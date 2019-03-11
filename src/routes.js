@@ -5,6 +5,7 @@ import Notifications from "views/Notifications.jsx";
 import TableList from "views/TableList.jsx";
 import Typography from "views/Typography.jsx";
 import UserProfile from "views/UserProfile.jsx";
+import Login from "views/Login.jsx";
 
 var routes = [
   {
@@ -57,4 +58,13 @@ var routes = [
     layout: "/admin"
   },
 ];
+
+var plainRoutes = [
+  {
+    path: "/login",
+    name: "Login",
+    component: Typography,
+    layout: "/"
+  }
+]
 export default routes;
