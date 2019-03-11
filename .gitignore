@@ -1,0 +1,9 @@
+#Mac DS_store
+.DS_Store
+
+#IntelliJ Files
+.idea
+
+#node stuff
+node_modules/
+
