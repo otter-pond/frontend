@@ -7,7 +7,7 @@ import Typography from "views/Typography.jsx";
 import UserProfile from "views/UserProfile.jsx";
 import Login from "views/Login.jsx";
 
-var routes = [
+export var routes = [
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -59,12 +59,11 @@ var routes = [
   },
 ];
 
-var plainRoutes = [
+export var plainRoutes = [
   {
-    path: "/login",
+    path: "/",
     name: "Login",
-    component: Typography,
+    component: Login,
     layout: "/"
   }
 ]
-export default routes;

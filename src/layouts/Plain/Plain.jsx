@@ -4,13 +4,16 @@ import { Route, Switch } from "react-router-dom";
 // core components
 import Footer from "components/Footer/Footer.jsx";
 
-import plainRoutes from "routes.js";
+import { plainRoutes }  from "routes.js";
 
 var ps;
 
 class Plain extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      backgroundColor: "blue",
+    };
   }
   getRoutes = plainRoutes => {
     return plainRoutes.map((prop, key) => {
@@ -32,8 +35,7 @@ class Plain extends React.Component {
       <>
         <div className="wrapper">
           <div
-            className="main-panel"
-            ref="mainPanel"
+            className="main-panel" data="blue"
           >
             <Switch>{this.getRoutes(plainRoutes)}</Switch>
           </div>
