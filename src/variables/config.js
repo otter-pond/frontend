@@ -4,11 +4,11 @@ const local = {
 
 
 const dev = {
-    apiGateway: "https://dev.theotterpond.com"
+    apiGateway: "https://dev.theotterpond.com/api"
 };
 
 const prod = {
-    apiGateway: "http://prod.theotterpond.com"
+    apiGateway: "http://prod.theotterpond.com/api"
 };
 
 const config = process.env.APP_STAGE === 'prod'
