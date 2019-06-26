@@ -11,9 +11,9 @@ const prod = {
     apiGateway: "http://prod-api.theotterpond.com"
 };
 
-const config = process.env.APP_STAGE === 'prod'
+const config = process.env.REACT_APP_STAGE === 'prod'
     ? prod
-    : process.env.APP_STAGE === 'dev'
+    : process.env.REACT_APP_STAGE === 'dev'
     ? dev
     : local;
 

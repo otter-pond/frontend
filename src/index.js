@@ -13,6 +13,8 @@ import "./assets/css/nucleo-icons.css";
 
 const hist = createHashHistory();
 
+console.log(process.env);
+
 const App = () => (
         <Router history={hist}>
             <Switch>
