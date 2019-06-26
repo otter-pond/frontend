@@ -1,4 +1,4 @@
-import config from "variables/config"
+import config from "../variables/config"
 import Cookies from 'universal-cookie';
 
 import axios from 'axios';

@@ -4,16 +4,15 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import PerfectScrollbar from "perfect-scrollbar";
 
 // core components
-import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
-import Footer from "components/Footer/Footer.jsx";
-import Sidebar from "components/Sidebar/Sidebar.jsx";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
-import APIClient from "api/APIClient"
-import {AuthConsumer} from 'react-check-auth';
+import AdminNavbar from "../../components/Navbars/AdminNavbar.jsx";
+import Footer from "../../components/Footer/Footer.jsx";
+import Sidebar from "../../components/Sidebar/Sidebar.jsx";
+import FixedPlugin from "../../components/FixedPlugin/FixedPlugin.jsx";
+import APIClient from "../../api/APIClient"
 
-import { routes } from "routes.js";
+import { routes } from "../../routes.js";
 
-import logo from "assets/img/react-logo.png";
+import logo from "../../assets/img/react-logo.png";
 
 var ps;
 

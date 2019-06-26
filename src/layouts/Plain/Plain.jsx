@@ -1,12 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
-// core components
-import Footer from "components/Footer/Footer.jsx";
-
-import { plainRoutes }  from "routes.js";
-
-var ps;
+import { plainRoutes }  from "../../routes.js";
 
 class Plain extends React.Component {
   constructor(props) {

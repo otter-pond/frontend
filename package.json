@@ -2,7 +2,6 @@
   "name": "black-dashboard-react",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://creativetimofficial.github.io/black-dashboard-react/#/dashboard",
   "dependencies": {
     "@types/react": "16.4.16",
     "axios": "^0.19.0",
@@ -15,7 +14,6 @@
     "prop-types": "^15.6.2",
     "react": "16.5.2",
     "react-chartjs-2": "^2.7.4",
-    "react-check-auth": "^0.2.0-alpha.2",
     "react-dom": "16.5.2",
     "react-google-maps": "9.4.5",
     "react-notification-alert": "0.0.8",
@@ -31,12 +29,14 @@
     "eject": "react-scripts eject",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
     "compile-scss": "node-sass src/assets/scss/black-dashboard-react.scss src/assets/css/black-dashboard-react.css",
+
     "predeploy": "APP_STAGE=dev npm run build",
-    "deploy": "aws s3 sync build/ s3://YOUR_DEV_S3_DEPLOY_BUCKET_NAME",
-    "postdeploy": "aws cloudfront create-invalidation --distribution-id YOUR_DEV_CF_DISTRIBUTION_ID --paths '/*' && aws cloudfront create-invalidation --distribution-id YOUR_DEV_WWW_CF_DISTRIBUTION_ID --paths '/*'",
-    "predeploy:prod": "APP_STAGE=production npm run build",
-    "deploy:prod": "aws s3 sync build/ s3://YOUR_PROD_S3_DEPLOY_BUCKET_NAME",
-    "postdeploy:prod": "aws cloudfront create-invalidation --distribution-id YOUR_PROD_CF_DISTRIBUTION_ID --paths '/*' && aws cloudfront create-invalidation --distribution-id YOUR_PROD_WWW_CF_DISTRIBUTION_ID --paths '/*'"
+    "deploy": "aws s3 sync build/ s3://otter-pond-web-dev",
+    "postdeploy": "aws cloudfront create-invalidation --distribution-id E19V84IIO6ELWU --paths '/*'",
+
+    "predeploy:prod": "APP_STAGE=prod npm run build",
+    "deploy:prod": "aws s3 sync build/ s3://otter-pond-web-prod",
+    "postdeploy:prod": "aws cloudfront create-invalidation --distribution-id E1VHOXQL30MUAX --paths '/*'"
   },
   "eslintConfig": {
     "extends": "react-app"
