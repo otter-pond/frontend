@@ -1,0 +1,16 @@
+dist: trusty
+language: node_js
+
+branches:
+  only:
+  - master
+  - development
+
+script: |
+  .travis.d/build.sh
+
+addons:
+  apt:
+    packages:
+      - "python3"
+      - "python3-pip"
