@@ -10,5 +10,13 @@ pip3 install awscli --upgrade --user
 
 echo "Deploying React Application..."
 
+if [ "$TRAVIS_BRANCH" = "$DEV_BRANCH_NAME" ]; then
+  ACTION="deploy"
+elif [ "$TRAVIS_BRANCH" = "$PROD_BRANCH_NAME" ]; then
+  ACTION="deploy:prod"
+else
+  exit 1
+fi
 
-npm run deploy
+
+CI=false npm run $ACTION
