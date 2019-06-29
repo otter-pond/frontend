@@ -6,10 +6,11 @@ import TableList from "./views/TableList.jsx";
 import Typography from "./views/Typography.jsx";
 import UserProfile from "./views/UserProfile.jsx";
 import Login from "./views/Login.jsx";
+import Home from "./views/Main/Home.jsx";
 
 export var routes = [
   {
-    path: "/dashboard",
+    path: "/",
     name: "Dashboard",
     icon: "tim-icons icon-chart-pie-36",
     component: Dashboard,
@@ -59,11 +60,21 @@ export var routes = [
   },
 ];
 
-export var plainRoutes = [
+export var mainRoutes = [
   {
-    path: "/",
+    path: "",
+    name: "Home",
+    icon: "tim-icons icon-align-center",
+    component: Home,
+    layout: "/"
+  },
+]
+
+export var authRoutes = [
+  {
+    path: "/login",
     name: "Login",
     component: Login,
-    layout: "/"
+    layout: "/auth"
   }
 ]

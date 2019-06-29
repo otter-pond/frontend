@@ -17,7 +17,7 @@ class Login extends React.Component {
         const client = new APIClient()
         client.checkAuthentication().then(() => {
             const { history } = this.props;
-            history.replace("/dashboard")
+            history.replace("/")
         }).catch(() => {
             console.log("User Not Logged In")
         })
@@ -40,7 +40,7 @@ class Login extends React.Component {
         var client = new APIClient();
         client.login(this.state.username, this.state.password).then(result =>{
             const { history } = this.props;
-            history.replace("/dashboard")
+            history.replace("/")
         }).catch(() => {
             this.setState({
                 password: "",
