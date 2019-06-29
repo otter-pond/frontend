@@ -8,7 +8,7 @@ branches:
   - development
 
 script: |
-  echo "Test"
+  .travis.d/build.sh
 
 addons:
   apt:
