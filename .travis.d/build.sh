@@ -12,4 +12,4 @@ pip3 install awscli --upgrade --user
 echo "Deploying React Application..."
 
 
-CI=false npm run deploy
+npm run deploy
