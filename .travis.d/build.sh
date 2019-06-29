@@ -13,7 +13,7 @@ echo "Deploying React Application..."
 if [ "$TRAVIS_BRANCH" = "$DEV_BRANCH_NAME" ]; then
   ACTION="deploy"
 elif [ "$TRAVIS_BRANCH" = "$PROD_BRANCH_NAME" ]; then
-  ACTION="deploy:prod
+  ACTION="deploy:prod"
 else
   exit 1
 fi
