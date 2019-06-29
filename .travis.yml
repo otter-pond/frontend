@@ -1,18 +1,17 @@
 dist: trusty
 language: node_js
 node_js:
-  - "8.11"
-
+- '8.11'
 branches:
   only:
   - master
   - development
-
-script: |
-  .travis.d/build.sh
-
+script: ".travis.d/build.sh\n"
 addons:
   apt:
     packages:
-      - "python3"
-      - "python3-pip"
+    - python3
+    - python3-pip
+notifications:
+  slack:
+    secure: OfojUZWf1M3Yr+qU8Itx9rwjBcEzBQvr5rpqDggkO8VZu42DUerRFwDrS2M4AVM8+0YYosO02KPh/Fi7gHE1RRE/M6P+XvddKKQZ0jt1knTiD1P116tKattRZ4AlNm8Q5SibokKu9U2F8nd+zxktT2g+BWmnzOV6ZNFNs2yyITA7SDeAL9HN2ySS/CJhxh855+MBLH12mHtFw6MsHuo17oz7YwMcR2odsEChlT+WQNUzTws8Yx+wvBVQQfO1EUnqBnYlAeVoGSzgn3IjcQ5mUqmKDPJEl5fII2hEm5L35pNoyNuicUI4y6XH+TPjdj1zsy7mVPR9ZIT5vohJ+9uSaRQuMzXZQwL9+pQ480RiJbdR/p61Y1XD0v63ebgcQLlLNCjpkE7Fg5epiqsAICofkqH/buw19baxkAoNmVZidBRD7bZPS97htyibjmkYMvIswT6J2IHqAmXElpRrnPoNSIPlAP0RXVYpkDCRGhrsl3eRFzFdYwhbEipOyQIV/+1LzllEEltF/JRHOYNBfVHPA1tfoF6EpQZePpPTTpqBZfmeg0630jPBlU4vMm0HdPgvvQ97xk5/udS6sd44kdU3NgDSYecYzxmvyT6XCAwataX4QPd9W3O19zyl8qQ7EB5OKRrbz+VBh0gYdXLkQrgaD43BsflTZR4cNtO3oYfctG8=
