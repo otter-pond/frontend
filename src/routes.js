@@ -1,19 +1,13 @@
-import Dashboard from "./views/Dashboard.jsx";
-import Icons from "./views/Icons.jsx";
-import Map from "./views/Map.jsx";
-import Notifications from "./views/Notifications.jsx";
-import TableList from "./views/TableList.jsx";
-import Typography from "./views/Typography.jsx";
-import UserProfile from "./views/UserProfile.jsx";
-import Login from "./views/Login.jsx";
+import Login from "./views/archive/Login.jsx";
 import Home from "./views/Main/Home.jsx";
 
+/*
 export var routes = [
   {
     path: "/",
-    name: "Dashboard",
+    name: "archive",
     icon: "tim-icons icon-chart-pie-36",
-    component: Dashboard,
+    component: archive,
     layout: "/dashboard"
   },
   {
@@ -59,6 +53,7 @@ export var routes = [
     layout: "/dashboard"
   },
 ];
+*/
 
 export var mainRoutes = [
   {

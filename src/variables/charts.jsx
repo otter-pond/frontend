@@ -54,7 +54,7 @@ let chart1_2_options = {
 };
 
 // #########################################
-// // // used inside src/views/Dashboard.jsx
+// // // used inside src/views/archive.jsx
 // #########################################
 let chartExample1 = {
   data1: canvas => {
@@ -196,7 +196,7 @@ let chartExample1 = {
 };
 
 // #########################################
-// // // used inside src/views/Dashboard.jsx
+// // // used inside src/views/archive.jsx
 // #########################################
 let chartExample2 = {
   data: canvas => {
@@ -235,7 +235,7 @@ let chartExample2 = {
 };
 
 // #########################################
-// // // used inside src/views/Dashboard.jsx
+// // // used inside src/views/archive.jsx
 // #########################################
 let chartExample3 = {
   data: canvas => {
@@ -314,7 +314,7 @@ let chartExample3 = {
 };
 
 // #########################################
-// // // used inside src/views/Dashboard.jsx
+// // // used inside src/views/archive.jsx
 // #########################################
 const chartExample4 = {
   data: canvas => {
@@ -403,8 +403,8 @@ const chartExample4 = {
 };
 
 module.exports = {
-  chartExample1, // in src/views/Dashboard.jsx
-  chartExample2, // in src/views/Dashboard.jsx
-  chartExample3, // in src/views/Dashboard.jsx
-  chartExample4 // in src/views/Dashboard.jsx
+  chartExample1, // in src/views/archive.jsx
+  chartExample2, // in src/views/archive.jsx
+  chartExample3, // in src/views/archive.jsx
+  chartExample4 // in src/views/archive.jsx
 };
