@@ -1,15 +1,16 @@
 import React, { Component } from "react";
 
-import { Table } from "reactstrap"
+import {Card, CardBody, CardHeader, CardTitle, Table, Dropdown, DropdownMenu, DropdownItem, DropdownToggle} from "reactstrap"
 import UsersAPI from "../../api/UsersAPI";
 import RolesAPI from "../../api/RolesAPI";
 
-class EditRoster extends Component {
+class EditRosterCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
             users: [],
-            roles: []
+            roles: [],
+            selectedRole: ""
         }
 
         let usersClient = new UsersAPI();
@@ -34,30 +35,40 @@ class EditRoster extends Component {
 
     render() {
         return (
-            <div>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Last Name</th>
-                            <th>First Name</th>
-                            <th>Role</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {this.state.users.map((user, index) => {
-                        return (
+            <Card>
+                <CardHeader>
+                    <div className="clearfix">
+                        <CardTitle tag="h2">Edit Roster</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardBody>
+                    <div>
+                        <Table>
+                            <thead>
                             <tr>
-                                <td>{user.last_name}</td>
-                                <td>{user.first_name}</td>
-                                <td></td>
+                                <th>Last Name</th>
+                                <th>First Name</th>
+                                <th>Role</th>
                             </tr>
-                        )
-                    })}
-                    </tbody>
-                </Table>
-            </div>
+                            </thead>
+                            <tbody>
+                            {this.state.users.map((user, index) => {
+                                return (
+                                    <tr>
+                                        <td>{user.last_name}</td>
+                                        <td>{user.first_name}</td>
+                                        <td></td>
+                                    </tr>
+                                )
+                            })}
+                            </tbody>
+                        </Table>
+                    </div>
+                </CardBody>
+            </Card>
+
         );
     }
 }
 
-export default EditRoster;
+export default EditRosterCard;

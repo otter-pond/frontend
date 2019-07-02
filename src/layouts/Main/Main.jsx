@@ -71,7 +71,7 @@ class Main extends React.Component {
     };
     getRoutes = mainRoutes => {
         return mainRoutes.map((prop, key) => {
-            if (prop.layout === "/") {
+            if (prop.layout === "/main") {
                 return (
                     <Route
                         path={prop.layout + prop.path}
@@ -130,10 +130,10 @@ class Main extends React.Component {
                         <Footer fluid />
                     </div>
                 </div>
-                <FixedPlugin
+                {/*<FixedPlugin
                     bgColor={this.state.backgroundColor}
                     handleBgClick={this.handleBgClick}
-                />
+                />*/}
             </>
         );
     }

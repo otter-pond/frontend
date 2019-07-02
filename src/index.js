@@ -18,7 +18,8 @@ const App = () => (
         <Router history={hist}>
             <Switch>
                 <Route path="/auth" render={props => <AuthLayout {...props} />} />
-                <Route path="/" render={props => <MainLayout {...props} />} />
+                <Route path="/main" render={props => <MainLayout {...props} />} />
+                <Redirect exact from="/" to="/main/home" />
             </Switch>
         </Router>
 )
