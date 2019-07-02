@@ -1,5 +1,6 @@
 import Login from "./views/archive/Login.jsx";
 import Home from "./views/Main/Home.jsx";
+import Admin from "./views/Main/Admin.jsx";
 
 /*
 export var routes = [
@@ -57,10 +58,17 @@ export var routes = [
 
 export var mainRoutes = [
   {
-    path: "",
+    path: "home",
     name: "Home",
     icon: "tim-icons icon-align-center",
     component: Home,
+    layout: "/"
+  },
+  {
+    path: "admin",
+    name: "Admin",
+    icon: "tim-icons icon-align-center",
+    component: Admin,
     layout: "/"
   },
 ]
