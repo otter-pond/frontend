@@ -56,9 +56,9 @@ class EditRosterCard extends Component {
 
     setActiveRole(role_id) {
         let role = this.state.roles.filter(a => {return a.role_id === role_id})[0];
-        this.rolesClient.getUsersWithRole(role["role_id"]).then(users => {
+        this.rolesClient.getUsersWithRole(role_id).then(users => {
             this.setState({
-                selectedRole: role.role_description,
+                selectedRole: role_id !== "none" ? role["role_description"] : "Users Without Role",
                 selectedRoleId: role_id,
                 activeUsers: users
             })
@@ -90,7 +90,7 @@ class EditRosterCard extends Component {
                     {this.state.roles.map((role, index) => {
                         return <DropdownItem value={role["role_id"]} onClick={(e) => onClick(e)}>{role["role_description"]}</DropdownItem>
                     })}
-
+                    <DropdownItem value={"none"} onClick={(e) => onClick(e)}>Users Without Role</DropdownItem>
                 </DropdownMenu>
             </UncontrolledDropdown>
         )
@@ -147,6 +147,7 @@ class EditRosterCard extends Component {
                                                 {this.state.roles.map((role, index) => {
                                                     return <option value={role.role_id}>{role.role_description}</option>
                                                 })}
+                                                <option value={"none"}>No Role</option>
                                             </Input>
                                         </td>
                                     </tr>
