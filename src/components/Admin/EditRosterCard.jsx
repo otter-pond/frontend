@@ -1,8 +1,21 @@
 import React, { Component } from "react";
 
-import {Card, CardBody, CardHeader, CardTitle, Table, Dropdown, DropdownMenu, DropdownItem, DropdownToggle} from "reactstrap"
+import {
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Table,
+    UncontrolledDropdown,
+    DropdownMenu,
+    DropdownItem,
+    DropdownToggle,
+    Button,
+    Input
+} from "reactstrap"
 import UsersAPI from "../../api/UsersAPI";
 import RolesAPI from "../../api/RolesAPI";
+import {FaSortDown} from "react-icons/fa";
 
 class EditRosterCard extends Component {
     constructor(props) {
@@ -10,26 +23,88 @@ class EditRosterCard extends Component {
         this.state = {
             users: [],
             roles: [],
-            selectedRole: ""
+            selectedRole: "Loading",
+            selectedRoleId: "",
+            activeUsers: [],
+            dropdownOpen: false
         }
 
-        let usersClient = new UsersAPI();
-        let rolesClient = new RolesAPI();
+        this.usersClient = new UsersAPI();
+        this.rolesClient = new RolesAPI();
 
-        usersClient.getUsers().then(users => {
+        this.usersClient.getUsers().then(users => {
+            var userMap = {};
+            users.forEach(user => {
+                userMap[user["user_email"]] = user;
+            });
             this.setState({
-                users: users
-            })
+                users: userMap
+            });
         }).catch(e => {
             console.log("Unable to load users.")
         });
 
-        rolesClient.getRoles().then(roles => {
+        this.rolesClient.getRoles().then(roles => {
             this.setState({
                 roles: roles
-            })
+            });
+            this.setActiveRole(roles[0].role_id);
         }).catch(e => {
             console.log("Unable to load roles.")
+        })
+    }
+
+    setActiveRole(role_id) {
+        let role = this.state.roles.filter(a => {return a.role_id === role_id})[0];
+        this.rolesClient.getUsersWithRole(role["role_id"]).then(users => {
+            this.setState({
+                selectedRole: role.role_description,
+                selectedRoleId: role_id,
+                activeUsers: users
+            })
+        }).catch((e) => {
+            console.log("unable to load users with role: " + e);
+        })
+    }
+
+    dropdownSelect(event) {
+        this.setState({
+            selectedRole: "Loading"
+        })
+        this.setActiveRole(event.target.value)
+    }
+
+    toggle() {
+        this.setState(prevState => ({
+            dropdownOpen: !prevState.dropdownOpen
+        }));
+    }
+
+    renderRoleDropdown(selected, onClick) {
+        return (
+            <UncontrolledDropdown>
+                <DropdownToggle>
+                    Selected: {selected}
+                </DropdownToggle>
+                <DropdownMenu>
+                    {this.state.roles.map((role, index) => {
+                        return <DropdownItem value={role["role_id"]} onClick={(e) => onClick(e)}>{role["role_description"]}</DropdownItem>
+                    })}
+
+                </DropdownMenu>
+            </UncontrolledDropdown>
+        )
+    }
+
+    updateRole(newRoleId, userEmail) {
+        console.log(newRoleId + userEmail);
+        this.rolesClient.setUserRole(newRoleId, userEmail).then(() => {
+            let users = this.state.activeUsers.filter(a => {return a !== userEmail});
+            this.setState({
+                activeUsers: users
+            });
+        }).catch(() => {
+            console.error("Error setting user role");
         })
     }
 
@@ -38,7 +113,13 @@ class EditRosterCard extends Component {
             <Card>
                 <CardHeader>
                     <div className="clearfix">
-                        <CardTitle tag="h2">Edit Roster</CardTitle>
+                        <CardTitle tag="h2" className="float-left">Edit Roster</CardTitle>
+                        <div className="float-right">
+                            <div className="float-right">
+                            {this.renderRoleDropdown(this.state.selectedRole, (e) => {this.dropdownSelect(e)})}
+                            </div>
+                            {/*<Button className="float-right">Change User Roles</Button>*/}
+                        </div>
                     </div>
                 </CardHeader>
                 <CardBody>
@@ -52,12 +133,22 @@ class EditRosterCard extends Component {
                             </tr>
                             </thead>
                             <tbody>
-                            {this.state.users.map((user, index) => {
+                            {this.state.activeUsers.map((user_email, index) => {
+                                let user = this.state.users[user_email];
+                                if (!user)
+                                    return
                                 return (
                                     <tr>
                                         <td>{user.last_name}</td>
                                         <td>{user.first_name}</td>
-                                        <td></td>
+                                        <td>
+                                            <Input type="select" style={{width: 200}} value={this.state.selectedRoleId}
+                                                   onChange={(e) => {this.updateRole(e.target.value, user_email)}}>
+                                                {this.state.roles.map((role, index) => {
+                                                    return <option value={role.role_id}>{role.role_description}</option>
+                                                })}
+                                            </Input>
+                                        </td>
                                     </tr>
                                 )
                             })}
