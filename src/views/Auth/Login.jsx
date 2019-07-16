@@ -4,6 +4,10 @@ import APIClient from "../../api/APIClient"
 import {
     Card, CardBody, CardHeader, Col, Row, Container, Form, FormGroup, Label, Input, Button
 } from "reactstrap";
+import UsersAPI from "../../api/UsersAPI";
+
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 class Login extends React.Component {
     constructor(props) {
@@ -39,8 +43,20 @@ class Login extends React.Component {
         event.preventDefault()
         var client = new APIClient();
         client.login(this.state.username, this.state.password).then(result =>{
-            const { history } = this.props;
-            history.replace("/")
+            let userClient = new UsersAPI();
+            let promises=[userClient.getUserRole(this.state.username), userClient.getUserPermissions(this.state.username)]
+            Promise.all(promises).then(result => {
+                let role = result[0]
+                let permissions = result[1]
+                cookies.set("role", role, { path: '/' })
+                cookies.set("permissions", permissions, { path: '/' })
+                const { history } = this.props;
+                history.replace("/")
+            }).catch(e => {
+                console.log("Error loading user details: ")
+                console.log(e)
+                cookies.remove("accessToken")
+            })
         }).catch(() => {
             this.setState({
                 password: "",

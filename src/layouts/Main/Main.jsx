@@ -10,9 +10,15 @@ import Sidebar from "../../components/Sidebar/Sidebar.jsx";
 import FixedPlugin from "../../components/FixedPlugin/FixedPlugin.jsx";
 import APIClient from "../../api/APIClient"
 
-import { mainRoutes } from "../../routes.js";
+import { getMainRoutesForUser } from "../../routes.js";
 
 import logo from "../../assets/img/react-logo.png";
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
+let role = cookies.get("role")
+let permissions = cookies.get("permissions")
+let mainRoutes = getMainRoutesForUser(role, permissions)
 
 var ps;
 
@@ -70,6 +76,7 @@ class Main extends React.Component {
         this.setState({ sidebarOpened: !this.state.sidebarOpened });
     };
     getRoutes = mainRoutes => {
+
         return mainRoutes.map((prop, key) => {
             if (prop.layout === "/main") {
                 return (
