@@ -1,4 +1,6 @@
 import React from "react";
+import {Col, Row} from "reactstrap";
+import CalendarCard from "../../components/Home/CalendarCard";
 
 // reactstrap components
 
@@ -8,7 +10,11 @@ class Home extends React.Component {
             <>
                 <div className="content">
                     <h1>Welcome to the Otter Pond</h1>
-                    <p>This would be a good place to put some valuable content. If only we had some.</p>
+                    <Row>
+                        <Col xs={12}>
+                            <CalendarCard />
+                        </Col>
+                    </Row>
                 </div>
             </>
         );

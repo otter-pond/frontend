@@ -1,13 +1,10 @@
 import React from "react";
 
 import EditRosterCard from "../../components/Admin/EditRosterCard";
+import EditEmailListsCard from "../../components/Admin/EditEmailListsCard";
 
 // reactstrap components
 import {
-    Card,
-    CardHeader,
-    CardBody,
-    CardTitle,
     Row,
     Col,
 } from "reactstrap";
@@ -18,6 +15,11 @@ class Admin extends React.Component {
             <>
                 <div className="content">
                     <h1>Admin</h1>
+                    <Row>
+                        <Col xs={12}>
+                            <EditEmailListsCard />
+                        </Col>
+                    </Row>
                     <Row>
                         <Col xs={12}>
                             <EditRosterCard />

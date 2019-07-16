@@ -10,12 +10,10 @@ import {
     DropdownMenu,
     DropdownItem,
     DropdownToggle,
-    Button,
     Input
 } from "reactstrap"
 import UsersAPI from "../../api/UsersAPI";
 import RolesAPI from "../../api/RolesAPI";
-import {FaSortDown} from "react-icons/fa";
 
 class EditRosterCard extends Component {
     constructor(props) {
@@ -26,7 +24,6 @@ class EditRosterCard extends Component {
             selectedRole: "Loading",
             selectedRoleId: "",
             activeUsers: [],
-            dropdownOpen: false
         }
 
         this.usersClient = new UsersAPI();
@@ -72,12 +69,6 @@ class EditRosterCard extends Component {
             selectedRole: "Loading"
         })
         this.setActiveRole(event.target.value)
-    }
-
-    toggle() {
-        this.setState(prevState => ({
-            dropdownOpen: !prevState.dropdownOpen
-        }));
     }
 
     renderRoleDropdown(selected, onClick) {
