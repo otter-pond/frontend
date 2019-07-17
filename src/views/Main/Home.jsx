@@ -10,6 +10,7 @@ class Home extends React.Component {
             <>
                 <div className="content">
                     <h1>Welcome to the Otter Pond</h1>
+                    <p>Don't judge, this is very much a work in progress</p>
                     <Row>
                         <Col xs={12}>
                             <CalendarCard />
