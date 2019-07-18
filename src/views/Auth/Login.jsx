@@ -33,31 +33,37 @@ class Login extends React.Component {
     })
   }
 
-    submitForm(event) {
-        event.preventDefault()
-        var client = new APIClient();
-        client.login(this.state.username, this.state.password).then(result =>{
-            let userClient = new UsersAPI();
-            let promises=[userClient.getUserRole(this.state.username), userClient.getUserPermissions(this.state.username)]
-            Promise.all(promises).then(result => {
-                let role = result[0]
-                let permissions = result[1]
-                cookies.set("role", role, { path: '/' })
-                cookies.set("permissions", permissions, { path: '/' })
-                const { history } = this.props;
-                history.replace("/")
-            }).catch(e => {
-                console.log("Error loading user details: ")
-                console.log(e)
-                cookies.remove("accessToken")
-            })
-        }).catch(() => {
-            this.setState({
-                password: "",
-                invalid: true
-            })
-        })
-    }
+  handlePasswordChange(event) {
+    this.setState({
+      password: event.target.value
+    })
+  }
+
+  submitForm(event) {
+      event.preventDefault()
+      var client = new APIClient();
+      client.login(this.state.username, this.state.password).then(result =>{
+          let userClient = new UsersAPI();
+          let promises=[userClient.getUserRole(this.state.username), userClient.getUserPermissions(this.state.username)]
+          Promise.all(promises).then(result => {
+              let role = result[0]
+              let permissions = result[1]
+              cookies.set("role", role, { path: '/' })
+              cookies.set("permissions", permissions, { path: '/' })
+              const { history } = this.props;
+              history.replace("/")
+          }).catch(e => {
+              console.log("Error loading user details: ")
+              console.log(e)
+              cookies.remove("accessToken")
+          })
+      }).catch(() => {
+          this.setState({
+              password: "",
+              invalid: true
+          })
+      })
+  }
 
   render() {
     return (
