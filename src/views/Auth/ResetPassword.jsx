@@ -141,7 +141,7 @@ class ResetPassword extends React.Component {
                                  onChange={(e) => this.handleConfirmNewPasswordChange(e)}
                           />
                         </FormGroup>
-                        <Button style={{textAlign: "center"}}>Submit</Button>
+                        <Button style={{textAlign: "center"}} block>Submit</Button>
                         {/*How do I space this out??? Or center it???*/}
                         <Row>
                           <Col>

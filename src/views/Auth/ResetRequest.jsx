@@ -78,7 +78,7 @@ class ResetRequest extends React.Component {
                             <CardLink style={{color: "white"}} href="#/auth/login">Back to Log in</CardLink>
                           </Col>
                         </Row>
-                        <CardLink style={{color: "white"}} href="#/auth/resetPassword">Already have a reset code?</CardLink>
+                        {/*<CardLink style={{color: "white"}} href="#/auth/resetPassword">Already have a reset code?</CardLink>*/}
                       </Form>
                     </CardBody>
                   </Card>
