@@ -39,6 +39,7 @@ class APIClient {
             if (!this.accessToken)
                 reject()
             this.perform("get","/auth/checkLoginStatus").then(userInfo => {
+                // reject()
                 if (userInfo && userInfo["user_name"]) {
                     cookies.set("user_name", userInfo["user_name"])
                     resolve()
@@ -46,6 +47,33 @@ class APIClient {
                     reject()
                 }
             }).catch(() => {
+                reject()
+            })
+        })
+    }
+
+    requestResetPassword(email) {
+        return new Promise((resolve, reject) => {
+            // TODO: Fill this in with actual API route with real data and real response handling
+            this.perform("post", "/auth/requestResetPassword", {
+                user_email: email
+            }).then( () => {
+                resolve()
+            }).catch( () => {
+                reject()
+            })
+        })
+    }
+
+    resetPassword(email, newPassword, resetToken) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", "/auth/resetPassword", {
+                user_email: email,
+                token: resetToken,
+                password: newPassword
+            }).then( () => {
+                resolve()
+            }).catch( () => {
                 reject()
             })
         })
