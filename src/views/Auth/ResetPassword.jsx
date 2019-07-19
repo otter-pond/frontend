@@ -3,7 +3,7 @@ import APIClient from "../../api/APIClient"
 import qs from 'query-string'
 
 import {
-  Card, CardLink, CardBody, CardHeader, Col, Row, Container, Form, FormGroup, Label, Input, Button
+  Card, CardLink, CardBody, CardHeader, Col, Row, Container, Form, FormGroup, Label, Input, Button, Alert
 } from "reactstrap";
 
 class ResetPassword extends React.Component {
@@ -105,8 +105,18 @@ class ResetPassword extends React.Component {
                     </CardHeader>
                     <CardBody>
                       <Form onSubmit={ (e) => this.submitForm(e) }>
-                        {this.state.resetSuccess && <p style={{color: "white"}}>Reset successful, please return to login page!</p>}
-                        {this.state.resetError && <p style={{color: "white"}}>Reset failed, check your email address and try again!</p>}
+                        <Alert color="success" isOpen={!this.state.resetSuccess}>
+                          Reset successful, please return to <a href="#/auth/login" className="alert-link">login page</a>!
+                        </Alert>
+                        <Alert color="warning" isOpen={this.state.resetError}>
+                          Reset failed, check your email address and try again!
+                        </Alert>
+                        <Alert color="warning" isOpen={this.state.passwordsEmpty}>
+                          Passwords are empty
+                        </Alert>
+                        <Alert color="warning" isOpen={this.state.passwordMismatch}>
+                          Passwords do not match
+                        </Alert>
                         <FormGroup>
                           <Label for="exampleEmail" style={{color: "white"}}>Email</Label>
                           <Input type="email"
@@ -117,8 +127,6 @@ class ResetPassword extends React.Component {
                                  value={this.state.email}
                                  onChange={(e) => this.handleEmailChange(e)}/>
                         </FormGroup>
-                        {this.state.passwordsEmpty && <p style={{color: "white"}}>Passwords are empty</p>}
-                        {this.state.passwordMismatch && <p style={{color: "white"}}>Passwords do not match</p>}
                         <FormGroup>
                           <Label for="newPassword" style={{color: "white"}}>New Password</Label>
                           <Input type="password"
