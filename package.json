@@ -9,13 +9,16 @@
     "chart.js": "^2.7.2",
     "classnames": "2.2.6",
     "history": "4.7.2",
+    "moment": "^2.24.0",
     "node-sass": "4.9.3",
     "perfect-scrollbar": "1.4.0",
     "prop-types": "^15.6.2",
     "react": "16.5.2",
+    "react-big-calendar": "^0.22.0",
     "react-chartjs-2": "^2.7.4",
     "react-dom": "16.5.2",
     "react-google-maps": "9.4.5",
+    "react-icons": "^3.7.0",
     "react-notification-alert": "0.0.8",
     "react-router-dom": "4.3.1",
     "react-scripts": "^2.1.8",
@@ -29,14 +32,12 @@
     "eject": "react-scripts eject",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
     "compile-scss": "node-sass src/assets/scss/black-dashboard-react.scss src/assets/css/black-dashboard-react.css",
-
     "predeploy": "REACT_APP_STAGE=dev npm run build",
-    "deploy": "aws s3 sync build/ s3://otter-pond-web-dev",
-    "postdeploy": "aws cloudfront create-invalidation --distribution-id E19V84IIO6ELWU --paths '/*'",
-
+    "deploy": "aws s3 sync build/ s3://$DEVS3BUCKET",
+    "postdeploy": "aws cloudfront create-invalidation --distribution-id $DEVCLOUDFRONTID --paths '/*'",
     "predeploy:prod": "REACT_APP_STAGE=prod npm run build",
-    "deploy:prod": "aws s3 sync build/ s3://otter-pond-web-prod",
-    "postdeploy:prod": "aws cloudfront create-invalidation --distribution-id E1VHOXQL30MUAX --paths '/*'"
+    "deploy:prod": "aws s3 sync build/ s3://$PRODS3BUCKET",
+    "postdeploy:prod": "aws cloudfront create-invalidation --distribution-id $PRODCLOUDFRONTID --paths '/*'"
   },
   "eslintConfig": {
     "extends": "react-app"

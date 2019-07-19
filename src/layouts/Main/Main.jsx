@@ -10,13 +10,19 @@ import Sidebar from "../../components/Sidebar/Sidebar.jsx";
 import FixedPlugin from "../../components/FixedPlugin/FixedPlugin.jsx";
 import APIClient from "../../api/APIClient"
 
-import { routes } from "../../routes.js";
+import { getMainRoutesForUser } from "../../routes.js";
 
 import logo from "../../assets/img/react-logo.png";
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
+let role = cookies.get("role")
+let permissions = cookies.get("permissions")
+let mainRoutes = getMainRoutesForUser(role, permissions)
 
 var ps;
 
-class Admin extends React.Component {
+class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -30,7 +36,7 @@ class Admin extends React.Component {
             console.log("User Logged In")
         }).catch(() => {
             const { history } = this.props;
-            history.replace("/")
+            history.replace("/auth/login")
         })
     }
     componentDidMount() {
@@ -69,9 +75,10 @@ class Admin extends React.Component {
         document.documentElement.classList.toggle("nav-open");
         this.setState({ sidebarOpened: !this.state.sidebarOpened });
     };
-    getRoutes = routes => {
-        return routes.map((prop, key) => {
-            if (prop.layout === "/dashboard") {
+    getRoutes = mainRoutes => {
+
+        return mainRoutes.map((prop, key) => {
+            if (prop.layout === "/main") {
                 return (
                     <Route
                         path={prop.layout + prop.path}
@@ -88,13 +95,13 @@ class Admin extends React.Component {
         this.setState({ backgroundColor: color });
     };
     getBrandText = path => {
-        for (let i = 0; i < routes.length; i++) {
+        for (let i = 0; i < mainRoutes.length; i++) {
             if (
                 this.props.location.pathname.indexOf(
-                    routes[i].layout + routes[i].path
+                    mainRoutes[i].layout + mainRoutes[i].path
                 ) !== -1
             ) {
-                return routes[i].name;
+                return mainRoutes[i].name;
             }
         }
         return "Brand";
@@ -106,7 +113,7 @@ class Admin extends React.Component {
 
                     <Sidebar
                         {...this.props}
-                        routes={routes}
+                        routes={mainRoutes}
                         bgColor={this.state.backgroundColor}
                         logo={{
                             outterLink: "https://www.creative-tim.com/",
@@ -126,20 +133,17 @@ class Admin extends React.Component {
                             toggleSidebar={this.toggleSidebar}
                             sidebarOpened={this.state.sidebarOpened}
                         />
-                        <Switch>{this.getRoutes(routes)}</Switch>
-                        {// we don't want the Footer to be rendered on map page
-                            this.props.location.pathname.indexOf("maps") !== -1 ? null : (
-                                <Footer fluid />
-                            )}
+                        <Switch>{this.getRoutes(mainRoutes)}</Switch>
+                        <Footer fluid />
                     </div>
                 </div>
-                <FixedPlugin
+                {/*<FixedPlugin
                     bgColor={this.state.backgroundColor}
                     handleBgClick={this.handleBgClick}
-                />
+                />*/}
             </>
         );
     }
 }
 
-export default Admin;
+export default Main;

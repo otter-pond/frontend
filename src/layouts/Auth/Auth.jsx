@@ -1,21 +1,21 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
-import { plainRoutes }  from "../../routes.js";
+import { authRoutes }  from "../../routes.js";
 
-class Plain extends React.Component {
+class Auth extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       backgroundColor: "blue",
     };
   }
-  getRoutes = plainRoutes => {
-    return plainRoutes.map((prop, key) => {
-      if (prop.layout === "/") {
+  getRoutes = authRoutes => {
+    return authRoutes.map((prop, key) => {
+      if (prop.layout === "/auth") {
         return (
           <Route
-            path={prop.path}
+            path={prop.layout + prop.path}
             component={prop.component}
             key={key}
           />
@@ -32,7 +32,7 @@ class Plain extends React.Component {
           <div
             className="main-panel" data="blue"
           >
-            <Switch>{this.getRoutes(plainRoutes)}</Switch>
+            <Switch>{this.getRoutes(authRoutes)}</Switch>
           </div>
         </div>
       </>
@@ -40,4 +40,4 @@ class Plain extends React.Component {
   }
 }
 
-export default Plain;
+export default Auth;

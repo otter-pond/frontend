@@ -1,69 +1,40 @@
-import Dashboard from "./views/Dashboard.jsx";
-import Icons from "./views/Icons.jsx";
-import Map from "./views/Map.jsx";
-import Notifications from "./views/Notifications.jsx";
-import TableList from "./views/TableList.jsx";
-import Typography from "./views/Typography.jsx";
-import UserProfile from "./views/UserProfile.jsx";
-import Login from "./views/Login.jsx";
+import Login from "./views/Auth/Login.jsx";
+import Home from "./views/Main/Home.jsx";
+import Admin from "./views/Main/Admin.jsx";
 
-export var routes = [
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: "tim-icons icon-chart-pie-36",
-    component: Dashboard,
-    layout: "/dashboard"
-  },
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "tim-icons icon-atom",
-    component: Icons,
-    layout: "/dashboard"
-  },
-  {
-    path: "/map",
-    name: "Map",
-    icon: "tim-icons icon-pin",
-    component: Map,
-    layout: "/dashboard"
-  },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    icon: "tim-icons icon-bell-55",
-    component: Notifications,
-    layout: "/dashboard"
-  },
-  {
-    path: "/user-profile",
-    name: "User Profile",
-    icon: "tim-icons icon-single-02",
-    component: UserProfile,
-    layout: "/dashboard"
-  },
-  {
-    path: "/tables",
-    name: "Table List",
-    icon: "tim-icons icon-puzzle-10",
-    component: TableList,
-    layout: "/dashboard"
-  },
-  {
-    path: "/typography",
-    name: "Typography",
-    icon: "tim-icons icon-align-center",
-    component: Typography,
-    layout: "/dashboard"
-  },
-];
 
-export var plainRoutes = [
+let homeRoute = {
+  path: "/home",
+  name: "Home",
+  icon: "tim-icons icon-align-center",
+  component: Home,
+  layout: "/main"
+}
+
+let adminRoute = {
+      path: "/admin",
+      name: "Admin",
+      icon: "tim-icons icon-align-center",
+      component: Admin,
+      layout: "/main"
+}
+
+export function getMainRoutesForUser(role, permissions){
+  let routes = [homeRoute]
+
+  if (permissions && permissions.includes("full_admin")) {
+    routes.push(adminRoute)
+  }
+
+  return routes
+}
+
+export var authRoutes = [
   {
-    path: "/",
+    path: "/login",
     name: "Login",
     component: Login,
-    layout: "/"
+    layout: "/auth"
   }
 ]
+
