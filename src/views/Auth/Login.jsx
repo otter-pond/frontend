@@ -2,7 +2,7 @@ import React from "react";
 import APIClient from "../../api/APIClient"
 
 import {
-  Card, CardLink, CardBody, CardHeader, Col, Row, Container, Form, FormGroup, Label, Input, Button
+  Card, CardLink, CardBody, CardHeader, Col, Row, Container, Form, FormGroup, Label, Input, Button, Alert
 } from "reactstrap";
 import UsersAPI from "../../api/UsersAPI";
 
@@ -78,7 +78,9 @@ class Login extends React.Component {
                     </CardHeader>
                     <CardBody>
                       <Form onSubmit={ (e) => this.submitForm(e) }>
-                        {this.state.invalid && <p style={{color: "white"}}>Invalid Username/Password</p>}
+                        <Alert color="warning" isOpen={this.state.invalid}>
+                          Invalid Username/Password
+                        </Alert>
                         <FormGroup>
                           <Label for="exampleEmail" style={{color: "white"}}>Email</Label>
                           <Input type="email"

@@ -2,7 +2,7 @@ import React from "react";
 import APIClient from "../../api/APIClient"
 
 import {
-  Card, CardLink, CardBody, CardSubtitle, CardHeader, Col, Row, Container, Form, FormGroup, Label, Input, Button
+  Card, CardLink, CardBody, CardSubtitle, CardHeader, Col, Row, Container, Form, FormGroup, Label, Input, Button, Alert
 } from "reactstrap";
 
 class ResetRequest extends React.Component {
@@ -40,6 +40,7 @@ class ResetRequest extends React.Component {
     }).finally( () => {
       // No matter what, always go to request received page. Doesn't tell people what is a valid email!
       this.setState({
+        email: "",
         requestSent: true
       })
     })
@@ -60,7 +61,9 @@ class ResetRequest extends React.Component {
                       <CardSubtitle>
                       </CardSubtitle>
                       <Form onSubmit={ (e) => this.submitForm(e) }>
-                        {this.state.requestSent && <p style={{color: "white"}}>Your reset request has been received. Check your email for further instructions!</p>}
+                        <Alert color="success" isOpen={this.state.requestSent}>
+                          Your reset request has been received. Check your email for further instructions!
+                        </Alert>
                         <FormGroup>
                           <Label for="exampleEmail" style={{color: "white"}}>Enter your email address</Label>
                           <Input type="email"
