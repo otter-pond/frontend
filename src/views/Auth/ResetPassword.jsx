@@ -105,7 +105,7 @@ class ResetPassword extends React.Component {
                     </CardHeader>
                     <CardBody>
                       <Form onSubmit={ (e) => this.submitForm(e) }>
-                        <Alert color="success" isOpen={!this.state.resetSuccess}>
+                        <Alert color="success" isOpen={this.state.resetSuccess}>
                           Reset successful, please return to <a href="#/auth/login" className="alert-link">login page</a>!
                         </Alert>
                         <Alert color="warning" isOpen={this.state.resetError}>
