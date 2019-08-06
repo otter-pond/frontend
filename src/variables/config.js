@@ -8,7 +8,7 @@ const dev = {
 };
 
 const prod = {
-    apiGateway: "http://prod-api.theotterpond.com"
+    apiGateway: "https://prod-api.theotterpond.com"
 };
 
 const config = process.env.REACT_APP_STAGE === 'prod'
