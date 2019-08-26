@@ -19,11 +19,15 @@ class CalendarEventFetcher {
                 let results = resp.data ? resp.data : [];
                 let events = [];
                 results.items.map((event) => {
-                    events.push({
-                        start: event.start.date || event.start.dateTime,
-                        end: event.end.date || event.end.dateTime,
-                        title: event.summary,
-                    })
+                    console.log(event);
+                    if (event.status !== "cancelled") {
+                        events.push({
+                            start: event.start.date || event.start.dateTime,
+                            end: event.end.date || event.end.dateTime,
+                            title: event.summary,
+                        })
+                    }
+
                 });
                 resolve(events);
             })
