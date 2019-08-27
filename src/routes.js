@@ -2,6 +2,7 @@ import Login from "./views/Auth/Login.jsx";
 import ResetRequest from "./views/Auth/ResetRequest.jsx";
 import Home from "./views/Main/Home.jsx";
 import Admin from "./views/Main/Admin.jsx";
+import Reporting from "./views/Main/Reporting.jsx";
 import ResetPassword from "./views/Auth/ResetPassword.jsx"
 
 
@@ -21,8 +22,16 @@ let adminRoute = {
       layout: "/main"
 }
 
+let reportingRoute = {
+  path: "/reporting",
+  name: "Reporting",
+  icon: "tim-icons icon-align-center",
+  component: Reporting,
+  layout: "/main"
+}
+
 export function getMainRoutesForUser(role, permissions){
-  let routes = [homeRoute]
+  let routes = [homeRoute, reportingRoute]
 
   if (permissions && permissions.includes("full_admin")) {
     routes.push(adminRoute)
@@ -49,6 +58,6 @@ export var authRoutes = [
     name: "Reset Password",
     component: ResetPassword,
     layout: "/auth"
-  }
+  },
 ]
 
