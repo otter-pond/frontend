@@ -28,6 +28,7 @@ class APIClient {
                 else {
                     this.accessToken = token
                     cookies.set("accessToken", token, { path: '/' })
+                    cookies.set("user_email", username, {path: '/'})
                     resolve()
                 }
             })

@@ -19,7 +19,6 @@ class CalendarEventFetcher {
                 let results = resp.data ? resp.data : [];
                 let events = [];
                 results.items.map((event) => {
-                    console.log(event);
                     if (event.status !== "cancelled") {
                         events.push({
                             start: event.start.date || event.start.dateTime,

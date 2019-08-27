@@ -90,7 +90,7 @@ class EditEmailListsCard extends Component {
                                 <DropdownMenu>
                                     {this.state.emailLists.map((list, index) => {
                                         return <DropdownItem value={list["address"]}
-                                                             onClick={(e) => {this.onListSelect(e)}}>{list["address"]}></DropdownItem>
+                                                             onClick={(e) => {this.onListSelect(e)}}>{list["address"]}</DropdownItem>
                                     })}
                                 </DropdownMenu>
                             </UncontrolledDropdown>

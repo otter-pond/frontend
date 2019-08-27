@@ -116,9 +116,9 @@ class Main extends React.Component {
                         routes={mainRoutes}
                         bgColor={this.state.backgroundColor}
                         logo={{
-                            outterLink: "https://www.creative-tim.com/",
-                            text: "Creative Tim",
-                            imgSrc: logo
+                            outterLink: "",
+                            text: "Otter Pond",
+                            //imgSrc: logo
                         }}
                         toggleSidebar={this.toggleSidebar}
                     />
