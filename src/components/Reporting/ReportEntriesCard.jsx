@@ -29,6 +29,13 @@ class ReportEntriesCard extends Component {
         Promise.all(promises).then(results => {
             let report = results[1];
             let entries = results[0];
+            if (entries == null || entries.length === 0) {
+                this.setState({
+                    report: report,
+                    entries: []
+                });
+                return;
+            }
             var summary;
             this.setState({
                 report: report
