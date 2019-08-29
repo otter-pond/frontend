@@ -3,6 +3,7 @@ import ResetRequest from "./views/Auth/ResetRequest.jsx";
 import Home from "./views/Main/Home.jsx";
 import Admin from "./views/Main/Admin.jsx";
 import Reporting from "./views/Main/Reporting.jsx";
+import Attendance from "./views/Main/Attendance.jsx";
 import ResetPassword from "./views/Auth/ResetPassword.jsx"
 
 
@@ -30,11 +31,23 @@ let reportingRoute = {
   layout: "/main"
 }
 
+let attendanceRoute = {
+  path: "/attendance",
+  name: "Attendance",
+  icon: "tim-icons icon-align-center",
+  component: Attendance,
+  layout: "/main"
+}
+
 export function getMainRoutesForUser(role, permissions){
   let routes = [homeRoute, reportingRoute]
 
   if (permissions && permissions.includes("full_admin")) {
     routes.push(adminRoute)
+  }
+
+  if (permissions && (permissions.includes("full_admin") || permissions.includes("can_take_attendance"))) {
+    routes.push(attendanceRoute)
   }
 
   return routes
