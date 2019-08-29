@@ -37,30 +37,27 @@ class ReportEntriesCard extends Component {
                 return;
             }
             var summary;
-            this.setState({
-                report: report
-            }, () => {
-                if (report["report_type"]["value_type"] === "optionselect") {
-                    let options = report["report_type"]["options"];
-                    let optionsMap = {}
-                    options.forEach(option => {
-                        optionsMap[option] = 0;
-                    })
-                    entries.forEach(entry => {
-                        optionsMap[entry["value"]]++;
-                    });
-                    summary = optionsMap
-                } else {
-                    let total = 0;
-                    entries.forEach(entry => {
-                        total += entry["value"]
-                    });
-                    summary = total
-                }
-                this.setState({
-                    entries: results[0],
-                    summary: summary
+            if (report["report_type"]["value_type"] === "optionselect") {
+                let options = report["report_type"]["options"];
+                let optionsMap = {}
+                options.forEach(option => {
+                    optionsMap[option] = 0;
                 })
+                entries.forEach(entry => {
+                    optionsMap[entry["value"]]++;
+                });
+                summary = optionsMap
+            } else {
+                let total = 0;
+                entries.forEach(entry => {
+                    total += entry["value"]
+                });
+                summary = total
+            }
+            this.setState({
+                entries: entries,
+                report: report,
+                summary: summary
             })
 
         }).catch(e =>{
@@ -74,9 +71,9 @@ class ReportEntriesCard extends Component {
         }
     }
 
-    formatValue(value) {
-        if (this.state.report != null) {
-            if (this.state.report["report_type"]["value_type"] === "financial") {
+    formatValue(report, value) {
+        if (report != null) {
+            if (report["report_type"]["value_type"] === "financial") {
                 let fixed = value.toFixed(2);
                 if (value < 0) {
                     return "-$" + Math.abs(fixed)
@@ -96,15 +93,15 @@ class ReportEntriesCard extends Component {
         }
     }
 
-    formatSummary(summary) {
-        if (this.state.report != null && this.state.report.hasOwnProperty("report_type") && summary != null) {
-            if (this.state.report["report_type"]["value_type"] === "financial") {
+    formatSummary(report, summary) {
+        if (report != null && report.hasOwnProperty("report_type") && summary != null) {
+            if (report["report_type"]["value_type"] === "financial") {
                 let fixed = summary.toFixed(2);
                 if (fixed < 0) {
                     return "Total: -$" + Math.abs(fixed)
                 }
                 return "Total: $" + fixed;
-            } else if (this.state.report["report_type"]["value_type"] === "optionselect") {
+            } else if (report["report_type"]["value_type"] === "optionselect") {
                 return (<span>
                     {Object.keys(summary).map((option, index) => {
                         return <span>{option}: {summary[option]}<br /></span>
@@ -137,14 +134,14 @@ class ReportEntriesCard extends Component {
                                 <tr key={index}>
                                     <td>{this.formatDate(entry["timestamp"])}</td>
                                     <td>{entry["description"]}</td>
-                                    <td>{this.formatValue(entry["value"])}</td>
+                                    <td>{this.formatValue(this.state.report, entry["value"])}</td>
                                 </tr>
                             )
                         })}
                         <tr>
                             <td> </td>
                             <td> </td>
-                            <td style={{fontWeight: "bold"}}>{this.formatSummary(this.state.summary)}</td>
+                            <td style={{fontWeight: "bold"}}>{this.formatSummary(this.state.report, this.state.summary)}</td>
                         </tr>
                         </tbody>
                     </Table>
