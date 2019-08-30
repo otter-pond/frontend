@@ -50,6 +50,9 @@ class ReportEntriesCard extends Component {
             } else {
                 let total = 0;
                 entries.forEach(entry => {
+                    if (typeof entry["value"] == "string") {
+                        entry["value"] = parseFloat(entry["value"]);
+                    }
                     total += entry["value"]
                 });
                 summary = total
