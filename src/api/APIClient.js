@@ -42,7 +42,7 @@ class APIClient {
             this.perform("get","/auth/checkLoginStatus").then(userInfo => {
                 // reject()
                 if (userInfo && userInfo["user_name"]) {
-                    cookies.set("user_name", userInfo["user_name"])
+                    cookies.set("user_email", userInfo["user_name"])
                     resolve()
                 } else {
                     reject()

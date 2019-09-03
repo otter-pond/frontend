@@ -20,7 +20,7 @@ export default class ReportingAPI extends APIClient {
 
     getUserReportEntries(report_id) {
         let cookies = new Cookies();
-        let username = cookies.get("username", {path: "/"})
+        let username = cookies.get("user_email", {path: "/"})
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/${report_id}/entries/${username}`).then(entries => {
                 resolve(entries);
