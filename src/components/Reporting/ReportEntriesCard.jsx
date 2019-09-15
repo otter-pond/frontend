@@ -14,7 +14,7 @@ class ReportEntriesCard extends Component {
         this.state = {
             report: {},
             entries: [],
-            summary: null
+            summary: null,
         }
 
         this.reportingApi = new ReportingAPI();
@@ -25,18 +25,32 @@ class ReportEntriesCard extends Component {
     }
 
     loadReport(reportId) {
-        let promises = [this.reportingApi.getUserReportEntries(reportId), this.reportingApi.getReportById(reportId)]
+        let reportPromise = this.reportingApi.getUserReportEntries(reportId)
+        if (this.props.viewAll) {
+            reportPromise = this.reportingApi.getReportEntries(reportId)
+        }
+        let promises = [reportPromise, this.reportingApi.getReportById(reportId)]
         Promise.all(promises).then(results => {
             let report = results[1];
             let entries = results[0];
             if (entries == null || entries.length === 0) {
                 this.setState({
                     report: report,
-                    entries: []
+                    entries: [],
+                    summary: null
                 });
                 return;
             }
             var summary;
+            if (this.props.sortDirection){
+                entries.sort((a, b) => {
+                    if (this.props.sortDirection === "asc") {
+                        return new Date(a.timestamp) - new Date(b.timestamp);
+                    } else if (this.props.sortDirection === "desc"){
+                        return new Date(b.timestamp) - new Date(a.timestamp);
+                    }
+                })
+            }
             if (report["report_type"]["value_type"] === "optionselect") {
                 let options = report["report_type"]["options"];
                 let optionsMap = {}
@@ -127,6 +141,7 @@ class ReportEntriesCard extends Component {
                         <thead>
                             <tr>
                                 <th>Date</th>
+                                {this.props.getUserName ? <th>User</th> : null}
                                 <th>Details</th>
                                 <th>Value</th>
                             </tr>
@@ -136,6 +151,7 @@ class ReportEntriesCard extends Component {
                             return(
                                 <tr key={index}>
                                     <td>{this.formatDate(entry["timestamp"])}</td>
+                                    {this.props.getUserName ? <td>{this.props.getUserName(entry["user_email"])}</td> : null}
                                     <td>{entry["description"]}</td>
                                     <td>{this.formatValue(this.state.report, entry["value"])}</td>
                                 </tr>
@@ -143,6 +159,7 @@ class ReportEntriesCard extends Component {
                         })}
                         <tr>
                             <td> </td>
+                            {this.props.getUserName ? <td></td> : null}
                             <td> </td>
                             <td style={{fontWeight: "bold"}}>{this.formatSummary(this.state.report, this.state.summary)}</td>
                         </tr>

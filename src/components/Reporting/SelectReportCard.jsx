@@ -51,7 +51,7 @@ class SelectReportCard extends Component {
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle tag="h2" className="float-left">Select Report to View</CardTitle>
+                    <CardTitle tag="h2" className="float-left">Select Report</CardTitle>
                 </CardHeader>
                 <CardBody>
                     <UncontrolledDropdown>

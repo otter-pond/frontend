@@ -24,7 +24,7 @@ class Reporting extends React.Component {
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <ReportEntiresCard reportId={this.state.selectedReportId}/>
+                            <ReportEntiresCard reportId={this.state.selectedReportId} sortDirection={"asc"}/>
                         </Col>
                     </Row>
                 </div>

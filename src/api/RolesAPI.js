@@ -9,6 +9,14 @@ export default class RolesAPI extends APIClient {
         })
     }
 
+    getRoleById(role_id) {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/roles/${role_id}`).then(role => {
+                resolve(role)
+            })
+        })
+    }
+
     getUsersWithRole(role_id) {
         return new Promise((resolve, reject) => {
             this.perform("get", `/roles/${role_id}/users`).then(users => {

@@ -18,6 +18,14 @@ export default class ReportingAPI extends APIClient {
         })
     }
 
+    getReportTypeById(reportTypeId) {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/reporting/types/${reportTypeId}`).then(report => {
+                resolve(report)
+            })
+        })
+    }
+
     getUserReportEntries(report_id) {
         let cookies = new Cookies();
         let username = cookies.get("user_email", {path: "/"})
@@ -30,8 +38,24 @@ export default class ReportingAPI extends APIClient {
 
     getReportEntries(report_id) {
         return new Promise((resolve, reject) => {
-            this.perform("get", `/reporting/${report_id}/entries/`).then(entries => {
+            this.perform("get", `/reporting/${report_id}/entries`).then(entries => {
                 resolve(entries);
+            })
+        })
+    }
+
+    addDescription(report_id, description) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `/reporting/${report_id}/presetDescription`, {'description': description}).then(result => {
+                resolve(result);
+            })
+        })
+    }
+
+    createReportEntry(report_id, entry) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `/reporting/${report_id}/entries`, entry).then(result => {
+                resolve(result);
             })
         })
     }
