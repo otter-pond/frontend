@@ -95,7 +95,7 @@ class Attendance extends React.Component {
         this.reportingAPI.createReportEntry(this.state.selectedReportId, report).then(result => {
             if (result["error"] !== "Success"){
                 this.setState({
-                    errorText: result["Error"]
+                    errorText: result["error"]
                 })
             } else {
                 this.loadEntries()
