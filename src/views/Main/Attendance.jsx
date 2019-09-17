@@ -35,6 +35,7 @@ class Attendance extends React.Component {
             scanning: false,
             pendingDescriptionText: "Chapter Attendance " + (new Date()).toLocaleDateString('en-US'),
             errorText: "",
+            manualEntry: ""
         };
 
         this.scanRead = "";
@@ -80,9 +81,12 @@ class Attendance extends React.Component {
         }
     }
 
-    handleSwipe() {
-        console.log(this.scanRead);
-        let gtid = this.scanRead.split("=")[1];
+    handleSwipe(manual) {
+        let gtid;
+        if (manual)
+            gtid = manual;
+        else
+            gtid = this.scanRead.split("=")[1];
         let cookies = new Cookies();
         let username = cookies.get("user_email", {path: "/"})
         let report = {
@@ -92,15 +96,17 @@ class Attendance extends React.Component {
             timestamp: (new Date()).toISOString(),
             entered_by_email: username
         }
-        this.reportingAPI.createReportEntry(this.state.selectedReportId, report).then(result => {
+        this.reportingAPI.createReportEntry(this.state.selectedReportId, report, true).then(result => {
             if (result["error"] !== "Success"){
                 this.setState({
-                    errorText: result["error"]
+                    errorText: result["error"],
+                    scanning: false
                 })
             } else {
                 this.loadEntries()
                 this.setState({
-                    scanning: false
+                    scanning: false,
+                    errorText: ""
                 });
             }
         })
@@ -200,6 +206,13 @@ class Attendance extends React.Component {
             <>
                 <div className="content">
                     <h1>Chapter Attendance</h1>
+                    {this.state.selectedReportId === "" ?
+                        <Row>
+                            <Col xs={12}>
+                                <SelectReportCard onSelect={(reportId) => {this.selectReport(reportId)}}/>
+                            </Col>
+                        </Row>
+                    : null }
                     <Row>
                         <Col xs={8}>
                             <Card>
@@ -207,7 +220,7 @@ class Attendance extends React.Component {
                                     <CardTitle tag="h2" className="float-left">Attendance</CardTitle>
                                 </CardHeader>
                                 <CardBody>
-                                    {this.state.selectedReportId === "" ? <p>Select a report below to take attendance</p> :
+                                    {this.state.selectedReportId === "" ? <p>Select a report above to take attendance</p> :
                                         this.state.attendanceDescription === "" ? this.renderSetDescription() : this.renderAttendanceDetails()}
                                 </CardBody>
                             </Card>
@@ -225,13 +238,6 @@ class Attendance extends React.Component {
                             </Card>
                         </Col>
                     </Row>
-                    {this.state.selectedReportId === "" ?
-                        <Row>
-                            <Col xs={12}>
-                                <SelectReportCard onSelect={(reportId) => {this.selectReport(reportId)}}/>
-                            </Col>
-                        </Row>
-                    : null }
                     <Row>
                         <Col xs={12}>
                             <Card>
@@ -281,6 +287,27 @@ class Attendance extends React.Component {
         })
     }
 
+    updateManualEntry(e) {
+        this.setState({
+            manualEntry: e.target.value
+        })
+    }
+
+    entryKeyUp(e) {
+        if (e.key === "Enter") {
+            this.submitManualEntry();
+        }
+    }
+
+    submitManualEntry() {
+        let swipe = this.state.manualEntry;
+        this.setState({
+            manualEntry: ""
+        }, () => {
+            this.handleSwipe(swipe)
+        })
+    }
+
     renderAttendanceDetails() {
         return <div>
             <Row>
@@ -301,8 +328,14 @@ class Attendance extends React.Component {
                     </Input>
                 </Col>
             </FormGroup>
-            <h4>{this.state.scanning ? "Scanning..." : "Ready to scan!"}</h4>
-            <Alert color="danger" isOpen={this.state.errorText !== ""} toggle={() => {this.setState({errorText: "", scanning: false})}}>
+            {this.state.scanning ? <h4>Scanning...</h4> :
+                <div className={"clearfix"}>
+                    <h4 className={"float-left"}>Ready to scan! Or enter GTID manually: </h4>
+                    <Input className={"float-left"} style={{width: 100, marginLeft: 40, marginRight: 10}} type="text" name="manualEntry" id={"manualEntry"} onChange={(e) => {this.updateManualEntry(e)}} onKeyUp={(e) => {this.entryKeyUp(e)}} value={this.state.manualEntry}/>
+                    <Button className={"float-left"} size="sm" onClick={() => {this.submitManualEntry()}}>Submit</Button>
+                </div>
+            }
+            <Alert color="danger" isOpen={this.state.errorText !== ""} toggle={() => {this.setState({errorText: ""})}}>
                 Error: {this.state.errorText}
             </Alert>
         </div>

@@ -52,9 +52,9 @@ export default class ReportingAPI extends APIClient {
         })
     }
 
-    createReportEntry(report_id, entry) {
+    createReportEntry(report_id, entry, existing = false) {
         return new Promise((resolve, reject) => {
-            this.perform("post", `/reporting/${report_id}/entries`, entry).then(result => {
+            this.perform("post", `/reporting/${report_id}/entries?checkExisting=${existing}`, entry).then(result => {
                 resolve(result);
             })
         })
