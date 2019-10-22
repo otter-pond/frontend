@@ -20,7 +20,8 @@ class EditEmailListsCard extends Component {
             emailLists: [],
             selectedListCopy: {},
             selectedList: "None",
-            showSuccessAlert: false
+            showSuccessAlert: false,
+            editingSubscribers: false
         }
 
         this.emailClient = new EmailListAPI();
@@ -44,11 +45,19 @@ class EditEmailListsCard extends Component {
             list["subject_prefix"] = ""
         if (!list["description"])
             list["description"] = ""
+        let editing = this.state.editingSubscribers
         this.setState({
             selectedListCopy: Object.create(list),
             selectedList: list.address,
-            showSuccessAlert: false
+            showSuccessAlert: false,
+            editingSubscribers: false
         })
+        this.props.listSelected(list.address);
+        if (editing) {
+            if (!!this.props.showSubscribers) {
+                this.props.showSubscribers(false)
+            }
+        }
     }
 
     updateListField(field, newValue){
@@ -72,6 +81,16 @@ class EditEmailListsCard extends Component {
                     showSuccessAlert: true
                 })
                 this.refreshLists()
+            }
+        })
+    }
+
+    toggleSubscribers() {
+        this.setState({
+            editingSubscribers: !this.state.editingSubscribers
+        }, () => {
+            if (!!this.props.showSubscribers) {
+                this.props.showSubscribers(this.state.editingSubscribers)
             }
         })
     }
@@ -167,7 +186,9 @@ class EditEmailListsCard extends Component {
                     </Container>
                 </Col>
                 <Col md={6}>
-
+                    <div className="text-center">
+                        <Button onClick={() => {this.toggleSubscribers()}}>{this.state.editingSubscribers ? "Hide List Subscribers": "Show List Subscribers"}</Button>
+                    </div>
                 </Col>
             </Row>
         )
