@@ -8,4 +8,12 @@ export default class CalendarAPI extends APIClient {
             })
         })
     }
+
+    generate_link() {
+        return new Promise((resolve, reject) => {
+            this.perform("get", "/calendar/generateLink").then(result => {
+                resolve(result["link"])
+            })
+        })
+    }
 }

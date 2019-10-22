@@ -6,6 +6,9 @@ import {
     CardBody,
     CardHeader,
     CardTitle,
+    Row,
+    Col,
+    Button, Input
 } from "reactstrap"
 
 import CalendarAPI from "../../api/CalendarAPI";
@@ -20,7 +23,8 @@ class CalendarCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            events: []
+            events: [],
+            link: ""
         };
 
         this.calendarClient = new CalendarAPI();
@@ -34,6 +38,14 @@ class CalendarCard extends Component {
             })
         }).catch(e => {
             console.log("Unable to load calendar: " + e)
+        })
+    }
+
+    generateLink(){
+        this.calendarClient.generate_link().then(link => {
+            this.setState({
+                link: link
+            })
         })
     }
 
@@ -56,6 +68,16 @@ class CalendarCard extends Component {
                             onRangeChange={(e) => {console.log(e)}}
                         />
                     </div>
+                    <Row>
+                        <Col xs={2}>
+                            <Button onClick={() => {this.generateLink()}}>Generate iCal Link</Button>
+                        </Col>
+                        <Col xs={10}>
+                            {this.state.link !== "" &&
+                            <Input type="text" readonly value={this.state.link}/>
+                            }
+                        </Col>
+                    </Row>
                 </CardBody>
             </Card>
 
