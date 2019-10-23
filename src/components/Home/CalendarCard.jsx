@@ -69,10 +69,10 @@ class CalendarCard extends Component {
                         />
                     </div>
                     <Row>
-                        <Col xs={2}>
+                        <Col md={2}>
                             <Button onClick={() => {this.generateLink()}}>Generate iCal Link</Button>
                         </Col>
-                        <Col xs={10}>
+                        <Col md={10}>
                             {this.state.link !== "" &&
                             <Input type="text" readonly value={this.state.link}/>
                             }
