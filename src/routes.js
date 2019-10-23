@@ -5,6 +5,8 @@ import Admin from "./views/Main/Admin.jsx";
 import Reporting from "./views/Main/Reporting.jsx";
 import Attendance from "./views/Main/Attendance.jsx";
 import ResetPassword from "./views/Auth/ResetPassword.jsx"
+import VerifySuccess from "./views/Auth/VerifySuccess.jsx"
+import VerifyFailure from "./views/Auth/VerifyFailure.jsx"
 
 
 let homeRoute = {
@@ -70,6 +72,18 @@ export var authRoutes = [
     path: "/resetpassword",
     name: "Reset Password",
     component: ResetPassword,
+    layout: "/auth"
+  },
+  {
+    path: "/verifySuccess",
+    name: "Verify Success",
+    component: VerifySuccess,
+    layout: "/auth"
+  },
+  {
+    path: "/verifyFailure",
+    name: "Verify Failure",
+    component: VerifyFailure,
     layout: "/auth"
   },
 ]
