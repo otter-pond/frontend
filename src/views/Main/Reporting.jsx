@@ -2,6 +2,7 @@ import React from "react";
 import {Col, Row} from "reactstrap";
 import SelectReportCard from "../../components/Reporting/SelectReportCard";
 import ReportEntiresCard from "../../components/Reporting/ReportEntriesCard";
+import ReportTableCard from "../../components/Reporting/ReportTableCard";
 
 
 class Reporting extends React.Component {
@@ -39,7 +40,7 @@ class Reporting extends React.Component {
                             {this.state.individualView ?
                                 <ReportEntiresCard reportId={this.state.selectedReportId} sortDirection={"asc"} selectedIndividual={this.state.selectedIndividual}/>
                             :
-                            null
+                                <ReportTableCard reportId={this.state.selectedReportId} />
                             }
 
                         </Col>
