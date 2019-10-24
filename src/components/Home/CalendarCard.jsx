@@ -16,6 +16,7 @@ import CalendarEventFetcher from "../../api/CalendarEventFetcher";
 
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
+import LoadingOverlay from "react-loading-overlay";
 
 const localizer = momentLocalizer(moment)
 
@@ -24,7 +25,8 @@ class CalendarCard extends Component {
         super(props);
         this.state = {
             events: [],
-            link: ""
+            link: "",
+            loading: true
         };
 
         this.calendarClient = new CalendarAPI();
@@ -33,7 +35,8 @@ class CalendarCard extends Component {
         this.calendarClient.get_configuration().then(config => {
             this.eventFetcher.load_events(config["api_key"], config["calendar_url"]).then(events => {
                 this.setState({
-                    events: events
+                    events: events,
+                    loading: false
                 })
             })
         }).catch(e => {
@@ -56,18 +59,25 @@ class CalendarCard extends Component {
                     <CardTitle tag="h2" className="float-left">Calendar</CardTitle>
                 </CardHeader>
                 <CardBody>
-                    <div style={{height: "500px", paddingBottom: "100px"}}>
-                        <Calendar
-                            popup
-                            localizer={localizer}
-                            events={this.state.events}
-                            startAccessor="start"
-                            endAccessor="end"
-                            height="300px"
-                            views={['month']}
-                            onRangeChange={(e) => {console.log(e)}}
-                        />
-                    </div>
+                    <LoadingOverlay
+                        active={this.state.loading}
+                        spinner
+                        text='Loading...'
+                    >
+                        <div style={{height: "500px", paddingBottom: "100px"}}>
+                            <Calendar
+                                popup
+                                localizer={localizer}
+                                events={this.state.events}
+                                startAccessor="start"
+                                endAccessor="end"
+                                height="300px"
+                                views={['month']}
+                                onRangeChange={(e) => {console.log(e)}}
+                            />
+                        </div>
+                    </LoadingOverlay>
+
                     <Row>
                         <Col md={2}>
                             <Button onClick={() => {this.generateLink()}}>Generate iCal Link</Button>

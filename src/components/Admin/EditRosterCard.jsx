@@ -14,6 +14,7 @@ import {
 } from "reactstrap"
 import UsersAPI from "../../api/UsersAPI";
 import RolesAPI from "../../api/RolesAPI";
+import LoadingOverlay from "react-loading-overlay";
 
 class EditRosterCard extends Component {
     constructor(props) {
@@ -21,9 +22,10 @@ class EditRosterCard extends Component {
         this.state = {
             users: [],
             roles: [],
-            selectedRole: "Loading",
+            selectedRole: "None",
             selectedRoleId: "",
             activeUsers: [],
+            loading: false
         }
 
         this.usersClient = new UsersAPI();
@@ -45,23 +47,30 @@ class EditRosterCard extends Component {
             this.setState({
                 roles: roles
             });
-            this.setActiveRole(roles[0].role_id);
         }).catch(e => {
             console.log("Unable to load roles.")
         })
     }
 
     setActiveRole(role_id) {
-        let role = this.state.roles.filter(a => {return a.role_id === role_id})[0];
-        this.rolesClient.getUsersWithRole(role_id).then(users => {
-            users.sort((a,b) => (a["last_name"] > b["last_name"]) ? 1 : ((b["last_name"] > a["last_name"]) ? -1 : 0));
-            this.setState({
-                selectedRole: role_id !== "none" ? role["role_description"] : "Users Without Role",
-                selectedRoleId: role_id,
-                activeUsers: users
+        this.setState({
+            loading: true
+        }, () => {
+            let role = this.state.roles.filter(a => {return a.role_id === role_id})[0];
+            this.rolesClient.getUsersWithRole(role_id).then(users => {
+                users.sort((a,b) => (a["last_name"] > b["last_name"]) ? 1 : ((b["last_name"] > a["last_name"]) ? -1 : 0));
+                this.setState({
+                    selectedRole: role_id !== "none" ? role["role_description"] : "Users Without Role",
+                    selectedRoleId: role_id,
+                    activeUsers: users,
+                    loading: false
+                })
+            }).catch((e) => {
+                console.log("unable to load users with role: " + e);
+                this.setState({
+                    loading: false
+                })
             })
-        }).catch((e) => {
-            console.log("unable to load users with role: " + e);
         })
     }
 
@@ -115,39 +124,50 @@ class EditRosterCard extends Component {
                     </div>
                 </CardHeader>
                 <CardBody>
-                    <div>
-                        <Table>
-                            <thead>
-                            <tr>
-                                <th>Last Name</th>
-                                <th>First Name</th>
-                                <th>Role</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {this.state.activeUsers.map((user_email, index) => {
-                                let user = this.state.users[user_email];
-                                if (!user)
-                                    return
-                                return (
-                                    <tr key={index}>
-                                        <td>{user.last_name}</td>
-                                        <td>{user.first_name}</td>
-                                        <td>
-                                            <Input type="select" style={{width: 200}} value={this.state.selectedRoleId}
-                                                   onChange={(e) => {this.updateRole(e.target.value, user_email)}}>
-                                                {this.state.roles.map((role, index) => {
-                                                    return <option value={role.role_id} key={index}>{role.role_description}</option>
-                                                })}
-                                                <option value={"none"}>No Role</option>
-                                            </Input>
-                                        </td>
+                    {this.state.selectedRole === "None" ?
+                        <h5>Select a role to edit.</h5>
+                    :
+                        <div>
+                            <LoadingOverlay
+                                active={this.state.loading}
+                                spinner
+                                text='Loading...'
+                            >
+                                <Table>
+                                    <thead>
+                                    <tr>
+                                        <th>Last Name</th>
+                                        <th>First Name</th>
+                                        <th>Role</th>
                                     </tr>
-                                )
-                            })}
-                            </tbody>
-                        </Table>
-                    </div>
+                                    </thead>
+                                    <tbody>
+                                    {this.state.activeUsers.map((user_email, index) => {
+                                        let user = this.state.users[user_email];
+                                        if (!user)
+                                            return
+                                        return (
+                                            <tr key={index}>
+                                                <td>{user.last_name}</td>
+                                                <td>{user.first_name}</td>
+                                                <td>
+                                                    <Input type="select" style={{width: 200}} value={this.state.selectedRoleId}
+                                                           onChange={(e) => {this.updateRole(e.target.value, user_email)}}>
+                                                        {this.state.roles.map((role, index) => {
+                                                            return <option value={role.role_id} key={index}>{role.role_description}</option>
+                                                        })}
+                                                        <option value={"none"}>No Role</option>
+                                                    </Input>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                    </tbody>
+                                </Table>
+                            </LoadingOverlay>
+                        </div>
+                    }
+
                 </CardBody>
             </Card>
 

@@ -7,6 +7,7 @@ import {
 } from "reactstrap";
 import EmailListAPI from "../../api/EmailListAPI";
 import UsersAPI from "../../api/UsersAPI";
+import LoadingOverlay from "react-loading-overlay";
 
 class ShowEmailList extends Component {
     constructor(props) {
@@ -15,7 +16,8 @@ class ShowEmailList extends Component {
             allUsers: [],
             users: [],
             emailList: null,
-            viewingSubscribers: true
+            viewingSubscribers: true,
+            loading: true
         }
 
         this.emailClient = new EmailListAPI();
@@ -26,7 +28,11 @@ class ShowEmailList extends Component {
 
     componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps.emailList !== this.state.emailList) {
-            this.loadUsersToShow(nextProps.emailList)
+            this.setState({
+                loading: true
+            }, () => {
+                this.loadUsersToShow(nextProps.emailList)
+            })
         }
     }
 
@@ -66,39 +72,21 @@ class ShowEmailList extends Component {
                     usersEmails.push(user_details);
                 }
 
-                usersEmails.sort((userA, userB) => { return userA['last_name'] - userB['last_name'] });
+                usersEmails.sort((userA, userB) => {
+                    try {
+                        return userA["user"]['last_name'].localeCompare(userB["user"]['last_name'])
+                    } catch (e) {
+                        return 0
+                    }
+                });
                 this.setState({
                     users: usersEmails,
-                    emailList: address
+                    emailList: address,
+                    loading: false
                 })
             })
         })
     }
-
-    // getUsersAndEmails(address) {
-    //     let promises = [this.emailClient.getAllUsersFromList(address), this.userClient.getUsers()];
-    //     Promise.all(promises).then(results => {
-    //         let emails = results[0];
-    //         let users = results[1];
-    //         const usersEmails = [];
-    //         for (let index in emails) {
-    //             let email = emails[index]
-    //             let user = users.filter(a => {return a['user_email'] === email})[0];
-    //             let user_details = {
-    //                 "email": email,
-    //                 "user": user,
-    //             }
-    //             usersEmails.push(user_details);
-    //         }
-    //
-    //         console.log(usersEmails);
-    //         usersEmails.sort((userA, userB) => { return userA['last_name'] - userB['last_name'] });
-    //         this.setState({
-    //             users: usersEmails,
-    //             emailList: address
-    //         })
-    //     })
-    // }
 
     removeFromList(userEmail) {
         this.emailClient.removeUserFromList(this.state.emailList, userEmail).then(result => {
@@ -137,29 +125,35 @@ class ShowEmailList extends Component {
                     </div>
                 </CardHeader>
                 <CardBody>
-                    <div>
-                        <Table>
-                            <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Email</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {this.state.users.map((entry, index) => {
-                                return(
-                                    <tr key={index}>
-                                        <td>{entry['user']['first_name']} {entry['user']['last_name']}</td>
-                                        <td>{entry['email']}</td>
-                                        <td>{this.state.viewingSubscribers ? <Button onClick={() => {this.removeFromList(entry["email"])}} size="sm">Remove</Button>:
-                                            <Button onClick={() => {this.addToList(entry["email"])}} size="sm">Add</Button>}</td>
-                                    </tr>
-                                )
-                            })}
-                            </tbody>
-                        </Table>
-                    </div>
+                    <LoadingOverlay
+                        active={this.state.loading}
+                        spinner
+                        text='Loading...'
+                    >
+                        <div>
+                            <Table>
+                                <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {this.state.users.map((entry, index) => {
+                                    return(
+                                        <tr key={index}>
+                                            <td>{entry['user']['last_name']}, {entry['user']['first_name']}</td>
+                                            <td>{entry['email']}</td>
+                                            <td>{this.state.viewingSubscribers ? <Button onClick={() => {this.removeFromList(entry["email"])}} size="sm">Remove</Button>:
+                                                <Button onClick={() => {this.addToList(entry["email"])}} size="sm">Add</Button>}</td>
+                                        </tr>
+                                    )
+                                })}
+                                </tbody>
+                            </Table>
+                        </div>
+                    </LoadingOverlay>
                 </CardBody>
             </Card>
         );
