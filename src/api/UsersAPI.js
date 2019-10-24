@@ -9,6 +9,14 @@ export default class UsersAPI extends APIClient {
         })
     }
 
+    getUserByEmail(user_email) {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/users/${user_email}`).then(user => {
+                resolve(user)
+            })
+        })
+    }
+
     getUserRole(user_email) {
         return new Promise((resolve, reject) => {
             this.perform("get", `/users/${user_email}/role`).then(role => {

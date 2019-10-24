@@ -7,6 +7,7 @@ import {
     CardTitle, Table,
 } from "reactstrap"
 import ReportingAPI from "../../api/ReportingAPI";
+import UsersAPI from "../../api/UsersAPI";
 
 class ReportEntriesCard extends Component {
     constructor(props) {
@@ -15,21 +16,29 @@ class ReportEntriesCard extends Component {
             report: {},
             entries: [],
             summary: null,
+            selectedIndividual: "",
+            user: null
         }
 
         this.reportingApi = new ReportingAPI();
+        this.usersApi = new UsersAPI();
 
-        if (this.props.reportId != null && this.props.reportId != "") {
-            this.loadReport(this.props.reportId)
+        if (this.props.reportId != null && this.props.reportId !== "") {
+            if (this.props.selectedIndividual !== null && this.props.selectedIndividual !== "") {
+                this.loadReport(this.props.reportId, this.props.selectedIndividual)
+            } else {
+                this.loadReport(this.props.reportId)
+            }
+
         }
     }
 
-    loadReport(reportId) {
-        let reportPromise = this.reportingApi.getUserReportEntries(reportId)
-        if (this.props.viewAll) {
-            reportPromise = this.reportingApi.getReportEntries(reportId)
-        }
+    loadReport(reportId, selectedIndividual = "") {
+        let reportPromise = this.reportingApi.getUserReportEntries(reportId, selectedIndividual)
         let promises = [reportPromise, this.reportingApi.getReportById(reportId)]
+        if (selectedIndividual !== "") {
+            promises.push(this.usersApi.getUserByEmail(selectedIndividual))
+        }
         Promise.all(promises).then(results => {
             let report = results[1];
             let entries = results[0];
@@ -71,10 +80,16 @@ class ReportEntriesCard extends Component {
                 });
                 summary = total
             }
+            let user = null;
+            if (selectedIndividual !== "") {
+                user = results[2]
+            }
             this.setState({
                 entries: entries,
                 report: report,
-                summary: summary
+                summary: summary,
+                user: user,
+                selectedIndividual: selectedIndividual
             })
 
         }).catch(e =>{
@@ -83,8 +98,8 @@ class ReportEntriesCard extends Component {
     }
 
     componentDidUpdate(prevProps){
-        if (this.props.reportId !== prevProps.reportId) {
-            this.loadReport(this.props.reportId)
+        if (this.props.reportId !== prevProps.reportId || this.props.selectedIndividual !== prevProps.selectedIndividual) {
+            this.loadReport(this.props.reportId, this.props.selectedIndividual)
         }
     }
 
@@ -134,7 +149,8 @@ class ReportEntriesCard extends Component {
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle tag="h2" className="float-left">Report Details</CardTitle>
+                    <CardTitle tag="h2" className="float-left">Report Details {this.state.selectedIndividual === "" ? ""
+                        : "for " + this.state.user["last_name"] + ", " + this.state.user["first_name"]}</CardTitle>
                 </CardHeader>
                 <CardBody>
                     <Table>
