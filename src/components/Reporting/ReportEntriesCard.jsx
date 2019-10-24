@@ -8,6 +8,7 @@ import {
 } from "reactstrap"
 import ReportingAPI from "../../api/ReportingAPI";
 import UsersAPI from "../../api/UsersAPI";
+import LoadingOverlay from "react-loading-overlay";
 
 class ReportEntriesCard extends Component {
     constructor(props) {
@@ -17,7 +18,7 @@ class ReportEntriesCard extends Component {
             entries: [],
             summary: null,
             selectedIndividual: "",
-            user: null
+            user: null,
         }
 
         this.reportingApi = new ReportingAPI();
@@ -42,11 +43,18 @@ class ReportEntriesCard extends Component {
         Promise.all(promises).then(results => {
             let report = results[1];
             let entries = results[0];
+            let user = null;
+            if (selectedIndividual !== "") {
+                user = results[2]
+            }
             if (entries == null || entries.length === 0) {
                 this.setState({
                     report: report,
                     entries: [],
-                    summary: null
+                    summary: null,
+                    loading: false,
+                    user: user,
+                    selectedIndividual: selectedIndividual,
                 });
                 return;
             }
@@ -80,16 +88,14 @@ class ReportEntriesCard extends Component {
                 });
                 summary = total
             }
-            let user = null;
-            if (selectedIndividual !== "") {
-                user = results[2]
-            }
+
             this.setState({
                 entries: entries,
                 report: report,
                 summary: summary,
                 user: user,
-                selectedIndividual: selectedIndividual
+                selectedIndividual: selectedIndividual,
+                loading: false
             })
 
         }).catch(e =>{
@@ -99,7 +105,12 @@ class ReportEntriesCard extends Component {
 
     componentDidUpdate(prevProps){
         if (this.props.reportId !== prevProps.reportId || this.props.selectedIndividual !== prevProps.selectedIndividual) {
-            this.loadReport(this.props.reportId, this.props.selectedIndividual)
+            this.setState({
+                loading: true
+            }, () => {
+                this.loadReport(this.props.reportId, this.props.selectedIndividual)
+            })
+
         }
     }
 
@@ -153,34 +164,40 @@ class ReportEntriesCard extends Component {
                         : "for " + this.state.user["last_name"] + ", " + this.state.user["first_name"]}</CardTitle>
                 </CardHeader>
                 <CardBody>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                {this.props.getUserName ? <th>User</th> : null}
-                                <th>Details</th>
-                                <th>Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {this.state.entries.map((entry, index) => {
-                            return(
-                                <tr key={index}>
-                                    <td>{this.formatDate(entry["timestamp"])}</td>
-                                    {this.props.getUserName ? <td>{this.props.getUserName(entry["user_email"])}</td> : null}
-                                    <td>{entry["description"]}</td>
-                                    <td>{this.formatValue(this.state.report, entry["value"])}</td>
+                    <LoadingOverlay
+                        active={this.state.loading}
+                        spinner
+                        text='Loading...'
+                    >
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    {this.props.getUserName ? <th>User</th> : null}
+                                    <th>Details</th>
+                                    <th>Value</th>
                                 </tr>
-                            )
-                        })}
-                        <tr>
-                            <td> </td>
-                            {this.props.getUserName ? <td></td> : null}
-                            <td> </td>
-                            <td style={{fontWeight: "bold"}}>{this.formatSummary(this.state.report, this.state.summary)}</td>
-                        </tr>
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                            {this.state.entries.map((entry, index) => {
+                                return(
+                                    <tr key={index}>
+                                        <td>{this.formatDate(entry["timestamp"])}</td>
+                                        {this.props.getUserName ? <td>{this.props.getUserName(entry["user_email"])}</td> : null}
+                                        <td>{entry["description"]}</td>
+                                        <td>{this.formatValue(this.state.report, entry["value"])}</td>
+                                    </tr>
+                                )
+                            })}
+                            <tr>
+                                <td> </td>
+                                {this.props.getUserName ? <td></td> : null}
+                                <td> </td>
+                                <td style={{fontWeight: "bold"}}>{this.formatSummary(this.state.report, this.state.summary)}</td>
+                            </tr>
+                            </tbody>
+                        </Table>
+                    </LoadingOverlay>
                 </CardBody>
             </Card>
 

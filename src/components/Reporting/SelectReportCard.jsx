@@ -13,6 +13,7 @@ import {
 } from "reactstrap"
 import Select from 'react-select';
 import ReportingAPI from "../../api/ReportingAPI";
+import LoadingOverlay from "react-loading-overlay";
 
 class SelectReportCard extends Component {
     constructor(props) {
@@ -23,14 +24,16 @@ class SelectReportCard extends Component {
             admin: false,
             applicableUsers: [],
             individualAdminView: true,
-            selectedIndividual: ""
+            selectedIndividual: "",
+            loading: true,
         }
 
         this.reportingApi = new ReportingAPI();
 
         this.reportingApi.getReports().then((reports) => {
             this.setState({
-                reports: reports
+                reports: reports,
+                loading: false
             })
         }).catch(e => {
             console.log("Unable to load reports: " + e)
@@ -53,7 +56,7 @@ class SelectReportCard extends Component {
             options.push(option)
         }
         options.sort((a, b) => {
-            return a.label - b.label
+            return a.label.localeCompare(b.label)
         })
         return options
     }
@@ -67,31 +70,36 @@ class SelectReportCard extends Component {
 
     onReportSelect(e) {
         let reportId = e.target.value;
-        this.reportingApi.checkReportPermissions(reportId).then(canManage => {
-            if (canManage && !this.props.enableAdmin) {
-                this.reportingApi.getApplicableUsers(reportId).then(users => {
+        this.setState({
+            loading: true
+        }, () => {
+            this.reportingApi.checkReportPermissions(reportId).then(canManage => {
+                if (canManage && !this.props.enableAdmin) {
+                    this.reportingApi.getApplicableUsers(reportId).then(users => {
+                        this.setState({
+                            selectedReportId: reportId,
+                            applicableUsers: users,
+                            admin: true,
+                            loading: false
+                        }, () => {
+                            if (this.props.onSelect) {
+                                this.props.onSelect(reportId)
+                            }
+                        })
+                    })
+                }
+                else {
                     this.setState({
                         selectedReportId: reportId,
-                        applicableUsers: users,
-                        admin: true
+                        loading: false
                     }, () => {
                         if (this.props.onSelect) {
                             this.props.onSelect(reportId)
                         }
                     })
-                })
-            }
-            else {
-                this.setState({
-                    selectedReportId: reportId
-                }, () => {
-                    if (this.props.onSelect) {
-                        this.props.onSelect(reportId)
-                    }
-                })
-            }
-        });
-
+                }
+            });
+        })
     }
 
     toggleView() {
@@ -113,38 +121,44 @@ class SelectReportCard extends Component {
                     <CardTitle tag="h2" className="float-left">Select Report</CardTitle>
                 </CardHeader>
                 <CardBody>
-                    <Row>
-                        <Col md={5}>
-                            <UncontrolledDropdown>
-                                <DropdownToggle>
-                                    Selected: {this.state.selectedReportId === "" ? "None" : this.getReportTitle()}
-                                </DropdownToggle>
-                                <DropdownMenu>
-                                    {this.state.reports.map((report, index) => {
-                                        return <DropdownItem value={report["report_id"]}
-                                                             key={report["report_id"]}
-                                                             onClick={(e) => {this.onReportSelect(e)}}>{report["name"]}</DropdownItem>
-                                    })}
-                                </DropdownMenu>
-                            </UncontrolledDropdown>
-                        </Col>
-                        {this.state.admin &&
-                            <Col md={7}>
-                                <h4>Current Mode: {this.state.individualAdminView ? "Individual" : "Table"} View</h4>
-                                {this.state.individualAdminView &&
-                                    <div style={{width: 200}}>
-                                        <Select
-                                            //value={this.state.selectedReportId}
-                                            onChange={(e) => {this.selectIndividual(e)}}
-                                            options={this.getOptions(this.state.applicableUsers)}
-                                        />
-                                    </div>
-                                }
-                                <Button onClick={() => {this.toggleView()}} size="sm">Switch to {this.state.individualAdminView ? "Table" : "Individual"}</Button>
-                                <Button onClick={() => {this.updateView()}} size="sm">Update View</Button>
+                    <LoadingOverlay
+                        active={this.state.loading}
+                        spinner
+                        text='Loading...'
+                    >
+                        <Row>
+                            <Col md={5}>
+                                <UncontrolledDropdown>
+                                    <DropdownToggle>
+                                        Selected: {this.state.selectedReportId === "" ? "None" : this.getReportTitle()}
+                                    </DropdownToggle>
+                                    <DropdownMenu>
+                                        {this.state.reports.map((report, index) => {
+                                            return <DropdownItem value={report["report_id"]}
+                                                                 key={report["report_id"]}
+                                                                 onClick={(e) => {this.onReportSelect(e)}}>{report["name"]}</DropdownItem>
+                                        })}
+                                    </DropdownMenu>
+                                </UncontrolledDropdown>
                             </Col>
-                        }
-                    </Row>
+                            {this.state.admin &&
+                                <Col md={7}>
+                                    <h4>Current Mode: {this.state.individualAdminView ? "Individual" : "Table"} View</h4>
+                                    {this.state.individualAdminView &&
+                                        <div style={{width: 200}}>
+                                            <Select
+                                                //value={this.state.selectedReportId}
+                                                onChange={(e) => {this.selectIndividual(e)}}
+                                                options={this.getOptions(this.state.applicableUsers)}
+                                            />
+                                        </div>
+                                    }
+                                    <Button onClick={() => {this.toggleView()}} size="sm">Switch to {this.state.individualAdminView ? "Table" : "Individual"}</Button>
+                                    <Button onClick={() => {this.updateView()}} size="sm">Update View</Button>
+                                </Col>
+                            }
+                        </Row>
+                    </LoadingOverlay>
                 </CardBody>
             </Card>
 

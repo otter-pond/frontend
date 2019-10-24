@@ -20,6 +20,7 @@
     "react-dom": "16.5.2",
     "react-google-maps": "9.4.5",
     "react-icons": "^3.7.0",
+    "react-loading-overlay": "^1.0.1",
     "react-notification-alert": "0.0.8",
     "react-router-dom": "4.3.1",
     "react-scripts": "^2.1.8",
@@ -30,7 +31,7 @@
     "universal-cookie": "^4.0.0"
   },
   "scripts": {
-    "start": "REACT_APP_STAGE=local NODE_PATH=./src react-scripts start",
+    "start": "REACT_APP_STAGE=prod NODE_PATH=./src react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
