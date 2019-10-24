@@ -26,9 +26,12 @@ export default class ReportingAPI extends APIClient {
         })
     }
 
-    getUserReportEntries(report_id) {
+    getUserReportEntries(report_id, other_user = "") {
         let cookies = new Cookies();
         let username = cookies.get("user_email", {path: "/"})
+        if (other_user !== "") {
+            username = other_user
+        }
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/${report_id}/entries/${username}`).then(entries => {
                 resolve(entries);
@@ -56,6 +59,24 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/${report_id}/entries?checkExisting=${existing}`, entry).then(result => {
                 resolve(result);
+            })
+        })
+    }
+
+
+    checkReportPermissions(report_id) {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/reporting/${report_id}/checkPermissions`).then(result => {
+                resolve(result["can_manage"])
+            })
+        })
+    }
+
+
+    getApplicableUsers(report_id) {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/reporting/${report_id}/applicableUsers`).then(users => {
+                resolve(users)
             })
         })
     }

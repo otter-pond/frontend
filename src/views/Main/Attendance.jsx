@@ -209,7 +209,7 @@ class Attendance extends React.Component {
                     {this.state.selectedReportId === "" ?
                         <Row>
                             <Col xs={12}>
-                                <SelectReportCard onSelect={(reportId) => {this.selectReport(reportId)}}/>
+                                <SelectReportCard onSelect={(reportId) => {this.selectReport(reportId)}} enableAdmin={false}/>
                             </Col>
                         </Row>
                     : null }
