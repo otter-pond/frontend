@@ -1,7 +1,9 @@
 import {Elements} from "react-stripe-elements";
 import React, {Component} from 'react';
 import {Modal, ModalHeader, ModalBody, ModalFooter, Button} from "reactstrap";
+import Enroll from "./Enroll.jsx"
 import Verify from "./Verify.jsx"
+import Verified from "./Verified.jsx"
 import PaymentAPI from "../../api/PaymentAPI";
 import LoadingOverlay from "react-loading-overlay";
 
@@ -10,7 +12,8 @@ class PaymentModal extends Component {
         super(props);
         this.state = {
             status: "",
-            loading: false
+            loading: false,
+            accountName: ""
         }
 
         this.paymentApi = new PaymentAPI()
@@ -29,7 +32,7 @@ class PaymentModal extends Component {
                 } else {
                     this.setState({
                         status: status["accountStatus"],
-                        bankName: status["bankName"],
+                        accountName: status["accountName"],
                         loading: false
                     })
                 }
@@ -66,17 +69,23 @@ class PaymentModal extends Component {
                             <ModalBody>
                                 {this.state.status === "None" ?
                                     <Elements>
-                                        <Verify postVerify={() => {this.checkAccountStatus()}}/>
+                                        <Enroll postEnroll={() => {this.checkAccountStatus()}}/>
                                     </Elements>
+                                : this.state.status === "new" ?
+                                    <Verify accountName={this.state.accountName} postVerify={() => {this.checkAccountStatus()}} />
+                                : this.state.status === "verified" ?
+                                    <Verified />
                                 :
-                                <p>Account exists</p>
+                                    null
                                 }
 
                             </ModalBody>
                         </LoadingOverlay>
 
                         <ModalFooter>
-                            <Button color="secondary" onClick={() => {this.close()}}>Close</Button>
+                            <div className="clearfix" style={{width: "100%"}}>
+                                <Button color="secondary" className="float-right" onClick={() => {this.close()}}>Close</Button>
+                            </div>
                         </ModalFooter>
                     </Modal>
             </div>

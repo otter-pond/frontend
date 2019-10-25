@@ -1,28 +1,38 @@
 import React, {Component} from 'react';
-import {injectStripe} from 'react-stripe-elements';
-import {Input, Button} from "reactstrap"
+import {Input, Button, Form, FormGroup, Label, Alert, InputGroup, InputGroupButton, InputGroupAddon} from "reactstrap"
+import PaymentAPI from "../../api/PaymentAPI";
 class Verify extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            routingNumber: "",
-            accountNumber: "",
-            accountHolder: "",
+            deposit1: "",
+            deposit2: "",
+            invalid: false
         }
+
+        this.paymentApi = new PaymentAPI()
     }
 
-    submit() {
-        this.props.stripe.createToken('bank_account', {
-            country: 'US',
-            currency: 'usd',
-            routing_number: this.state.routingNumber,
-            account_number: this.state.accountNumber,
-            account_holder_name: 'Jenny Rosen',
-            account_holder_type: 'individual',
-        }).then(result => {
-            console.log(JSON.stringify(result))
-        }).catch(e => {
-            console.log(JSON.stringify(e))
+    submit(e) {
+        e.preventDefault()
+        this.paymentApi.verifyAccount(this.state.deposit1, this.state.deposit2).then(result => {
+            if (result["error"] === "Success" && this.props.postVerify) {
+                this.props.postVerify()
+            } else {
+                this.setState({
+                    deposit1: "",
+                    deposit2: "",
+                    invalid: true
+                })
+            }
+        })
+    }
+
+    deleteAccount() {
+        this.paymentApi.deleteAccount().then(result => {
+            if (this.props.postVerify) {
+                this.props.postVerify()
+            }
         })
     }
 
@@ -30,29 +40,58 @@ class Verify extends Component {
         return (
             <div>
                 <div className="text-center">
-                    <h3 style={{"textDecoration": "underline"}}>Add Bank Account</h3>
-                    <p>Otter Pond has partnered with <a href="https://stripe.com/">Stripe</a>, a PCI compliant payment processor, to enable payments from the web. None of your
-                    account details will be sent to Otter Pond's server or stored by Otter Pond.</p>
+                    <h3 style={{"textDecoration": "underline"}}>Verify Bank Account</h3>
+                    <p>Now that you've added your bank account, it needs to be verified before it can be used. <a href="https://stripe.com/">Stripe</a> will make two separate small deposits
+                    (microdeposits) into your account over the next 1-2 days. Once they do, come back here and enter the amounts in whole numbers
+                    (i.e. $0.32 -> 32). Once you verify you will be able to make payments</p>
                 </div>
-                <p>Would you like to complete the purchase?</p>
-                <Input type="text" name="routingNumber" placeholder={"Account Holder Name"} value={this.state.accountHolder} onChange={(e) => {this.setState({accountHolder: e.target.value})}}/>
-                <Input type="text" name="routingNumber" placeholder={"Routing Number"} value={this.state.routingNumber} onChange={(e) => {this.setState({routingNumber: e.target.value})}}/>
-                <Input type="text" name="accountNumber" placeholder={"Account Number"} value={this.state.accountNumber} onChange={(e) => {this.setState({accountNumber: e.target.value})}}/>
-                <Button onClick={() => {this.submit()}}>Verify</Button>
+                <Alert color="danger" isOpen={this.state.invalid}>
+                    Invalid verification amounts. Please check your bank account and try again. You are limited to 10 attempts to verify. Please contact an
+                    administrator if you believe this is an error
+                </Alert>
+                <Form onSubmit={(e) => {this.submit(e)}} class="needs-validation" novalidate>
+                    <FormGroup>
+                        <Label for="accountHolderInput">Account</Label>
+                        <InputGroup>
+                            <Input type="text"
+                               id="accountHolderInput"
+                               value={this.props.accountName}
+                               readonly/>
+                            <InputGroupAddon addonType="append">
+                                <InputGroupButton
+                                    name="deleteAccount"
+                                    onClick={() => { if (window.confirm('Are you sure you wish to delete this item?')) this.deleteAccount() } }
+                                    size="sm"
+                                    color="danger">Delete</InputGroupButton>
+                            </InputGroupAddon>
+                        </InputGroup>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="routingNumberInput">Deposit Amount 1</Label>
+                        <Input type="number"
+                               name="routingNumber"
+                               placeholder={"00"}
+                               value={this.state.deposit1}
+                               onChange={(e) => {this.setState({deposit1: e.target.value})}}
+                               required/>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="accountNumberInput">Deposit Amount 2</Label>
+                        <Input type="number"
+                               name="accountNumber"
+                               placeholder={"00"}
+                               value={this.state.deposit2}
+                               onChange={(e) => {this.setState({deposit2: e.target.value})}}
+                               required/>
+                    </FormGroup>
+                    <div className="text-center">
+                        <Button type="submit">Verify Account</Button>
+                    </div>
+                </Form>
 
-
-                <div id="mandate-acceptance">
-                    By providing your IBAN and confirming this payment, you are authorizing
-                    Rocketship Inc. and Stripe, our payment service provider, to send
-                    instructions to your bank to debit your account and your bank to debit
-                    your account in accordance with those instructions. You are entitled to
-                    a refund from your bank under the terms and conditions of your agreement
-                    with your bank. A refund must be claimed within 8 weeks starting from the
-                    date on which your account was debited.
-                </div>
             </div>
         );
     }
 }
 
-export default injectStripe(Verify);
+export default Verify;
