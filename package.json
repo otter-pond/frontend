@@ -25,13 +25,14 @@
     "react-router-dom": "4.3.1",
     "react-scripts": "^2.1.8",
     "react-select": "^3.0.8",
+    "react-stripe-elements": "^5.1.0",
     "react-table": "^6.10.3",
     "react-table-hoc-fixed-columns": "^2.1.1",
     "reactstrap": "6.5.0",
     "universal-cookie": "^4.0.0"
   },
   "scripts": {
-    "start": "REACT_APP_STAGE=prod NODE_PATH=./src react-scripts start",
+    "start": "REACT_APP_STAGE=local NODE_PATH=./src react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",

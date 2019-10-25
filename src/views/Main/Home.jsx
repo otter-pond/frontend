@@ -1,10 +1,18 @@
 import React from "react";
-import {Col, Row} from "reactstrap";
+import {Button, Col, Row} from "reactstrap";
 import CalendarCard from "../../components/Home/CalendarCard";
+import PaymentModal from "../../components/Payment/PaymentModal";
 
 // reactstrap components
 
 class Home extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            modal: false
+        }
+    }
+
     render() {
         return (
             <>
@@ -16,6 +24,8 @@ class Home extends React.Component {
                             <CalendarCard />
                         </Col>
                     </Row>
+                    <Button onClick={() => {this.setState({modal: true})}}>Payment</Button>
+                    <PaymentModal isOpen={this.state.modal} toggle={() => {this.setState({modal: !this.state.modal})}}/>
                 </div>
             </>
         );

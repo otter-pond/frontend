@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { createHashHistory } from "history";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
+import config from "variables/config"
+import {StripeProvider} from 'react-stripe-elements';
 
 import AuthLayout from "./layouts/Auth/Auth.jsx";
 import MainLayout from "./layouts/Main/Main.jsx";
@@ -15,6 +17,7 @@ const hist = createHashHistory();
 console.log(process.env);
 
 const App = () => (
+    <StripeProvider apiKey={config.stripePublicKey}>
         <Router history={hist}>
             <Switch>
                 <Route path="/auth" render={props => <AuthLayout {...props} />} />
@@ -22,6 +25,7 @@ const App = () => (
                 <Redirect exact from="/" to="/main/home" />
             </Switch>
         </Router>
+    </StripeProvider>
 )
 
 ReactDOM.render(
