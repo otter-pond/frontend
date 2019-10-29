@@ -6,6 +6,7 @@ import Verify from "./Verify.jsx"
 import Verified from "./Verified.jsx"
 import PaymentAPI from "../../api/PaymentAPI";
 import LoadingOverlay from "react-loading-overlay";
+import PayNow from "./PayNow.jsx";
 
 class PaymentModal extends Component {
     constructor(props) {
@@ -13,10 +14,15 @@ class PaymentModal extends Component {
         this.state = {
             status: "",
             loading: false,
-            accountName: ""
+            accountName: "",
+            paymentAmount: -1
         }
 
         this.paymentApi = new PaymentAPI()
+
+        if (!!this.props.paymentAmount) {
+            this.state.paymentAmount = this.props.paymentAmount
+        }
     }
 
     checkAccountStatus() {
@@ -45,7 +51,15 @@ class PaymentModal extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.isOpen && !prevProps.isOpen) {
-            this.checkAccountStatus()
+            if (this.props.paymentAmount && this.props.paymentAmount !== prevProps.paymentAmount) {
+                this.setState({
+                    paymentAmount: this.props.paymentAmount
+                }, () => {
+                    this.checkAccountStatus()
+                })
+            } else {
+                this.checkAccountStatus()
+            }
         }
     }
 
@@ -73,6 +87,9 @@ class PaymentModal extends Component {
                                     </Elements>
                                 : this.state.status === "new" ?
                                     <Verify accountName={this.state.accountName} postVerify={() => {this.checkAccountStatus()}} />
+                                : this.state.status === "verified" && this.state.paymentAmount !== -1 ?
+                                    <PayNow paymentAmount={this.state.paymentAmount} accountName={this.state.accountName} postDelete={() => {this.checkAccountStatus()}}/>
+
                                 : this.state.status === "verified" ?
                                     <Verified />
                                 :

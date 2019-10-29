@@ -11,7 +11,7 @@ const dev = {
 
 const prod = {
     apiGateway: "https://prod-api.theotterpond.com",
-    stripePublicKey: ""
+    stripePublicKey: "pk_live_JUxM51O5gk4u7TA3YPRBkfg100s5QgdOIo"
 };
 
 const config = process.env.REACT_APP_STAGE === 'prod'

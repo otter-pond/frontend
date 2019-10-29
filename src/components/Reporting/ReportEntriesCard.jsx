@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import {
+    Button,
     Card,
     CardBody,
     CardHeader,
@@ -9,6 +10,7 @@ import {
 import ReportingAPI from "../../api/ReportingAPI";
 import UsersAPI from "../../api/UsersAPI";
 import LoadingOverlay from "react-loading-overlay";
+import PaymentModal from "../Payment/PaymentModal";
 
 class ReportEntriesCard extends Component {
     constructor(props) {
@@ -19,6 +21,8 @@ class ReportEntriesCard extends Component {
             summary: null,
             selectedIndividual: "",
             user: null,
+            payNow: false,
+            paymentAmount: 0.0
         }
 
         this.reportingApi = new ReportingAPI();
@@ -103,6 +107,13 @@ class ReportEntriesCard extends Component {
         })
     }
 
+    payNow() {
+        this.setState({
+            payNow: true,
+            paymentAmount: this.state.summary.toFixed(2)
+        })
+    }
+
     componentDidUpdate(prevProps){
         if (this.props.reportId !== prevProps.reportId || this.props.selectedIndividual !== prevProps.selectedIndividual) {
             this.setState({
@@ -142,6 +153,9 @@ class ReportEntriesCard extends Component {
                 let fixed = summary.toFixed(2);
                 if (fixed < 0) {
                     return "Total: -$" + Math.abs(fixed)
+                }
+                if (this.state.selectedIndividual === "") { // User viewing their own
+                    return <span>Total: $  {fixed} <Button size={"sm"} onClick={() => {this.payNow()}}>Pay Now</Button></span>;
                 }
                 return "Total: $" + fixed;
             } else if (report["report_type"]["value_type"] === "optionselect") {
@@ -197,6 +211,9 @@ class ReportEntriesCard extends Component {
                             </tr>
                             </tbody>
                         </Table>
+                        <PaymentModal paymentAmount={this.state.paymentAmount}
+                                      isOpen={this.state.payNow}
+                                      toggle={() => {this.setState({payNow: !this.state.payNow})}} />
                     </LoadingOverlay>
                 </CardBody>
             </Card>

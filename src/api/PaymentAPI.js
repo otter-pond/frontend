@@ -32,4 +32,12 @@ export default class CalendarAPI extends APIClient {
             })
         })
     }
+
+    charge(amount) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", "/payment/charge", {"amount": amount}).then(result => {
+                resolve(result)
+            })
+        })
+    }
 }

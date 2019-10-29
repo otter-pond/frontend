@@ -56,7 +56,7 @@ class Verify extends Component {
                             <Input type="text"
                                id="accountHolderInput"
                                value={this.props.accountName}
-                               readonly/>
+                               disabled/>
                             <InputGroupAddon addonType="append">
                                 <InputGroupButton
                                     name="deleteAccount"
