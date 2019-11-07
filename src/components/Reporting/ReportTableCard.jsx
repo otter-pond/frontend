@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import LoadingOverlay from 'react-loading-overlay';
 
 import {
     Card,
@@ -21,7 +22,8 @@ class ReportTableCard extends Component {
         this.state = {
             reportId: "",
             columns: [],
-            data: []
+            data: [],
+            loading: true
         }
 
         this.reportingApi = new ReportingAPI()
@@ -33,7 +35,11 @@ class ReportTableCard extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.reportId !== prevProps.reportId) {
-            this.loadReport(this.props.reportId)
+            this.setState({
+                loading: true
+            }, () => {
+                this.loadReport(this.props.reportId)
+            })
         }
     }
 
@@ -60,13 +66,18 @@ class ReportTableCard extends Component {
             let descriptionDict = {}
             for (let index in entries) {
                 let entry = entries[index];
-                let accessor = this.formatAccessor(entry["description"])
-                descriptionDict[accessor] = entry["description"];
-                let formattedEntry = {
-                    accessor: accessor,
-                    value: entry["value"]
+                try {
+                    let accessor = this.formatAccessor(entry["description"])
+                    descriptionDict[accessor] = entry["description"];
+                    let formattedEntry = {
+                        accessor: accessor,
+                        value: entry["value"]
+                    }
+                    usersDict[entry["user_email"]]["entries"].push(formattedEntry)
+                } catch (e) {
+                    console.log("Unable to process entry: " + JSON.stringify(entry))
                 }
-                usersDict[entry["user_email"]]["entries"].push(formattedEntry)
+
             }
             let userColumn = {
                 Header: "Member",
@@ -112,7 +123,7 @@ class ReportTableCard extends Component {
                     Header: "Total",
                     accessor: "total",
                     fixed: "right",
-                    maxWidth: 75
+                    maxWidth: 150
                 }
                 columns.push(column)
             }
@@ -127,24 +138,37 @@ class ReportTableCard extends Component {
                 } else {
                     dataUser["total"] = 0.0
                 }
-                for (const entry of user["entries"]) {
-                    dataUser[entry["accessor"]] = entry["value"]
-                    if (isOptionSelect) {
-                        dataUser[entry["value"]] = dataUser[entry["value"]] + 1
-                    } else {
-                        dataUser["total"] = dataUser["total"] + entry["value"]
+                try {
+                    for (const entry of user["entries"]) {
+                        dataUser[entry["accessor"]] = entry["value"]
+                        if (isOptionSelect) {
+                            dataUser[entry["value"]] = dataUser[entry["value"]] + 1
+                        } else {
+                            dataUser["total"] = dataUser["total"] + Number(entry["value"])
+                        }
                     }
+                } catch (e) {
+                    console.log("Exception creating data user for " + JSON.stringify(user))
                 }
+
                 dataUser["lastName"] = user["last_name"]
                 dataUser["firstName"] = user["first_name"]
+                if (!isOptionSelect) {
+                    dataUser["total"] = Number(dataUser["total"].toFixed(2))
+                }
 
                 data.push(dataUser)
             }
 
+            data.sort((a, b) => {
+                return a["lastName"].localeCompare(b["lastName"])
+            })
+
             this.setState({
                 columns: columns,
                 data: data,
-                reportId: reportId
+                reportId: reportId,
+                loading: false
             })
         }).catch(e => {
             console.log("Unable to load report table: " + e)
@@ -168,13 +192,19 @@ class ReportTableCard extends Component {
                     <CardTitle tag="h2" className="float-left">Report Table View</CardTitle>
                 </CardHeader>
                 <CardBody>
-                    <ReactTableFixedColumns
-                        data={this.state.data}
-                        columns={this.state.columns}
-                        showPagination={false}
-                        style={{ height: 500 }}
-                        className="-striped"
-                    />
+
+                    <LoadingOverlay
+                        active={this.state.loading}
+                        spinner
+                        text='Loading...'
+                    >
+                        <ReactTableFixedColumns
+                            data={this.state.data}
+                            columns={this.state.columns}
+                            style={{ height: 500 }}
+                            className="-striped"
+                        />
+                    </LoadingOverlay>
                 </CardBody>
             </Card>
 
