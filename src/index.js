@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { createHashHistory } from "history";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
-import config from "variables/config"
+import config from "./variables/config"
 import {StripeProvider} from 'react-stripe-elements';
 
 import AuthLayout from "./layouts/Auth/Auth.jsx";
