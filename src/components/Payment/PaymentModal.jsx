@@ -88,7 +88,8 @@ class PaymentModal extends Component {
                                 : this.state.status === "new" ?
                                     <Verify accountName={this.state.accountName} postVerify={() => {this.checkAccountStatus()}} />
                                 : this.state.status === "verified" && this.state.paymentAmount !== -1 ?
-                                    <PayNow paymentAmount={this.state.paymentAmount} accountName={this.state.accountName} postDelete={() => {this.checkAccountStatus()}}/>
+                                    <PayNow paymentAmount={this.state.paymentAmount} accountName={this.state.accountName} postDelete={() => {this.checkAccountStatus()}}
+                                            refresh={this.props.refresh}/>
 
                                 : this.state.status === "verified" ?
                                     <Verified />

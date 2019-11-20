@@ -154,6 +154,9 @@ class ReportEntriesCard extends Component {
                 if (fixed < 0) {
                     return "Total: -$" + Math.abs(fixed)
                 }
+                if (fixed === 0){
+                    return "Total: $0.00"
+                }
                 if (this.state.selectedIndividual === "") { // User viewing their own
                     return <span>Total: $  {fixed} <Button size={"sm"} onClick={() => {this.payNow()}}>Pay Now</Button></span>;
                 }
@@ -167,6 +170,15 @@ class ReportEntriesCard extends Component {
             } else {
                 return "Total: " + summary
             }
+        }
+    }
+
+    renderStatusHeader(report) {
+        if (report != null
+                && report.hasOwnProperty("report_type")
+                && report["report_type"]["status_options"]
+                && report["report_type"]["status_options"].length > 0) {
+            return <th>Status</th>
         }
     }
 
@@ -189,6 +201,7 @@ class ReportEntriesCard extends Component {
                                     <th>Date</th>
                                     {this.props.getUserName ? <th>User</th> : null}
                                     <th>Details</th>
+                                    <th>Status</th>
                                     <th>Value</th>
                                 </tr>
                             </thead>
@@ -199,6 +212,7 @@ class ReportEntriesCard extends Component {
                                         <td>{this.formatDate(entry["timestamp"])}</td>
                                         {this.props.getUserName ? <td>{this.props.getUserName(entry["user_email"])}</td> : null}
                                         <td>{entry["description"]}</td>
+                                        <td>{entry["status"]}</td>
                                         <td>{this.formatValue(this.state.report, entry["value"])}</td>
                                     </tr>
                                 )
@@ -207,13 +221,15 @@ class ReportEntriesCard extends Component {
                                 <td> </td>
                                 {this.props.getUserName ? <td></td> : null}
                                 <td> </td>
+                                <td> </td>
                                 <td style={{fontWeight: "bold"}}>{this.formatSummary(this.state.report, this.state.summary)}</td>
                             </tr>
                             </tbody>
                         </Table>
                         <PaymentModal paymentAmount={this.state.paymentAmount}
                                       isOpen={this.state.payNow}
-                                      toggle={() => {this.setState({payNow: !this.state.payNow})}} />
+                                      toggle={() => {this.setState({payNow: !this.state.payNow})}}
+                                      refresh={() => {this.loadReport(this.state.report["report_id"])}} />
                     </LoadingOverlay>
                 </CardBody>
             </Card>
