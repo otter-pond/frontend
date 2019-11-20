@@ -9,7 +9,7 @@ import {
     Row,
     Col,
     Container, Label,
-    Input, FormGroup, InputGroup, InputGroupAddon, InputGroupButton, Button, Form
+    Input, FormGroup, InputGroup, InputGroupAddon, InputGroupButton, Button, Form, Alert
 } from "reactstrap"
 import UsersAPI from "../../api/UsersAPI";
 
@@ -86,6 +86,9 @@ class ProfileCard extends Component {
                     <CardTitle tag="h2" className="float-left">User Profile</CardTitle>
                 </CardHeader>
                 <CardBody>
+                    <Alert color="success" isOpen={this.state.success} toggle={() => {this.setState({success: false})}}>
+                        Successfully updated user profile.
+                    </Alert>
                     <Container>
                         <LoadingOverlay
                             active={this.state.loading}
@@ -149,6 +152,7 @@ class ProfileCard extends Component {
                                 </div>
                             </Form>
                         </LoadingOverlay>
+
                     </Container>
                 </CardBody>
             </Card>

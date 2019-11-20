@@ -40,4 +40,20 @@ export default class EmailListAPI extends APIClient {
             })
         })
     }
+
+    checkVerification(address) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `email_lists/checkVerification`, {"user_email": address}).then(result => {
+                resolve(result["verified"])
+            })
+        })
+    }
+
+    requestVerification(address) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `email_lists/requestVerification`, {"user_email": address}).then(result => {
+                resolve()
+            })
+        })
+    }
 }

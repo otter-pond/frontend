@@ -1,7 +1,7 @@
 import React from "react";
 import {Col, Container, Row} from "reactstrap";
 import ProfileCard from "../../components/ProfileSettings/ProfileCard";
-import SettingsCard from "../../components/ProfileSettings/SettingsCard";
+import EmailSettingsCard from "../../components/ProfileSettings/EmailSettingsCard";
 
 
 class ProfileSettings extends React.Component {
@@ -18,10 +18,8 @@ class ProfileSettings extends React.Component {
                             <Col xs={6}>
                                 <ProfileCard />
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <SettingsCard />
+                            <Col xs={6}>
+                                <EmailSettingsCard />
                             </Col>
                         </Row>
                 </div>
