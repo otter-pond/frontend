@@ -12,7 +12,6 @@ import {
     Input, Button, Table, Alert
 } from "reactstrap";
 import SelectReportCard from "../../components/Reporting/SelectReportCard";
-import ReportEntiresCard from "../../components/Reporting/ReportEntriesCard";
 import ReportingAPI from "../../api/ReportingAPI";
 import UsersAPI from "../../api/UsersAPI";
 import RolesAPI from "../../api/RolesAPI";
