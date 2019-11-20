@@ -154,7 +154,7 @@ class ReportEntriesCard extends Component {
                 if (fixed < 0) {
                     return "Total: -$" + Math.abs(fixed)
                 }
-                if (fixed === 0){
+                if (fixed == 0){
                     return "Total: $0.00"
                 }
                 if (this.state.selectedIndividual === "") { // User viewing their own
@@ -170,15 +170,6 @@ class ReportEntriesCard extends Component {
             } else {
                 return "Total: " + summary
             }
-        }
-    }
-
-    renderStatusHeader(report) {
-        if (report != null
-                && report.hasOwnProperty("report_type")
-                && report["report_type"]["status_options"]
-                && report["report_type"]["status_options"].length > 0) {
-            return <th>Status</th>
         }
     }
 
