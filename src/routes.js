@@ -4,6 +4,7 @@ import Home from "./views/Main/Home.jsx";
 import Admin from "./views/Main/Admin.jsx";
 import Reporting from "./views/Main/Reporting.jsx";
 import Attendance from "./views/Main/Attendance.jsx";
+import ProfileSettings from "./views/Main/ProfileSettings.jsx"
 import ResetPassword from "./views/Auth/ResetPassword.jsx"
 import VerifySuccess from "./views/Auth/VerifySuccess.jsx"
 import VerifyFailure from "./views/Auth/VerifyFailure.jsx"
@@ -41,8 +42,17 @@ let attendanceRoute = {
   layout: "/main"
 }
 
+let profileSettingsRoute = {
+  path: "/profileSettings",
+  name: "Profile & Settings",
+  icon: "tim-icons icon-align-center",
+  component: ProfileSettings,
+  layout: "/main"
+}
+
+
 export function getMainRoutesForUser(role, permissions){
-  let routes = [homeRoute, reportingRoute]
+  let routes = [homeRoute, reportingRoute, profileSettingsRoute]
 
   if (permissions && permissions.includes("full_admin")) {
     routes.push(adminRoute)
