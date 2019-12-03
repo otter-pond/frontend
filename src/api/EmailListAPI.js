@@ -1,9 +1,9 @@
 import APIClient from "./APIClient";
 
 export default class EmailListAPI extends APIClient {
-    getAllLists() {
+    getAllLists(onlyJoinable = false) {
         return new Promise((resolve, reject) => {
-            this.perform("get", "/email_lists/").then(lists => {
+            this.perform("get", `/email_lists/?onlyJoinable=${onlyJoinable}`).then(lists => {
                 resolve(lists)
             })
         })
@@ -69,6 +69,14 @@ export default class EmailListAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `email_lists/${address}/rolePermissions/${roleId}`, permission).then(result => {
                 resolve(result)
+            })
+        })
+    }
+
+    getUserSubscriptions(user_email) {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `email_lists/subscriptions/${user_email}`).then(subscriptions => {
+                resolve(subscriptions)
             })
         })
     }
