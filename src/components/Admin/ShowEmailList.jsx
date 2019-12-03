@@ -8,6 +8,7 @@ import {
 import EmailListAPI from "../../api/EmailListAPI";
 import UsersAPI from "../../api/UsersAPI";
 import LoadingOverlay from "react-loading-overlay";
+import Notify from 'react-notification-alert';
 
 class ShowEmailList extends Component {
     constructor(props) {
@@ -104,6 +105,17 @@ class ShowEmailList extends Component {
                 let userEmails = this.state.users;
                 userEmails = userEmails.filter(a => {return a["email"] !== userEmail})
                 this.setState({users: userEmails})
+            } else {
+                let message = `Cannot add ${userEmail} to ${this.state.emailList}. The user's role is missing the following 
+                permission: ${result["permission"] === "can_self_join" ? "Can Self Join": "Can Be Added"}`;
+                var options = {
+                    place: "tc",
+                    message: message,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             }
         })
     }
@@ -131,6 +143,7 @@ class ShowEmailList extends Component {
                         text='Loading...'
                     >
                         <div>
+                            <Notify ref="notify"/>
                             <Table>
                                 <thead>
                                 <tr>
