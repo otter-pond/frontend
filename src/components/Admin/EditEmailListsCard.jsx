@@ -9,9 +9,10 @@ import {
     Row,
     Button,
     Alert,
-    Col, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledDropdown, Input
+    Col, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledDropdown, Input, Label, Table
 } from "reactstrap"
 import EmailListAPI from "../../api/EmailListAPI";
+import RolesAPI from "../../api/RolesAPI";
 
 class EditEmailListsCard extends Component {
     constructor(props) {
@@ -21,10 +22,21 @@ class EditEmailListsCard extends Component {
             selectedListCopy: {},
             selectedList: "None",
             showSuccessAlert: false,
-            editingSubscribers: false
+            editingSubscribers: false,
+            roles: [],
+            permissions: []
         }
 
         this.emailClient = new EmailListAPI();
+        this.rolesClient = new RolesAPI();
+
+        this.rolesClient.getRoles().then(roles => {
+            this.setState({
+                roles: roles
+            },() => {
+                this.refreshLists()
+            })
+        })
 
         this.refreshLists()
     }
@@ -47,17 +59,26 @@ class EditEmailListsCard extends Component {
             list["description"] = ""
         let editing = this.state.editingSubscribers
         this.setState({
-            selectedListCopy: Object.create(list),
-            selectedList: list.address,
-            showSuccessAlert: false,
-            editingSubscribers: false
+            loading:  true,
+            permissions: []
+        }, () => {
+            this.emailClient.getAllRolePermissions(list.address).then(permissions => {
+                this.setState({
+                    selectedListCopy: Object.create(list),
+                    selectedList: list.address,
+                    showSuccessAlert: false,
+                    editingSubscribers: false,
+                    permissions: permissions,
+                    loading: false
+                })
+                this.props.listSelected(list.address);
+                if (editing) {
+                    if (!!this.props.showSubscribers) {
+                        this.props.showSubscribers(false)
+                    }
+                }
+            })
         })
-        this.props.listSelected(list.address);
-        if (editing) {
-            if (!!this.props.showSubscribers) {
-                this.props.showSubscribers(false)
-            }
-        }
     }
 
     updateListField(field, newValue){
@@ -91,6 +112,36 @@ class EditEmailListsCard extends Component {
         }, () => {
             if (!!this.props.showSubscribers) {
                 this.props.showSubscribers(this.state.editingSubscribers)
+            }
+        })
+    }
+
+    getPermission(roleId) {
+        let permissions = this.state.permissions.filter(a => {return a["role_id"] === roleId})
+        if (permissions.length === 0) {
+            return {
+                "can_self_join": false,
+                "default": false,
+                "can_be_invited": false,
+                "joined_on_creation": false,
+                "role_id": roleId
+            }
+        }
+        return permissions[0]
+    }
+
+    updatePermission(e, roleId, toUpdate) {
+        e.preventDefault()
+        let value = e.target.checked;
+        let permission = this.getPermission(roleId);
+        permission[toUpdate] = value;
+        this.emailClient.setRolePermission(permission, roleId, this.state.selectedListCopy["address"]).then(result => {
+            if (result) {
+                let permissions = this.state.permissions.filter(a => {return a["role_id"] !== roleId})
+                permissions.push(permission)
+                this.setState({
+                    permissions: permissions
+                })
             }
         })
     }
@@ -130,9 +181,11 @@ class EditEmailListsCard extends Component {
 
     renderEmailListView(selectedList) {
         return (
+            <>
             <Row>
-                <Col md={6}>
+                <Col md={6} style={{borderRight: "1px solid gray"}}>
                     <Container>
+                        <h3>List Details</h3>
                         <Row>
                             <Col xs={6}>
                                 <p>Address:</p>
@@ -172,8 +225,8 @@ class EditEmailListsCard extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <div style={{width: "100%", textAlign: "center"}}>
-                                <Button size="sm" onClick={() => {this.saveListChanges()}}>Save Changes</Button>
+                            <div style={{width: "100%", textAlign: "center", marginTop: "auto"}}>
+                                <Button size="sm" onClick={() => {this.saveListChanges()}}>Save Details Changes</Button>
                                 <Alert color="info"
                                        isOpen={this.state.showSuccessAlert}
                                        toggle={() => {this.setState({showSuccessAlert: false})}}
@@ -186,11 +239,83 @@ class EditEmailListsCard extends Component {
                     </Container>
                 </Col>
                 <Col md={6}>
+                    <h3>List Permissions</h3>
+                    <Table style={{textAlign: "center"}}>
+                        <thead>
+                            <tr>
+                                <th>Role</th>
+                                <th>Can Self Join</th>
+                                <th>Can Be Added</th>
+                                <th>Added By Default</th>
+                                <th>Added On Creation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {this.state.roles.map((role, index) => {
+                            let permission = this.getPermission(role["role_id"])
+                            return <tr key={index}>
+                                <td>{role["role_description"]}</td>
+                                <td style={{textAlign: "center"}}>
+                                    <Input type={"checkbox"}
+                                           onChange={(e) => {this.updatePermission(e, role["role_id"], "can_self_join")}}
+                                           checked={permission["can_self_join"]}/>
+                                </td>
+                                <td style={{textAlign: "center"}}>
+                                    <Input type={"checkbox"}
+                                           onChange={(e) => {this.updatePermission(e, role["role_id"], "can_be_invited")}}
+                                           checked={permission["can_be_invited"]} />
+                                </td>
+                                <td style={{textAlign: "center"}}>
+                                    <Input type={"checkbox"}
+                                           onChange={(e) => {this.updatePermission(e, role["role_id"], "default")}}
+                                           checked={permission["default"]} />
+                                </td>
+                                <td style={{textAlign: "center"}}>
+                                    <Input type={"checkbox"}
+                                           onChange={(e) => {this.updatePermission(e, role["role_id"], "joined_on_creation")}}
+                                           checked={permission["joined_on_creation"]} />
+                                </td>
+                            </tr>
+                        })}
+                        </tbody>
+                    </Table>
+                    {
+                        /*this.state.roles.map((role, index) => {
+                            return <>
+                                    <Row>
+                                        <h4>{role["role_description"]}</h4>
+                                    </Row>
+                                    <Row>
+                                        <Col sm={3}>
+                                            <Label>Can Self Join</Label>
+                                        </Col>
+                                        <Col sm={3}>
+                                            <Label>Can Be Added</Label>
+                                        </Col>
+                                        <Col sm={3}>
+                                            <Label>Added By Default</Label>
+                                        </Col>
+                                        <Col sm={3}>
+                                            <Label>Added On Creation</Label>
+                                        </Col>
+                                    </Row>
+                                </>
+
+
+                        })
+                        */
+                    }
+                </Col>
+
+            </Row>
+            <Row>
+                <Col md={12}>
                     <div className="text-center">
                         <Button onClick={() => {this.toggleSubscribers()}}>{this.state.editingSubscribers ? "Hide List Subscribers": "Show List Subscribers"}</Button>
                     </div>
                 </Col>
             </Row>
+            </>
         )
     }
 }

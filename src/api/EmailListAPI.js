@@ -56,4 +56,20 @@ export default class EmailListAPI extends APIClient {
             })
         })
     }
+
+    getAllRolePermissions(address) {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `email_lists/${address}/rolePermissions/`).then(permissions => {
+                resolve(permissions)
+            })
+        })
+    }
+
+    setRolePermission(permission, roleId, address) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `email_lists/${address}/rolePermissions/${roleId}`, permission).then(result => {
+                resolve(result)
+            })
+        })
+    }
 }
