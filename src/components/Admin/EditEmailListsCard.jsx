@@ -226,7 +226,7 @@ class EditEmailListsCard extends Component {
                         </Row>
                         <Row>
                             <div style={{width: "100%", textAlign: "center", marginTop: "auto"}}>
-                                <Button size="sm" onClick={() => {this.saveListChanges()}}>Save Details Changes</Button>
+                                <Button size="sm" onClick={() => {this.saveListChanges()}}>Save List Details</Button>
                                 <Alert color="info"
                                        isOpen={this.state.showSuccessAlert}
                                        toggle={() => {this.setState({showSuccessAlert: false})}}
