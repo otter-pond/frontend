@@ -85,7 +85,7 @@ class MemberListCard extends Component {
                             </thead>
                             <tbody>
                             {this.state.users.map((user, index) => {
-                                let role = "";
+                                let role = {"role_description": "Unavailable"};
                                 try {
                                     role = this.state.roles.filter((a) => {return a["role_id"] === user["role_id"]})[0]
                                 } catch{
