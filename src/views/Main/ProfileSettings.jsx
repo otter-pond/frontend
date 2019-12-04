@@ -16,12 +16,12 @@ class ProfileSettings extends React.Component {
                 <div className="content">
                     <h1>Profile and Settings</h1>
                         <Row>
-                            <Col xs={6}>
+                            <Col md={6}>
                                 <ProfileCard />
-                            </Col>
-                            <Col xs={6}>
-                                <ListSubscriptionsCard />
                                 <EmailSettingsCard />
+                            </Col>
+                            <Col md={6}>
+                                <ListSubscriptionsCard />
                             </Col>
                         </Row>
                 </div>

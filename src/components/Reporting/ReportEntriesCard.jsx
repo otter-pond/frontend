@@ -186,6 +186,10 @@ class ReportEntriesCard extends Component {
                         spinner
                         text='Loading...'
                     >
+                        <PaymentModal paymentAmount={this.state.paymentAmount}
+                                      isOpen={this.state.payNow}
+                                      toggle={() => {this.setState({payNow: !this.state.payNow})}}
+                                      refresh={() => {this.loadReport(this.state.report["report_id"])}} />
                         <Table>
                             <thead>
                                 <tr>
@@ -217,10 +221,6 @@ class ReportEntriesCard extends Component {
                             </tr>
                             </tbody>
                         </Table>
-                        <PaymentModal paymentAmount={this.state.paymentAmount}
-                                      isOpen={this.state.payNow}
-                                      toggle={() => {this.setState({payNow: !this.state.payNow})}}
-                                      refresh={() => {this.loadReport(this.state.report["report_id"])}} />
                     </LoadingOverlay>
                 </CardBody>
             </Card>
