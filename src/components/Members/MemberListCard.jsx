@@ -85,17 +85,29 @@ class MemberListCard extends Component {
                             </thead>
                             <tbody>
                             {this.state.users.map((user, index) => {
-                                let role = {"role_description": "Unavailable"};
                                 try {
-                                    role = this.state.roles.filter((a) => {return a["role_id"] === user["role_id"]})[0]
-                                } catch{
-                                    console.log("Error loading role: " + user["user_email"])
+                                    let roles = this.state.roles.filter((a) => {
+                                        return a["role_id"] === user["role_id"]
+                                    })
+                                    let role = {"role_description": "Unavailable"}
+                                    if (roles.length > 0) {
+                                        role = roles[0]
+                                    }
+                                    return <tr key={index} onClick={(e) => {
+                                        e.preventDefault();
+                                        this.selectUser(user)
+                                    }}>
+                                        <td>{user["last_name"]}</td>
+                                        <td>{user["first_name"]}</td>
+                                        <td>{role["role_description"]}</td>
+                                    </tr>
+                                } catch {
+                                    return <tr>
+                                        <td>Error</td>
+                                        <td>Error</td>
+                                        <td>Error</td>
+                                    </tr>
                                 }
-                                return <tr key={index} onClick={(e) => {e.preventDefault(); this.selectUser(user)}}>
-                                    <td>{user["last_name"]}</td>
-                                    <td>{user["first_name"]}</td>
-                                    <td>{role["role_description"]}</td>
-                                </tr>
                             })}
                             </tbody>
                         </Table>
