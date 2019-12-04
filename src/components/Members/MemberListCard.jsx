@@ -85,7 +85,12 @@ class MemberListCard extends Component {
                             </thead>
                             <tbody>
                             {this.state.users.map((user, index) => {
-                                let role = this.state.roles.filter((a) => {return a["role_id"] === user["role_id"]})[0]
+                                let role = "";
+                                try {
+                                    role = this.state.roles.filter((a) => {return a["role_id"] === user["role_id"]})[0]
+                                } catch{
+                                    console.log("Error loading role: " + user["user_email"])
+                                }
                                 return <tr key={index} onClick={(e) => {e.preventDefault(); this.selectUser(user)}}>
                                     <td>{user["last_name"]}</td>
                                     <td>{user["first_name"]}</td>
