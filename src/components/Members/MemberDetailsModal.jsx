@@ -85,7 +85,7 @@ class MemberDetailsModal extends Component {
                                         <p style={{fontWeight: "bold"}}>Emails</p>
                                     </Col>
                                     <Col md={8} className={"text-right"}>
-                                        <p><a href={"mailto:" + this.props.user["user_email"]}>{this.props.user["user_email"]}</a></p>
+                                        <p><a href={"mailto:" + this.props.user["user_email"]}>{this.props.user["user_email"]}</a> (Primary)</p>
                                     </Col>
                                 </Row>
                                 {this.props.user["other_emails"].map((email, index) => {
