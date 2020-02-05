@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {
     Card, CardBody,
     CardHeader,
-    CardTitle, Input, Table,
+    CardTitle, CardSubtitle, Input, Table,
     Button
 } from "reactstrap";
 import EmailListAPI from "../../api/EmailListAPI";
@@ -133,8 +133,9 @@ class ShowEmailList extends Component {
             <Card>
                 <CardHeader>
                     <div className="clearfix">
-                        <CardTitle tag="h2" className="float-left">{this.state.viewingSubscribers ? "Subscribers" : "Non-Subscribers"} of {this.props.emailList} <Button onClick={() => {this.toggleView()}} size="sm">Toggle View</Button></CardTitle>
+                        <CardTitle tag="h2" className="float-left">{this.state.viewingSubscribers ? "Subscribers" : "Non-Subscribers"} of {this.props.emailList} <Button onClick={() => {this.toggleView()}} size="sm">{this.state.viewingSubscribers ? "View Non-Subscribers" : "View Subscribers"}</Button></CardTitle>
                     </div>
+                    <CardSubtitle className="float-left">{this.state.viewingSubscribers ? "Subscriber Count: " : "Non-Subscriber Count: "} {this.state.users.length} </CardSubtitle>
                 </CardHeader>
                 <CardBody>
                     <LoadingOverlay
