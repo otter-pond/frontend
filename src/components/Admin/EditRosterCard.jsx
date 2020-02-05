@@ -5,6 +5,7 @@ import {
     CardBody,
     CardHeader,
     CardTitle,
+    CardSubtitle,
     Table,
     UncontrolledDropdown,
     DropdownMenu,
@@ -121,6 +122,9 @@ class EditRosterCard extends Component {
                             </div>
                             {/*<Button className="float-right">Change User Roles</Button>*/}
                         </div>
+                    </div>
+                    <div className="float-left" hidden={this.state.selectedRole === "None"}>
+                        <CardSubtitle className="float-left">Roster Count: {this.state.activeUsers.length}</CardSubtitle>
                     </div>
                 </CardHeader>
                 <CardBody>
