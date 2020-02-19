@@ -16,7 +16,6 @@ import ReportingAPI from "../../api/ReportingAPI";
 import UsersAPI from "../../api/UsersAPI";
 import RolesAPI from "../../api/RolesAPI";
 import Cookies from "universal-cookie";
-import {getMainRoutesForUser} from "../../routes";
 
 const cookies = new Cookies();
 let permissions = cookies.get("permissions")
@@ -373,15 +372,12 @@ class Attendance extends React.Component {
                     </Input>
                 </Col>
             </FormGroup>
-            {this.state.scanning ? <h4>Scanning...</h4> :
-                <div className={"clearfix"}>
-                    <div className={"clearfix"}>
-                        <h4 className={"float-left"}>Ready to scan! Or enter GTID manually: </h4>
-                        <Input className={"float-left"} style={{width: 100, marginLeft: 40, marginRight: 10}} type="text" name="manualEntry" id={"manualEntry"} onChange={(e) => {this.updateManualEntry(e)}} onKeyUp={(e) => {this.entryKeyUp(e)}} value={this.state.manualEntry}/>
-                        <Button className={"float-left"} size="sm" onClick={() => {this.submitManualEntry()}}>Submit</Button>
-                    </div>
-                    <div hidden={!permissions.includes("full_admin")}>
+            <div hidden={!permissions.includes("full_admin")}>
+                <Row>
+                    <Col sm={2}>
                         <h4 className={"float-left"}>(Full Admin) Select User:</h4>
+                    </Col>
+                    <Col sm={3}>
                         <Input type="select" name="selectUser" id={"selectUser"}
                                defaultValue={this.state.selectedUser}
                                onChange={(e) => {this.updateSelectedUser(e)}}>
@@ -390,7 +386,17 @@ class Attendance extends React.Component {
                                 return <option key={index} value={value["user_email"]}>{value["first_name"] + " " + value["last_name"]}</option>
                             })}
                         </Input>
+                    </Col>
+                </Row>
+            </div>
+            {this.state.scanning ? <h4>Scanning...</h4> :
+                <div className={"clearfix"}>
+                    <div className={"clearfix"}>
+                        <h4 className={"float-left"}>Ready to scan! Or enter GTID manually: </h4>
+                        <Input className={"float-left"} style={{width: 100, marginLeft: 40, marginRight: 10}} type="text" name="manualEntry" id={"manualEntry"} onChange={(e) => {this.updateManualEntry(e)}} onKeyUp={(e) => {this.entryKeyUp(e)}} value={this.state.manualEntry}/>
+                        <Button className={"float-left"} size="sm" onClick={() => {this.submitManualEntry()}}>Submit</Button>
                     </div>
+
                 </div>
             }
             <Alert color="danger" isOpen={this.state.errorText !== ""} toggle={() => {this.setState({errorText: ""})}}>
