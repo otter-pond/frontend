@@ -17,6 +17,8 @@ import UsersAPI from "../../api/UsersAPI";
 import RolesAPI from "../../api/RolesAPI";
 import Cookies from "universal-cookie";
 
+const cookies = new Cookies();
+let permissions = cookies.get("permissions")
 
 class Attendance extends React.Component {
     constructor(props) {
@@ -28,13 +30,15 @@ class Attendance extends React.Component {
             selectedOption: "",
             attendanceDescription: "",
             users: [],
+            applicableUsers: [],
             entries: [],
             presetDescriptions: [],
             pendingDescriptionSelect: "",
             scanning: false,
             pendingDescriptionText: "Chapter Attendance " + (new Date()).toLocaleDateString('en-US'),
             errorText: "",
-            manualEntry: ""
+            manualEntry: "",
+            selectedUser: "",
         };
 
         this.scanRead = "";
@@ -95,6 +99,23 @@ class Attendance extends React.Component {
             timestamp: (new Date()).toISOString(),
             entered_by_email: username
         }
+        this.makeNewReportEntryForReport(report)
+    }
+
+    handleDropDownSelect(user_email) {
+        let cookies = new Cookies();
+        let username = cookies.get("user_email", {path: "/"})
+        let report = {
+            user_email: user_email,
+            value: this.state.selectedOption,
+            description: this.state.attendanceDescription,
+            timestamp: (new Date()).toISOString(),
+            entered_by_email: username
+        }
+        this.makeNewReportEntryForReport(report)
+    }
+
+    makeNewReportEntryForReport(report) {
         this.reportingAPI.createReportEntry(this.state.selectedReportId, report, true).then(result => {
             if (result["error"] !== "Success"){
                 this.setState({
@@ -110,6 +131,21 @@ class Attendance extends React.Component {
             }
         })
     }
+
+    loadAllApplicableUsersForReport(reportId) {
+        let applicableUsers = [];
+
+        this.reportingAPI.getApplicableUsers(reportId).then(users => {
+            if (users != null) {
+                for (let index in users) {
+                    let user = users[index]
+                    applicableUsers.push(user)
+                }
+                this.setState({applicableUsers: applicableUsers})
+            }
+        })
+    }
+
 
     selectReport(reportId) {
         this.reportingAPI.getReportById(reportId).then(report => {
@@ -131,6 +167,7 @@ class Attendance extends React.Component {
                             pendingDescriptionSelect: pendingDescriptionSelect
                         });
                         this.loadUsersAndRoles(report["applicable_roles"])
+                        this.loadAllApplicableUsersForReport(this.state.selectedReportId)
                     }
                 })
             }
@@ -298,6 +335,14 @@ class Attendance extends React.Component {
         }
     }
 
+    updateSelectedUser(e) {
+        this.setState( {
+            selectedUser: e.target.value
+        }, () => {
+            this.handleDropDownSelect(this.state.selectedUser)
+        })
+    }
+
     submitManualEntry() {
         let swipe = this.state.manualEntry;
         this.setState({
@@ -327,11 +372,31 @@ class Attendance extends React.Component {
                     </Input>
                 </Col>
             </FormGroup>
+            <div hidden={!permissions.includes("full_admin")}>
+                <Row>
+                    <Col sm={2}>
+                        <h4 className={"float-left"}>(Full Admin) Select User:</h4>
+                    </Col>
+                    <Col sm={3}>
+                        <Input type="select" name="selectUser" id={"selectUser"}
+                               defaultValue={this.state.selectedUser}
+                               onChange={(e) => {this.updateSelectedUser(e)}}>
+                            <option key={"default"}>(Select a user)</option>
+                            {this.state.applicableUsers.map((value, index) => {
+                                return <option key={index} value={value["user_email"]}>{value["first_name"] + " " + value["last_name"]}</option>
+                            })}
+                        </Input>
+                    </Col>
+                </Row>
+            </div>
             {this.state.scanning ? <h4>Scanning...</h4> :
                 <div className={"clearfix"}>
-                    <h4 className={"float-left"}>Ready to scan! Or enter GTID manually: </h4>
-                    <Input className={"float-left"} style={{width: 100, marginLeft: 40, marginRight: 10}} type="text" name="manualEntry" id={"manualEntry"} onChange={(e) => {this.updateManualEntry(e)}} onKeyUp={(e) => {this.entryKeyUp(e)}} value={this.state.manualEntry}/>
-                    <Button className={"float-left"} size="sm" onClick={() => {this.submitManualEntry()}}>Submit</Button>
+                    <div className={"clearfix"}>
+                        <h4 className={"float-left"}>Ready to scan! Or enter GTID manually: </h4>
+                        <Input className={"float-left"} style={{width: 100, marginLeft: 40, marginRight: 10}} type="text" name="manualEntry" id={"manualEntry"} onChange={(e) => {this.updateManualEntry(e)}} onKeyUp={(e) => {this.entryKeyUp(e)}} value={this.state.manualEntry}/>
+                        <Button className={"float-left"} size="sm" onClick={() => {this.submitManualEntry()}}>Submit</Button>
+                    </div>
+
                 </div>
             }
             <Alert color="danger" isOpen={this.state.errorText !== ""} toggle={() => {this.setState({errorText: ""})}}>
