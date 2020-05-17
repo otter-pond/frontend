@@ -9,7 +9,7 @@ import {
     Row,
     Col,
     Container, Label,
-    Input, FormGroup, InputGroup, InputGroupAddon, InputGroupButton, Button, Form, Alert
+    Input, FormGroup, Button, Form, Alert
 } from "reactstrap"
 import UsersAPI from "../../api/UsersAPI";
 

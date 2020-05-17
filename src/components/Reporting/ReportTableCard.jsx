@@ -9,12 +9,8 @@ import {
 } from "reactstrap"
 import ReportingAPI from "../../api/ReportingAPI";
 import ReactTable from 'react-table';
-import "react-table/react-table.css";
-import withFixedColumns from 'react-table-hoc-fixed-columns';
-import 'react-table-hoc-fixed-columns/lib/styles.css'
-import UsersAPI from "../../api/UsersAPI";
+// import "react-table/react-table.css";
 
-const ReactTableFixedColumns = withFixedColumns(ReactTable);
 
 class ReportTableCard extends Component {
     constructor(props) {
@@ -198,7 +194,7 @@ class ReportTableCard extends Component {
                         spinner
                         text='Loading...'
                     >
-                        <ReactTableFixedColumns
+                        <ReactTable
                             data={this.state.data}
                             columns={this.state.columns}
                             style={{ height: 500 }}
