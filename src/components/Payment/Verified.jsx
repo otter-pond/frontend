@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import {Input, Button, Form, FormGroup, Label, Alert, InputGroup, InputGroupButton, InputGroupAddon} from "reactstrap"
-import PaymentAPI from "../../api/PaymentAPI";
 class Verified extends Component {
 
     render() {

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Input, Button, Form, FormGroup, Label, Alert, InputGroup, InputGroupButton, InputGroupAddon} from "reactstrap"
+import {Input, Button, Form, FormGroup, Label, Alert, InputGroup, InputGroupAddon} from "reactstrap"
 import PaymentAPI from "../../api/PaymentAPI";
 import LoadingOverlay from "react-loading-overlay";
 class Verify extends Component {
@@ -79,11 +79,12 @@ class Verify extends Component {
                                    value={this.props.accountName}
                                    disabled/>
                                 <InputGroupAddon addonType="append">
-                                    <InputGroupButton
+                                    {/*Used to be InputGroupButton but had to change it. Might cause some issues...*/}
+                                    <Button
                                         name="deleteAccount"
                                         onClick={() => { if (window.confirm('Are you sure you wish to delete this item?')) this.deleteAccount() } }
                                         size="sm"
-                                        color="danger">Delete</InputGroupButton>
+                                        color="danger">Delete</Button>
                                 </InputGroupAddon>
                             </InputGroup>
                         </FormGroup>
