@@ -11,6 +11,7 @@ import {
 } from "reactstrap";
 import EmailListAPI from "../../api/EmailListAPI";
 import UsersAPI from "../../api/UsersAPI";
+import EditPositionsCard from "../../components/Admin/EditPositionsCard";
 
 class Admin extends React.Component {
     constructor(props) {
@@ -58,6 +59,11 @@ class Admin extends React.Component {
                     <Row>
                         <Col xs={12}>
                             <EditRosterCard />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12}>
+                            <EditPositionsCard />
                         </Col>
                     </Row>
                 </div>

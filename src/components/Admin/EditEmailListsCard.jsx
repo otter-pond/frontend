@@ -224,18 +224,6 @@ class EditEmailListsCard extends Component {
                                 </Input></p>
                             </Col>
                         </Row>
-                        <Row>
-                            <div style={{width: "100%", textAlign: "center", marginTop: "auto"}}>
-                                <Button size="sm" onClick={() => {this.saveListChanges()}}>Save List Details</Button>
-                                <Alert color="info"
-                                       isOpen={this.state.showSuccessAlert}
-                                       toggle={() => {this.setState({showSuccessAlert: false})}}
-                                       color="success">
-                                    Changes successfully saved!
-                                </Alert>
-                            </div>
-
-                        </Row>
                     </Container>
                 </Col>
                 <Col md={6}>
@@ -279,39 +267,22 @@ class EditEmailListsCard extends Component {
                         })}
                         </tbody>
                     </Table>
-                    {
-                        /*this.state.roles.map((role, index) => {
-                            return <>
-                                    <Row>
-                                        <h4>{role["role_description"]}</h4>
-                                    </Row>
-                                    <Row>
-                                        <Col sm={3}>
-                                            <Label>Can Self Join</Label>
-                                        </Col>
-                                        <Col sm={3}>
-                                            <Label>Can Be Added</Label>
-                                        </Col>
-                                        <Col sm={3}>
-                                            <Label>Added By Default</Label>
-                                        </Col>
-                                        <Col sm={3}>
-                                            <Label>Added On Creation</Label>
-                                        </Col>
-                                    </Row>
-                                </>
-
-
-                        })
-                        */
-                    }
                 </Col>
 
             </Row>
             <Row>
                 <Col md={12}>
+                    <div style={{width: "100%", textAlign: "center", marginTop: "auto"}}>
+                        <Button size="sm" onClick={() => {this.saveListChanges()}}>Save List Details</Button>
+                        <Alert color="info"
+                               isOpen={this.state.showSuccessAlert}
+                               toggle={() => {this.setState({showSuccessAlert: false})}}
+                               color="success">
+                            Changes successfully saved!
+                        </Alert>
+                    </div>
                     <div className="text-center">
-                        <Button onClick={() => {this.toggleSubscribers()}}>{this.state.editingSubscribers ? "Hide List Subscribers": "Show List Subscribers"}</Button>
+                        <Button size="sm" onClick={() => {this.toggleSubscribers()}}>{this.state.editingSubscribers ? "Hide List Subscribers": "Show List Subscribers"}</Button>
                     </div>
                 </Col>
             </Row>
