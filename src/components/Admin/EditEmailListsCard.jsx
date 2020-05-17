@@ -44,7 +44,7 @@ class EditEmailListsCard extends Component {
     refreshLists() {
         this.emailClient.getAllLists().then(lists => {
             this.setState({
-                emailLists: lists
+                emailLists: lists.filter(a => {return !(a.hasOwnProperty("position") && a["position"] !== null)})
             })
         }).catch(e => {
             console.log("Unable to load email lists")
