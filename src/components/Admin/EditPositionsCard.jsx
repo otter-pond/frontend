@@ -21,7 +21,6 @@ class EditPositionsCard extends Component {
         this.state = {
             positions: [],
             usersOnPosition: [],
-            usersOnPermissionBackup: [],
             permissions: [],
             selectedPositionName: "None",
             editingPosition: {},
@@ -43,9 +42,6 @@ class EditPositionsCard extends Component {
     }
 
     updatePositionField(field, newValue){
-        if (newValue === "") {
-            newValue = null;
-        }
         let position = this.state.editingPosition;
         position[field] = newValue;
         this.setState({
@@ -57,13 +53,12 @@ class EditPositionsCard extends Component {
         let position = this.state.positions[index];
         this.positionsApi.getUsersForPosition(position["id"]).then(users => {
             let fullUsers = users.map(a => {
-                return this.state.users.filter(u => u["user_email"] === a)[0];;
+                return this.state.users.filter(u => u["user_email"] === a)[0];
             });
             this.setState({
                 editingPosition: position,
                 selectedPositionName: position["name"],
                 usersOnPosition: fullUsers,
-                usersOnPositionBackup: fullUsers
             });
         });
     }
@@ -98,10 +93,19 @@ class EditPositionsCard extends Component {
     }
 
     save() {
+        let position = this.state.editingPosition;
+        if (position["name"] === "") {
+            position["name"] = null
+        }
+        if (position["description"] === "") {
+            position["description"] = null
+        }
+        if (position["email_address"] === "") {
+            position["email_address"] = null
+        }
         if (this.state.editingNewPosition) {
-            this.positionsApi.createPosition(this.state.editingPosition).then(result => {
+            this.positionsApi.createPosition(position).then(result => {
                 let id = result["position_id"]
-                let position = this.state.editingPosition;
                 position["id"] = id
                 let promises = []
                 promises.push(this.positionsApi.getAllPositions())
@@ -114,29 +118,34 @@ class EditPositionsCard extends Component {
                         showSuccessAlert: true,
                         selectedPositionName: position["Name"],
                         editingPosition: position,
-                        usersOnPositionBackup: this.state.usersOnPosition,
                         editingNewPosition: false
                     })
                 })
             })
         } else {
-            let promises = [this.positionsApi.update_position(this.state.editingPosition["id"], this.state.editingPosition)]
+            this.positionsApi.getUsersForPosition(position["id"]).then(existingUsers => {
+                let fullExistingUsers = existingUsers.map(a => {
+                    return this.state.users.filter(u => u["user_email"] === a)[0];
+                });
+                let promises = [this.positionsApi.update_position(position["id"], position)]
 
-            let holdersToRemove = this.state.usersOnPositionBackup.filter(x => {return this.state.usersOnPosition.filter(a => {return a["user_email"] === x["user_email"]}).length === 0})
-            let holdersToAdd = this.state.usersOnPosition.filter(x => {return this.state.usersOnPositionBackup.filter(a => {return a["user_email"] === x["user_email"]}).length === 0})
+                let holdersToRemove = fullExistingUsers.filter(x => {return this.state.usersOnPosition.filter(a => {return a["user_email"] === x["user_email"]}).length === 0})
+                let holdersToAdd = this.state.usersOnPosition.filter(x => {return fullExistingUsers.filter(a => {return a["user_email"] === x["user_email"]}).length === 0})
 
-            holdersToRemove.forEach(holder => {
-                promises.push(this.positionsApi.remove_holder(this.state.editingPosition["id"], holder["user_email"]))
-            });
+                holdersToRemove.forEach(holder => {
+                    promises.push(this.positionsApi.remove_holder(position["id"], holder["user_email"]))
+                });
 
-            holdersToAdd.forEach(holder => {
-                promises.push(this.positionsApi.add_holder(this.state.editingPosition["id"], holder["user_email"]))
-            });
-            Promise.all(promises).then(results => {
-                this.setState({
-                    showSuccessAlert: true
+                holdersToAdd.forEach(holder => {
+                    promises.push(this.positionsApi.add_holder(position["id"], holder["user_email"]))
+                });
+                Promise.all(promises).then(results => {
+                    this.setState({
+                        showSuccessAlert: true
+                    })
                 })
-            })
+            });
+
         }
 
     }
@@ -147,10 +156,13 @@ class EditPositionsCard extends Component {
             selectedPositionName: "New",
             editingPosition: {
                 "name": "",
-                "description": null,
-                "email_address": null,
+                "description": "",
+                "email_address": "",
                 "permissions": []
-            }
+            },
+            usersOnPositionBackup: [],
+            usersOnPosition: [],
+            showSuccessAlert: false
         });
     }
 
