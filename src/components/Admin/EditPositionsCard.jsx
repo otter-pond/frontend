@@ -25,7 +25,8 @@ class EditPositionsCard extends Component {
             permissions: [],
             selectedPositionName: "None",
             editingPosition: {},
-            showSuccessAlert: false
+            showSuccessAlert: false,
+            editingNewPosition: false
         }
 
         this.positionsApi = new PositionsAPI();
@@ -42,6 +43,9 @@ class EditPositionsCard extends Component {
     }
 
     updatePositionField(field, newValue){
+        if (newValue === "") {
+            newValue = null;
+        }
         let position = this.state.editingPosition;
         position[field] = newValue;
         this.setState({
@@ -78,24 +82,76 @@ class EditPositionsCard extends Component {
         })
     }
 
-    save() {
-        let promises = [this.positionsApi.update_position(this.state.editingPosition["id"], this.state.editingPosition)]
+    delete() {
+        if (window.confirm("Are you sure? This cannot be undone")) {
+            this.positionsApi.delete_position(this.state.editingPosition["id"]).then(() => {
+                this.positionsApi.getAllPositions().then(positions => {
+                    this.setState({
+                        positions: positions,
+                        selectedPositionName: "None",
+                        showSuccessAlert: true
+                    })
+                })
 
-        let holdersToRemove = this.state.usersOnPositionBackup.filter(x => {return this.state.usersOnPosition.filter(a => {return a["user_email"] === x["user_email"]}).length === 0})
-        let holdersToAdd = this.state.usersOnPosition.filter(x => {return this.state.usersOnPositionBackup.filter(a => {return a["user_email"] === x["user_email"]}).length === 0})
-
-        holdersToRemove.forEach(holder => {
-            promises.push(this.positionsApi.remove_holder(this.state.editingPosition["id"], holder["user_email"]))
-        });
-
-        holdersToAdd.forEach(holder => {
-            promises.push(this.positionsApi.add_holder(this.state.editingPosition["id"], holder["user_email"]))
-        });
-        Promise.all(promises).then(results => {
-            this.setState({
-                showSuccessAlert: true
             })
-        })
+        }
+    }
+
+    save() {
+        if (this.state.editingNewPosition) {
+            this.positionsApi.createPosition(this.state.editingPosition).then(result => {
+                let id = result["position_id"]
+                let position = this.state.editingPosition;
+                position["id"] = id
+                let promises = []
+                promises.push(this.positionsApi.getAllPositions())
+                this.state.usersOnPosition.forEach(holder => {
+                    promises.push(this.positionsApi.add_holder(id, holder["user_email"]))
+                })
+                Promise.all(promises).then(result => {
+                    this.setState({
+                        positions: result[0],
+                        showSuccessAlert: true,
+                        selectedPositionName: position["Name"],
+                        editingPosition: position,
+                        usersOnPositionBackup: this.state.usersOnPosition,
+                        editingNewPosition: false
+                    })
+                })
+            })
+        } else {
+            let promises = [this.positionsApi.update_position(this.state.editingPosition["id"], this.state.editingPosition)]
+
+            let holdersToRemove = this.state.usersOnPositionBackup.filter(x => {return this.state.usersOnPosition.filter(a => {return a["user_email"] === x["user_email"]}).length === 0})
+            let holdersToAdd = this.state.usersOnPosition.filter(x => {return this.state.usersOnPositionBackup.filter(a => {return a["user_email"] === x["user_email"]}).length === 0})
+
+            holdersToRemove.forEach(holder => {
+                promises.push(this.positionsApi.remove_holder(this.state.editingPosition["id"], holder["user_email"]))
+            });
+
+            holdersToAdd.forEach(holder => {
+                promises.push(this.positionsApi.add_holder(this.state.editingPosition["id"], holder["user_email"]))
+            });
+            Promise.all(promises).then(results => {
+                this.setState({
+                    showSuccessAlert: true
+                })
+            })
+        }
+
+    }
+
+    createNew(){
+        this.setState({
+            editingNewPosition: true,
+            selectedPositionName: "New",
+            editingPosition: {
+                "name": "",
+                "description": null,
+                "email_address": null,
+                "permissions": []
+            }
+        });
     }
 
     render() {
@@ -105,18 +161,27 @@ class EditPositionsCard extends Component {
                     <div className="clearfix">
                         <CardTitle tag="h2" className="float-left">Edit Positions</CardTitle>
                         <div className="float-right">
-                            <UncontrolledDropdown>
-                                <DropdownToggle>
-                                    Selected: {this.state.selectedPositionName}
-                                </DropdownToggle>
-                                <DropdownMenu>
-                                    {this.state.positions.map((position, index) => {
-                                        return <DropdownItem value={position["id"]}
-                                                             key={index}
-                                                             onClick={(e) => {this.onPositionSelect(e, index)}}>{position["name"]}</DropdownItem>
-                                    })}
-                                </DropdownMenu>
-                            </UncontrolledDropdown>
+                            <div className={"clearfix"}>
+                                <div className={"float-left"}>
+                                    <Button onClick={() => {this.createNew()}}>Create New</Button>
+                                </div>
+                                <div className={"float-right"}>
+                                    <UncontrolledDropdown>
+                                        <DropdownToggle>
+                                            Selected: {this.state.selectedPositionName}
+                                        </DropdownToggle>
+                                        <DropdownMenu>
+                                            {this.state.positions.map((position, index) => {
+                                                return <DropdownItem value={position["id"]}
+                                                                     key={index}
+                                                                     onClick={(e) => {this.onPositionSelect(e, index)}}>{position["name"]}</DropdownItem>
+                                            })}
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
                 </CardHeader>
@@ -208,10 +273,12 @@ class EditPositionsCard extends Component {
                 <Col xs={12}>
                     <div style={{width: "100%", textAlign: "center", marginTop: "auto"}}>
                         <Button size="sm" onClick={() => {this.save()}}>Save Position</Button>
+                        <Button size="sm" onClick={() => {this.delete()}} color={"danger"}>Delete Position</Button>
                         <Alert color="info"
                                isOpen={this.state.showSuccessAlert}
                                toggle={() => {this.setState({showSuccessAlert: false})}}
-                               color="success">
+                               color="success"
+                               fade={true}>
                             Changes successfully saved!
                         </Alert>
                     </div>

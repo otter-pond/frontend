@@ -33,6 +33,14 @@ export default class PositionsAPI extends APIClient {
         })
     }
 
+    delete_position(positionId) {
+        return new Promise((resolve, reject) => {
+            this.perform("delete", `/positions/${positionId}`).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
     add_holder(positionId, user_email){
         return new Promise((resolve, reject) => {
             this.perform("post", `/positions/${positionId}/users/${user_email}`).then(result => {
@@ -44,6 +52,14 @@ export default class PositionsAPI extends APIClient {
     remove_holder(positionId, user_email){
         return new Promise((resolve, reject) => {
             this.perform("delete", `/positions/${positionId}/users/${user_email}`).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
+    createPosition(position) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", "/positions/create", position).then(result => {
                 resolve(result)
             })
         })
