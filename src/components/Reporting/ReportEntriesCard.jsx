@@ -5,12 +5,14 @@ import {
     Card,
     CardBody,
     CardHeader,
-    CardTitle, Table,
+    CardTitle, DropdownItem, DropdownMenu, DropdownToggle, Table, UncontrolledDropdown, Alert
 } from "reactstrap"
 import ReportingAPI from "../../api/ReportingAPI";
 import UsersAPI from "../../api/UsersAPI";
 import LoadingOverlay from "react-loading-overlay";
 import PaymentModal from "../Payment/PaymentModal";
+import ReportEntryForm from "./ReportEntryForm";
+import Cookies from 'universal-cookie';
 
 class ReportEntriesCard extends Component {
     constructor(props) {
@@ -22,7 +24,10 @@ class ReportEntriesCard extends Component {
             selectedIndividual: "",
             user: null,
             payNow: false,
-            paymentAmount: 0.0
+            paymentAmount: 0.0,
+            form: null,
+            showFormEntry: false,
+            showSuccessAlert: false,
         }
 
         this.reportingApi = new ReportingAPI();
@@ -40,16 +45,18 @@ class ReportEntriesCard extends Component {
 
     loadReport(reportId, selectedIndividual = "") {
         let reportPromise = this.reportingApi.getUserReportEntries(reportId, selectedIndividual)
-        let promises = [reportPromise, this.reportingApi.getReportById(reportId)]
+        let reportFormPromise = this.reportingApi.getReportFormById(reportId);
+        let promises = [reportPromise, this.reportingApi.getReportById(reportId), reportFormPromise]
         if (selectedIndividual !== "") {
             promises.push(this.usersApi.getUserByEmail(selectedIndividual))
         }
         Promise.all(promises).then(results => {
             let report = results[1];
             let entries = results[0];
+            let form = results[2]["valueQuestion"] == null ? null: results[2];
             let user = null;
             if (selectedIndividual !== "") {
-                user = results[2]
+                user = results[3]
             }
             if (entries == null || entries.length === 0) {
                 this.setState({
@@ -59,6 +66,7 @@ class ReportEntriesCard extends Component {
                     loading: false,
                     user: user,
                     selectedIndividual: selectedIndividual,
+                    form: form
                 });
                 return;
             }
@@ -99,7 +107,8 @@ class ReportEntriesCard extends Component {
                 summary: summary,
                 user: user,
                 selectedIndividual: selectedIndividual,
-                loading: false
+                loading: false,
+                form: form
             })
 
         }).catch(e =>{
@@ -173,14 +182,81 @@ class ReportEntriesCard extends Component {
         }
     }
 
+    formatDescription(description) {
+        let formattedDescriptions = []
+        let splitDescriptions = description.split("\n");
+        for (let index in splitDescriptions) {
+            let descriptionString = splitDescriptions[index];
+            let splitDescription = descriptionString.split("\t");
+            if (splitDescription.length > 1) {
+                let temp = "<span style='font-weight: bold'>" + splitDescription[0] + " </span> " + splitDescription[1];
+                formattedDescriptions[index] = temp
+            } else {
+                formattedDescriptions[index] =  splitDescription[0];
+            }
+        }
+
+        let descriptionHtml = formattedDescriptions.join("<br />");
+        return <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+    }
+
+    newEntry() {
+        this.setState({
+            showFormEntry: true
+        })
+    }
+
+    submitReportEntry(entry) {
+        entry["timestamp"] = new Date();
+
+        let cookies = new Cookies();
+        let user_email = cookies.get("user_email")
+
+        if (this.state.selectedIndividual !== "") {
+            entry["user_email"] = this.state.selectedIndividual
+        } else {
+            entry["user_email"] = user_email
+        }
+
+        entry["entered_by_email"] = user_email
+
+        let entryText = JSON.stringify(entry);
+        let newEntry = JSON.parse(entryText);
+
+        this.reportingApi.submitReportEntry(this.state.report["report_id"], newEntry).then(result => {
+            this.setState({
+                showFormEntry: false,
+                showSuccessAlert: true,
+                loading: true
+            }, () => {
+                this.loadReport(this.state.report["report_id"], this.state.selectedIndividual)
+            })
+        })
+    }
+
     render() {
+        var entryType = null;
+        if (this.state.report.hasOwnProperty("report_type") && this.state.report["report_type"].hasOwnProperty("value_type")) {
+            entryType = this.state.report["report_type"]["value_type"] === "financial" || this.state.report["report_type"]["value_type"] === "numeric" ? "number" : "text"
+        }
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle tag="h2" className="float-left">Report Details {this.state.selectedIndividual === "" ? ""
-                        : "for " + this.state.user["last_name"] + ", " + this.state.user["first_name"]}</CardTitle>
+                    <div className="clearfix">
+                        <CardTitle tag="h2" className="float-left">Report Details {this.state.selectedIndividual === "" ? ""
+                            : "for " + this.state.user["last_name"] + ", " + this.state.user["first_name"]}</CardTitle>
+                        {this.state.form !== null &&
+                            <div className="float-right">
+                                <Button onClick={() => {this.newEntry()}}>Submit New Entry</Button>
+                            </div>
+                        }
+                    </div>
+
                 </CardHeader>
                 <CardBody>
+                    <Alert isOpen={this.state.showSuccessAlert} toggle={() => {this.setState({showSuccessAlert: false})}}>
+                        Successfully submitted new report entry!
+                    </Alert>
                     <LoadingOverlay
                         active={this.state.loading}
                         spinner
@@ -190,6 +266,7 @@ class ReportEntriesCard extends Component {
                                       isOpen={this.state.payNow}
                                       toggle={() => {this.setState({payNow: !this.state.payNow})}}
                                       refresh={() => {this.loadReport(this.state.report["report_id"])}} />
+
                         <Table>
                             <thead>
                                 <tr>
@@ -206,7 +283,7 @@ class ReportEntriesCard extends Component {
                                     <tr key={index}>
                                         <td>{this.formatDate(entry["timestamp"])}</td>
                                         {this.props.getUserName ? <td>{this.props.getUserName(entry["user_email"])}</td> : null}
-                                        <td>{entry["description"]}</td>
+                                        <td>{this.formatDescription(entry["description"])}</td>
                                         <td>{entry["status"]}</td>
                                         <td>{this.formatValue(this.state.report, entry["value"])}</td>
                                     </tr>
@@ -221,6 +298,13 @@ class ReportEntriesCard extends Component {
                             </tr>
                             </tbody>
                         </Table>
+                        {this.state.form !== null &&
+                            <ReportEntryForm isOpen={this.state.showFormEntry}
+                                             toggle={() => {this.setState({showFormEntry: !this.state.showFormEntry})}}
+                                             form={this.state.form}
+                                             valueAnswerType={entryType}
+                                             submit={(e) => {this.submitReportEntry(e)}}/>
+                        }
                     </LoadingOverlay>
                 </CardBody>
             </Card>
