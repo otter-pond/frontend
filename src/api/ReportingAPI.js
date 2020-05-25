@@ -18,6 +18,14 @@ export default class ReportingAPI extends APIClient {
         })
     }
 
+    getReportFormById(reportId) {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/reporting/${reportId}/form`).then(report => {
+                resolve(report)
+            })
+        })
+    }
+
     getReportTypeById(reportTypeId) {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/types/${reportTypeId}`).then(report => {
@@ -81,4 +89,11 @@ export default class ReportingAPI extends APIClient {
         })
     }
 
+    submitReportEntry(report_id, entry) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `/reporting/${report_id}/form/submit`, entry).then(result => {
+                resolve(result);
+            })
+        })
+    }
 }
