@@ -4,7 +4,31 @@ import Cookies from "universal-cookie";
 export default class ReportingAPI extends APIClient {
     getReports() {
         return new Promise((resolve, reject) => {
-            this.perform("get", "/reporting/").then(reports => {
+            this.perform("get", `/reporting/`).then(reports => {
+                resolve(reports)
+            })
+        })
+    }
+
+    getAdminReports() {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/reporting/adminReports`).then(reports => {
+                resolve(reports)
+            })
+        })
+    }
+
+    getSemesters() {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/reporting/semesters/`).then(reports => {
+                resolve(reports)
+            })
+        })
+    }
+
+    getReportTypes() {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/reporting/types/`).then(reports => {
                 resolve(reports)
             })
         })
