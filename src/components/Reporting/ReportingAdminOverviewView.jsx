@@ -19,7 +19,7 @@ import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
-class ReportingAdminView extends Component {
+class ReportingAdminOverviewView extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -569,4 +569,4 @@ class ReportingAdminView extends Component {
     }
 }
 
-export default ReportingAdminView;
+export default ReportingAdminOverviewView;
