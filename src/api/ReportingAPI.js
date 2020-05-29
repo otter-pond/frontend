@@ -26,6 +26,38 @@ export default class ReportingAPI extends APIClient {
         })
     }
 
+    createSemester(semester) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `/reporting/semesters/create`, semester).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
+    updateSemester(semesterId, semester) {
+        return new Promise((resolve, reject) => {
+            this.perform("put", `/reporting/semesters/${semesterId}`, semester).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
+    createReportType(reportType) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `/reporting/types/create`, reportType).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
+    updateReportType(reportId, reportType) {
+        return new Promise((resolve, reject) => {
+            this.perform("put", `/reporting/types/${reportId}`, reportType).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
     getReportTypes() {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/types/`).then(reports => {
