@@ -3,9 +3,9 @@ import {Col, Row, Button} from "reactstrap";
 import SelectReportCard from "../../components/Reporting/SelectReportCard";
 import ReportEntiresCard from "../../components/Reporting/ReportEntriesCard";
 import ReportTableCard from "../../components/Reporting/ReportTableCard";
-import ReportingAdminOverviewView from "../../components/Reporting/ReportingAdminOverviewView";
+import ReportAdminOverview from "../../components/Reporting/ReportAdminOverview";
 import { Route, Switch, Redirect, Link } from "react-router-dom";
-import ReportingIndividualView from "../../components/Reporting/ReportingIndividualView";
+import ReportIndividualView from "../../components/Reporting/ReportIndividualView";
 
 
 class Reporting extends React.Component {
@@ -46,7 +46,7 @@ class Reporting extends React.Component {
                                     </Link>
                                 </div>
                             </div>
-                            <ReportingAdminOverviewView />
+                            <ReportAdminOverview />
                         </Route>
                         <Route>
                             <div className={"clearfix"}>
@@ -61,7 +61,7 @@ class Reporting extends React.Component {
                                     </Link>
                                 </div>
                             </div>
-                            <ReportingIndividualView />
+                            <ReportIndividualView />
                         </Route>
                     </Switch>
                 </div>

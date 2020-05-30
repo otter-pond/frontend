@@ -6,7 +6,7 @@ import ReportTableCard from "../../components/Reporting/ReportTableCard";
 import {  Link } from "react-router-dom";
 
 
-class ReportingIndividualView extends React.Component {
+class ReportIndividualView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -49,4 +49,4 @@ class ReportingIndividualView extends React.Component {
     }
 }
 
-export default ReportingIndividualView;
+export default ReportIndividualView;

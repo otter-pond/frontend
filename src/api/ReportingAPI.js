@@ -58,6 +58,14 @@ export default class ReportingAPI extends APIClient {
         })
     }
 
+    createReport(report) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", "/reporting/create", report).then(result => {
+                resolve(result);
+            })
+        })
+    }
+
     getReportTypes() {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/types/`).then(reports => {

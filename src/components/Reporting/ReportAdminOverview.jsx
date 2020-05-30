@@ -19,7 +19,7 @@ import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
-class ReportingAdminOverviewView extends Component {
+class ReportAdminOverview extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,7 +32,9 @@ class ReportingAdminOverviewView extends Component {
             editingSemester: null,
             successSemester: false,
             editingType: null,
-            successType: false
+            successType: false,
+            editingReport: null,
+            successReport: false
         };
 
         this.reportingApi = new ReportingAPI();
@@ -90,6 +92,18 @@ class ReportingAdminOverviewView extends Component {
         })
     }
 
+    createNewReport() {
+        this.setState({
+            editingReport: {
+                "name": "",
+                "description": "",
+                "report_type_id": "",
+                "semester_id": "",
+                "applicable_roles": []
+            }
+        })
+    }
+
     saveSemester() {
         var promise = null;
         if (this.state.editingSemester.hasOwnProperty("semester_id")) {
@@ -136,11 +150,32 @@ class ReportingAdminOverviewView extends Component {
         })
     }
 
+    saveReport() {
+        let report = this.state.editingReport;
+        this.reportingApi.createReport(report).then(report => {
+            this.setState({
+                editingReport: null,
+                successReport: true,
+                loading: true
+            }, () => {
+                this.loadAll();
+            })
+        })
+    }
+
     onPermissionUpdate(e) {
         let type = this.state.editingType
         type["management_permissions"] = e.map(a => a["name"])
         this.setState({
             editingType: type
+        })
+    }
+
+    onApplicableRolesUpdate(e) {
+        let report = this.state.editingReport;
+        report["applicable_roles"] = e.map(a => a["role_id"]);
+        this.setState({
+            editingReport: report
         })
     }
 
@@ -152,6 +187,7 @@ class ReportingAdminOverviewView extends Component {
                         <Card>
                             <CardHeader>
                                 <CardTitle tag="h2" className="float-left">Reports I Can Manage</CardTitle>
+                                {this.manageReporting() && <Button className="float-right" onClick={() => {this.createNewReport()}}>Create New</Button>}
                             </CardHeader>
                             <CardBody>
                                 <LoadingOverlay
@@ -245,6 +281,84 @@ class ReportingAdminOverviewView extends Component {
                         })}
                         </tbody>
                     </Table>
+                    <Modal isOpen={this.state.editingReport !== null} backdrop={true}>
+                        <ModalHeader tag={"h2"}>Edit Report</ModalHeader>
+                        <ModalBody>
+                            {this.state.editingReport !== null &&
+                            <Form>
+                                <FormGroup>
+                                    <Label>Name</Label>
+                                    <Input type={"text"}
+                                           value={this.state.editingReport["name"]}
+                                           required={true}
+                                           onChange={(e) => {this.setState({editingReport: {...this.state.editingReport, "name": e.target.value}})}}/>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label>Description</Label>
+                                    <Input type={"text"}
+                                           value={this.state.editingReport["description"]}
+                                           required={true}
+                                           onChange={(e) => {this.setState({editingReport: {...this.state.editingReport, "description": e.target.value}})}}/>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label>Report Type</Label>
+                                    <Input type={"select"}
+                                           value={this.state.editingReport["report_type_id"]}
+                                           onChange={(e) => {this.setState({
+                                               editingReport: {
+                                                   ...this.state.editingReport,
+                                                   "report_type_id": e.target.value,
+                                               }
+                                           })}}>
+                                        <option value={""}>Select Report Type</option>
+                                        {this.state.types.map((type, key) => {
+                                            return <option value={type["report_type_id"]} key={key}>{type["name"]}</option>
+                                        })}
+                                    </Input>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label>Semester</Label>
+                                    <Input type={"select"}
+                                           value={this.state.editingReport["semester_id"]}
+                                           onChange={(e) => {this.setState({
+                                               editingReport: {
+                                                   ...this.state.editingReport,
+                                                   "semester_id": e.target.value,
+                                               }
+                                           })}}>
+                                        <option value={""}>Select Semester</option>
+                                        {this.state.semesters.map((type, key) => {
+                                            return <option value={type["semester_id"]} key={key}>{type["description"]}</option>
+                                        })}
+                                    </Input>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label>Applicable Roles</Label>
+                                    <Multiselect
+                                        options={this.state.roles}
+                                        displayValue={"role_description"}
+                                        selectedValues={this.state.editingReport["applicable_roles"].map(a => {return this.state.roles.filter(role => {return role["role_id"] === a})[0]})}
+                                        onSelect={(e) => this.onApplicableRolesUpdate(e)}
+                                        onRemove={(e) => this.onApplicableRolesUpdate(e)}
+                                    />
+                                </FormGroup>
+                            </Form>
+                            }
+                        </ModalBody>
+                        <ModalFooter>
+                            <div className="clearfix" style={{width: "100%"}}>
+                                <Button color="secondary"
+                                        className="float-right"
+                                        onClick={() => {this.saveReport()}}
+                                        style={{marginLeft: "10px"}}
+                                >Save Report</Button>
+                                <Button color="secondary"
+                                        className="float-right"
+                                        onClick={() => {this.setState({editingReport: null})}}
+                                >Cancel</Button>
+                            </div>
+                        </ModalFooter>
+                    </Modal>
                 </div>
             </>
         )
@@ -569,4 +683,4 @@ class ReportingAdminOverviewView extends Component {
     }
 }
 
-export default ReportingAdminOverviewView;
+export default ReportAdminOverview;
