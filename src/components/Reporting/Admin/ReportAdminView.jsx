@@ -19,6 +19,7 @@ import {Multiselect} from "multiselect-react-dropdown";
 import Cookies from "universal-cookie";
 import {withRouter} from "react-router-dom";
 import UsersAPI from "../../../api/UsersAPI";
+import ReportTotals from "./ReportTotals";
 
 const cookies = new Cookies();
 
@@ -247,7 +248,9 @@ class ReportAdminView extends Component {
                     <Row>
                         <Col sm={12}>
                             {this.state.viewType === "totals" ?
-                                <p>Totals</p>
+                                <ReportTotals users={this.state.users}
+                                              reportType={this.state.reportType}
+                                              entries={this.state.entries} />
                             : this.state.viewType === "individual" ?
                                 <p>Individual</p>
                             : this.state.viewType === "byDescription" ?
