@@ -21,6 +21,9 @@ export default function ReportTotals(props) {
     }, {});
     entries.forEach(entry => {
         let userEmail = entry["user_email"]
+        if (!usersTotalMap.hasOwnProperty(userEmail)) {
+            return;
+        }
         let value = entry["value"]
         if (valueType === "optionselect") {
             usersTotalMap[userEmail].value[value] = 1

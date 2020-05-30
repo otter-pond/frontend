@@ -93,6 +93,12 @@ class ReportAdminView extends Component {
         })
     }
 
+    getApplicableUsers() {
+        return this.state.users.filter(user => {
+            return this.state.report["applicable_roles"].includes(user["role_id"])
+        })
+    }
+
     onApplicableRolesUpdate(e) {
         let report = this.state.editingReport;
         report["applicable_roles"] = e.map(a => a["role_id"]);
@@ -248,9 +254,9 @@ class ReportAdminView extends Component {
                     <Row>
                         <Col sm={12}>
                             {this.state.viewType === "totals" ?
-                                <ReportTotals users={this.state.users}
-                                              reportType={this.state.reportType}
-                                              entries={this.state.entries} />
+                                <ReportTotals users={this.getApplicableUsers()}
+                                              reportType={this.getApplicableUsers()}
+                                              entries={this.getApplicableUsers()} />
                             : this.state.viewType === "individual" ?
                                 <p>Individual</p>
                             : this.state.viewType === "byDescription" ?
