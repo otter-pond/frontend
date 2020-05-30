@@ -26,6 +26,14 @@ export default class ReportingAPI extends APIClient {
         })
     }
 
+    getSemesterById(semesterId) {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/reporting/semesters/${semesterId}`).then(report => {
+                resolve(report)
+            })
+        })
+    }
+
     createSemester(semester) {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/semesters/create`, semester).then(result => {
@@ -77,6 +85,14 @@ export default class ReportingAPI extends APIClient {
     getReportById(reportId) {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/${reportId}`).then(report => {
+                resolve(report)
+            })
+        })
+    }
+
+    updateReport(reportId, report) {
+        return new Promise((resolve, reject) => {
+            this.perform("put", `/reporting/${reportId}`, report).then(report => {
                 resolve(report)
             })
         })

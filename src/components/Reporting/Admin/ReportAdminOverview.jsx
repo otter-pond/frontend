@@ -10,10 +10,10 @@ import {
     Table, ModalHeader, ModalBody, ModalFooter, Button, Modal,
     Form, FormGroup, Input, Label, Alert
 } from "reactstrap"
-import ReportingAPI from "../../api/ReportingAPI";
+import ReportingAPI from "../../../api/ReportingAPI";
 import LoadingOverlay from "react-loading-overlay";
-import RolesAPI from "../../api/RolesAPI";
-import PositionsAPI from "../../api/PositionsAPI";
+import RolesAPI from "../../../api/RolesAPI";
+import PositionsAPI from "../../../api/PositionsAPI";
 import {Multiselect} from "multiselect-react-dropdown";
 import Cookies from "universal-cookie";
 
@@ -252,8 +252,13 @@ class ReportAdminOverview extends Component {
     renderReportsToManage() {
         return (
             <>
-                <p>The following are reports that you have permissions to manage: </p>
+                <Alert isOpen={this.state.successReport}
+                       toggle={() => {this.setState({successReport: false})}}
+                       color="success"
+                       fade={true}>Report successfully saved</Alert>
+                <p>The following are reports that you have permissions to manage. Click on a row to view the report. </p>
                 <div style={{maxHeight: "300px", overflowY: "scroll"}}>
+
                     <Table striped={true} hover>
                         <thead>
                             <tr>
@@ -271,7 +276,7 @@ class ReportAdminOverview extends Component {
                                 .map(item => {return item["role_description"]}).join(", ")
                             console.log(roles)
                             return (
-                                <tr key={index}>
+                                <tr key={index} onClick={() => {window.location = "/#/main/reporting/manage/" + report["report_id"]}} style={{cursor: "pointer"}}>
                                     <td>{report["name"]}</td>
                                     <td>{semester["description"]}</td>
                                     <td>{type["name"]}</td>
@@ -377,6 +382,7 @@ class ReportAdminOverview extends Component {
                        toggle={() => {this.setState({successType: false})}}
                        color="success"
                        fade={true}>Report type successfully saved</Alert>
+                {this.manageReporting() && <p>Click on a row to edit report type</p>}
                 <Table striped={true} hover>
                     <thead>
                         <tr>
@@ -615,6 +621,7 @@ class ReportAdminOverview extends Component {
                        toggle={() => {this.setState({successSemester: false})}}
                        color="success"
                        fade={true}>Semester successfully saved</Alert>
+                {this.manageReporting() && <p>Click on a row to edit semester</p>}
                 <Table striped={true} hover>
                     <thead>
                     <tr>
