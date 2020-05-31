@@ -184,4 +184,20 @@ export default class ReportingAPI extends APIClient {
             })
         })
     }
+
+    createReportForm(report_id, form) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `/reporting/${report_id}/form`, form).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
+    deleteReportForm(report_id) {
+        return new Promise((resolve, reject) => {
+            this.perform("delete", `/reporting/${report_id}/form`).then(result => {
+                resolve(result)
+            })
+        })
+    }
 }

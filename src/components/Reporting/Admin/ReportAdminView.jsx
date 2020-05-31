@@ -40,7 +40,10 @@ class ReportAdminView extends Component {
             editingReport: null,
             reportSuccess: false,
             viewType: null,
-            deleteSuccess: false
+            deleteSuccess: false,
+            reportForm: null,
+            editingForm: null,
+            formSuccess: false
         };
 
 
@@ -55,7 +58,8 @@ class ReportAdminView extends Component {
                             this.reportingApi.getSemesterById(report["semester_id"]),
                             this.rolesApi.getRoles(),
                             this.reportingApi.getReportEntries(this.state.report_id),
-                            this.usersApi.getUsers()];
+                            this.usersApi.getUsers(),
+                            this.reportingApi.getReportFormById(this.state.report_id)];
 
             Promise.all(promises).then(results => {
                 this.setState({
@@ -65,6 +69,7 @@ class ReportAdminView extends Component {
                     roles: results[2],
                     entries: results[3],
                     users: results[4],
+                    reportForm: results[5].valueQuestion === null ? null : results[5],
                     loading: false
                 })
             })
@@ -128,6 +133,61 @@ class ReportAdminView extends Component {
         }
     }
 
+    saveForm() {
+        let form = this.state.editingForm
+        this.setState({
+            loading: true
+        }, () => {
+            this.reportingApi.createReportForm(this.state.report_id, form).then(result => {
+                this.reportingApi.getReportFormById(this.state.report_id).then(form => {
+                    this.setState({
+                        loading: false,
+                        editingForm: null,
+                        formSuccess: true,
+                        reportForm: form
+                    })
+                })
+            })
+        })
+    }
+
+    deleteForm() {
+        this.setState({
+            loading: true
+        }, () => {
+            this.reportingApi.deleteReportForm(this.state.report_id).then(result => {
+                this.reportingApi.getReportFormById(this.state.report_id).then(form => {
+                    this.setState({
+                        loading: false,
+                        editingForm: null,
+                        formSuccess: true,
+                        reportForm: form
+                    })
+                })
+            })
+        })
+    }
+
+    editForm() {
+        if (this.state.reportForm === null) {
+            this.setState({
+                editingForm: {
+                    valueQuestion: "",
+                    descriptionQuestions: [
+                        {
+                            "question": "",
+                            "answerType": "text"
+                        }
+                    ]
+                }
+            })
+        } else {
+            this.setState({
+                editingForm: this.state.reportForm
+            })
+        }
+    }
+
     render() {
         return (
             <>
@@ -186,6 +246,19 @@ class ReportAdminView extends Component {
                                                            toggle={() => {this.setState({reportSuccess: false})}}
                                                            color="success"
                                                            fade={true}>Report successfully saved</Alert>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col sm={12} className={"text-center"}>
+                                                    <p>
+                                                        <span style={{fontWeight: "bold"}}>Self Reporting Enabled: </span>
+                                                        {this.state.reportForm === null ? "No": "Yes"}
+                                                        <Button size={"sm"} style={{marginLeft: "10px"}} onClick={() => {this.editForm()}}>{this.state.reportForm === null ? "Create Form" : "Edit Form"}</Button>
+                                                    </p>
+                                                    <Alert isOpen={this.state.formSuccess}
+                                                           toggle={() => {this.setState({formSuccess: false})}}
+                                                           color="success"
+                                                           fade={true}>Report form successfully saved</Alert>
                                                 </Col>
                                             </Row>
                                             <Row style={{marginTop: "20px"}}>
@@ -265,6 +338,115 @@ class ReportAdminView extends Component {
                                                     className="float-right"
                                                     onClick={() => {this.setState({editingReport: null})}}
                                             >Cancel</Button>
+                                        </div>
+                                    </ModalFooter>
+                                </Modal>
+                                <Modal isOpen={this.state.editingForm !== null} backdrop={true}>
+                                    <ModalHeader tag={"h2"}>Edit Self Submit Form</ModalHeader>
+                                    <ModalBody>
+                                        {this.state.editingForm !== null &&
+                                        <Form>
+                                            <FormGroup>
+                                                <Label>Primary Entry Question</Label>
+                                                <Input type={"text"}
+                                                       value={this.state.editingForm["valueQuestion"]}
+                                                       required={true}
+                                                       onChange={(e) => {this.setState({editingForm: {...this.state.editingForm, "valueQuestion": e.target.value}})}}/>
+                                            </FormGroup>
+                                            {this.state.editingForm["descriptionQuestions"].map((question, key) => {
+                                                return <>
+                                                    <FormGroup>
+                                                        <Label>Description Question #{key + 1} </Label>
+                                                        <Input type={"text"}
+                                                               value={question["question"]}
+                                                               required={true}
+                                                               onChange={(e) => {this.setState({
+                                                                   editingForm: {
+                                                                       ...this.state.editingForm,
+                                                                       "descriptionQuestions": [
+                                                                           ...this.state.editingForm.descriptionQuestions.slice(0, key),
+                                                                           {
+                                                                               question: e.target.value,
+                                                                               answerType: this.state.editingForm.descriptionQuestions[key].answerType
+                                                                           },
+                                                                           ...this.state.editingForm.descriptionQuestions.slice(key + 1, this.state.editingForm.descriptionQuestions.length)
+                                                                       ]
+                                                                   }
+                                                               })}} />
+                                                    </FormGroup>
+                                                    <FormGroup>
+                                                        <Label>Description Question #{key + 1} Type</Label>
+                                                        <Input type={"select"}
+                                                               value={question["answerType"]}
+                                                               required={true}
+                                                               onChange={(e) => {this.setState({
+                                                                   editingForm: {
+                                                                       ...this.state.editingForm,
+                                                                       "descriptionQuestions": [
+                                                                           ...this.state.editingForm.descriptionQuestions.slice(0, key),
+                                                                           {
+                                                                               question: this.state.editingForm.descriptionQuestions[key].question,
+                                                                               answerType: e.target.value
+                                                                           },
+                                                                           ...this.state.editingForm.descriptionQuestions.slice(key + 1, this.state.editingForm.descriptionQuestions.length)
+                                                                       ]
+                                                                   }
+                                                               })}}>
+                                                            <option value={"text"}>Text</option>
+                                                            <option value={"number"}>Number</option>
+                                                        </Input>
+                                                    </FormGroup>
+                                                </>
+                                            })}
+
+                                        </Form>
+                                        }
+                                        <div style={{width: "100%"}} className={"text-center"}>
+                                            <Button color={"danger"}
+                                                    size={"sm"}
+                                                    onClick={() => {
+                                                        this.setState({
+                                                            editingForm: {
+                                                                ...this.state.editingForm,
+                                                                "descriptionQuestions": this.state.editingForm.descriptionQuestions.slice(0, this.state.editingForm.descriptionQuestions.length - 1)
+                                                            }
+                                                        })
+                                                    }}>Delete Description Question</Button>
+                                            <Button color={"secondary"}
+                                                    size={"sm"}
+                                                    onClick={() => {
+                                                        this.setState({
+                                                            editingForm: {
+                                                                ...this.state.editingForm,
+                                                                "descriptionQuestions": [
+                                                                    ...this.state.editingForm.descriptionQuestions,
+                                                                    {
+                                                                        "question": "",
+                                                                        "answerType": "text"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        })
+                                                    }}>Add Description Question</Button>
+                                        </div>
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <div className="clearfix" style={{width: "100%"}}>
+                                            <Button color="secondary"
+                                                    className="float-right"
+                                                    onClick={() => {this.saveForm()}}
+                                                    style={{marginLeft: "10px"}}
+                                            >Save Form</Button>
+                                            <Button color="secondary"
+                                                    className="float-right"
+                                                    onClick={() => {this.setState({editingForm: null})}}
+                                                    style={{marginLeft: "10px"}}
+                                            >Cancel</Button>
+                                            <Button color="danger"
+                                                    className="float-right"
+                                                    onClick={() => {this.deleteForm()}}
+                                                    style={{marginLeft: "10px"}}
+                                            >Delete Form</Button>
                                         </div>
                                     </ModalFooter>
                                 </Modal>
