@@ -1,6 +1,7 @@
 import React from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
+import Cookies from "universal-cookie";
 
 // reactstrap components
 import {
@@ -68,6 +69,18 @@ class AdminNavbar extends React.Component {
       modalSearch: !this.state.modalSearch
     });
   };
+  // destroys cookies and redirects user to login
+  userLogout = () => {
+    const cookies = new Cookies();
+    // destroy cookies
+    cookies.remove("role", { path: '/' });
+    cookies.remove("permissions", { path: '/' });
+    cookies.remove("accessToken", { path: '/' });
+    cookies.remove("user_email", { path: '/' });
+    // redirect user
+    const { history } = this.props;
+    history.replace("/");
+  };
   render() {
     return (
       <>
@@ -121,9 +134,14 @@ class AdminNavbar extends React.Component {
                     onClick={this.toggleModalSearch}
                   >
                   </Button>
+                  <Button
+                    color="link"
+                    id="logout-button"
+                    onClick={this.userLogout}
+                  >
+                    Logout
+                  </Button>
                 </InputGroup>
-
-
                 <li className="separator d-lg-none" />
               </Nav>
             </Collapse>
