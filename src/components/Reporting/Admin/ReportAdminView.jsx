@@ -21,6 +21,7 @@ import {withRouter} from "react-router-dom";
 import UsersAPI from "../../../api/UsersAPI";
 import ReportTotals from "./ReportTotals";
 import IndividualView from "./IndividualView";
+import DescriptionView from "./DescriptionView";
 
 const cookies = new Cookies();
 
@@ -130,6 +131,28 @@ class ReportAdminView extends Component {
                 })
             })
 
+        }
+    }
+
+    deleteEntriesWithDescription(description) {
+        if (window.confirm("Are you sure? This cannot be undone")) {
+            this.setState({
+                loading: true
+            }, () => {
+                let promises = this.state.entries.filter(a => {return a["description"] === description}).reduce((agg, entry) => {
+                    agg.push(this.reportingApi.deleteReportEntry(this.state.report_id, entry["user_email"], entry["entry_id"]))
+                    return agg
+                }, [])
+                Promise.all(promises).then(() => {
+                    this.reportingApi.getReportEntries(this.state.report_id).then(entries => {
+                        this.setState({
+                            entries: entries,
+                            loading: false,
+                            deleteSuccess: true
+                        })
+                    })
+                })
+            })
         }
     }
 
@@ -470,7 +493,11 @@ class ReportAdminView extends Component {
                                                 entries={this.state.entries}
                                                 deleteReportEntry={(email, id) => {this.deleteReportEntry(email, id)}}/>
                             : this.state.viewType === "byDescription" ?
-                                <p>By Description</p>
+                                <DescriptionView users={this.getApplicableUsers()}
+                                              reportType={this.state.reportType}
+                                              entries={this.state.entries}
+                                              deleteReportEntry={(email, id) => {this.deleteReportEntry(email, id)}}
+                                              deleteEntriesWithDescription={(description) => {this.deleteEntriesWithDescription(description)}}/>
                             : this.state.viewType === "byStatus" ?
                                 <p>By Status</p>
                             : null}

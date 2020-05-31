@@ -2,46 +2,8 @@ import React, {useState} from "react";
 import {Card, CardTitle, CardBody, CardHeader, Table} from "reactstrap";
 import Select from "react-select";
 import {FaTrashAlt} from "react-icons/fa";
+import {formatDate, formatDescription, formatValue, summarizeEntries} from "../../../utils/ReportDisplayUtils";
 
-const formatDate = (date) => {
-    try{
-        return new Date(date).toLocaleDateString();
-    } catch(e) {
-        console.log("Unable to format date")
-        return "Invalid Date"
-    }
-}
-
-const formatValue = (valueType, value) => {
-    if (valueType != null) {
-        if (valueType === "financial") {
-            let fixed = value.toFixed(2);
-            if (value < 0) {
-                return "-$" + Math.abs(fixed)
-            }
-            return "$" + fixed;
-        }
-    }
-    return value;
-}
-
-const formatDescription = (description) => {
-    let formattedDescriptions = []
-    let splitDescriptions = description.split("\n");
-    for (let index in splitDescriptions) {
-        let descriptionString = splitDescriptions[index];
-        let splitDescription = descriptionString.split("\t");
-        if (splitDescription.length > 1) {
-            let temp = "<span style='font-weight: bold'>" + splitDescription[0] + " </span> " + splitDescription[1];
-            formattedDescriptions[index] = temp
-        } else {
-            formattedDescriptions[index] =  splitDescription[0];
-        }
-    }
-
-    let descriptionHtml = formattedDescriptions.join("<br />");
-    return <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-}
 const IndividualView = (props) => {
     const [selectedUser, setSelectedUser] = useState(null);
 
@@ -68,36 +30,7 @@ const IndividualView = (props) => {
         individualEntries = entries.filter(entry => {
             return entry["user_email"] === selectedUser;
         });
-        if (valueType === "optionselect") {
-            var summaryObj = {}
-            individualEntries.forEach(entry => {
-                if (summaryObj.hasOwnProperty(entry["value"])) {
-                    summaryObj[entry["value"]] = summaryObj[entry["value"]] + 1
-                } else {
-                    summaryObj[entry["value"]] = 1;
-                }
-            })
-            summary = <span>
-                {Object.keys(summaryObj).map((name, key) => {
-                    return <span key={key}>{name}: {summaryObj[name]}<br /></span>
-                })}
-            </span>
-        } else {
-            var total = 0;
-            individualEntries.forEach(entry => {
-                total += parseFloat(entry["value"]);
-            });
-            if (valueType === "financial") {
-                total = total.toFixed(2);
-                if (total > 0) {
-                    summary = <span>Total: ${total}</span>
-                } else {
-                    summary = <span>Total: -${Math.abs(total)}</span>
-                }
-            } else {
-                summary = <span>Total: {total}</span>
-            }
-        }
+        summary = summarizeEntries(individualEntries, valueType)
     }
 
     return <Card>
@@ -128,7 +61,6 @@ const IndividualView = (props) => {
                         <th>Description</th>
                         <th>Status</th>
                         <th>Value</th>
-                        <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -137,11 +69,9 @@ const IndividualView = (props) => {
                             <td>{formatDate(entry["timestamp"])}</td>
                             <td>{formatDescription(entry["description"])}</td>
                             <td>{entry["status"]}</td>
-                            <td>{formatValue(valueType, entry["value"])}</td>
-                            <td style={{width: "50px"}}
-                                className={"text-right"}>
-                                <FaTrashAlt style={{color: "red", cursor: "pointer"}}
-                                            onClick={() => {props.deleteReportEntry(entry["user_email"], entry["entry_id"])}}/>
+                            <td>{formatValue(valueType, entry["value"])}
+                                <FaTrashAlt style={{color: "red", cursor: "pointer", marginLeft: "10px", float: "right"}}
+                                        onClick={() => {props.deleteReportEntry(entry["user_email"], entry["entry_id"])}}/>
                             </td>
                         </tr>
                     })}
@@ -150,7 +80,6 @@ const IndividualView = (props) => {
                         <td></td>
                         <td></td>
                         <td style={{fontWeight: "bold"}}>{summary}</td>
-                        <td></td>
                     </tr>
                     </tbody>
                 </Table>
