@@ -33,7 +33,7 @@
     "universal-cookie": "^4.0.3"
   },
   "scripts": {
-    "start": "REACT_APP_STAGE=prod NODE_PATH=./src react-scripts start",
+    "start": "REACT_APP_STAGE=local NODE_PATH=./src react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
