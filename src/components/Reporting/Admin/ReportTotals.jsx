@@ -2,7 +2,7 @@ import React from "react";
 import {Card, CardTitle, CardBody, CardHeader, Table} from "reactstrap";
 
 
-export default function ReportTotals(props) {
+const ReportTotals = (props) => {
     const users = props.users;
     const entries = props.entries;
     const reportType = props.reportType;
@@ -78,3 +78,5 @@ export default function ReportTotals(props) {
         </CardBody>
     </Card>
 }
+
+export default ReportTotals

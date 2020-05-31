@@ -20,6 +20,7 @@ import Cookies from "universal-cookie";
 import {withRouter} from "react-router-dom";
 import UsersAPI from "../../../api/UsersAPI";
 import ReportTotals from "./ReportTotals";
+import IndividualView from "./IndividualView";
 
 const cookies = new Cookies();
 
@@ -255,10 +256,12 @@ class ReportAdminView extends Component {
                         <Col sm={12}>
                             {this.state.viewType === "totals" ?
                                 <ReportTotals users={this.getApplicableUsers()}
-                                              reportType={this.getApplicableUsers()}
-                                              entries={this.getApplicableUsers()} />
+                                              reportType={this.state.reportType}
+                                              entries={this.state.entries} />
                             : this.state.viewType === "individual" ?
-                                <p>Individual</p>
+                                <IndividualView users={this.getApplicableUsers()}
+                                                reportType={this.state.reportType}
+                                                entries={this.state.entries} />
                             : this.state.viewType === "byDescription" ?
                                 <p>By Description</p>
                             : this.state.viewType === "byStatus" ?
