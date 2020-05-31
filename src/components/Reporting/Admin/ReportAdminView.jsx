@@ -40,6 +40,7 @@ class ReportAdminView extends Component {
             editingReport: null,
             reportSuccess: false,
             viewType: null,
+            deleteSuccess: false
         };
 
 
@@ -106,6 +107,25 @@ class ReportAdminView extends Component {
         this.setState({
             editingReport: report
         })
+    }
+
+    deleteReportEntry(userEmail, entryId) {
+        if (window.confirm("Are you sure? This cannot be undone")) {
+            this.setState({
+                loading: true
+            }, () => {
+                this.reportingApi.deleteReportEntry(this.state.report_id, userEmail, entryId).then(() => {
+                    this.reportingApi.getReportEntries(this.state.report_id).then(entries => {
+                        this.setState({
+                            entries: entries,
+                            loading: false,
+                            deleteSuccess: true
+                        })
+                    })
+                })
+            })
+
+        }
     }
 
     render() {
@@ -254,6 +274,10 @@ class ReportAdminView extends Component {
                     </Row>
                     <Row>
                         <Col sm={12}>
+                            <Alert isOpen={this.state.deleteSuccess}
+                                   toggle={() => {this.setState({deleteSuccess: false})}}
+                                   color="success"
+                                   fade={true}>Report entry successfully deleted</Alert>
                             {this.state.viewType === "totals" ?
                                 <ReportTotals users={this.getApplicableUsers()}
                                               reportType={this.state.reportType}
@@ -261,7 +285,8 @@ class ReportAdminView extends Component {
                             : this.state.viewType === "individual" ?
                                 <IndividualView users={this.getApplicableUsers()}
                                                 reportType={this.state.reportType}
-                                                entries={this.state.entries} />
+                                                entries={this.state.entries}
+                                                deleteReportEntry={(email, id) => {this.deleteReportEntry(email, id)}}/>
                             : this.state.viewType === "byDescription" ?
                                 <p>By Description</p>
                             : this.state.viewType === "byStatus" ?

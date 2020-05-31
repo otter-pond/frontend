@@ -135,6 +135,14 @@ export default class ReportingAPI extends APIClient {
         })
     }
 
+    deleteReportEntry(report_id, user_email, entry_id) {
+        return new Promise((resolve, reject) => {
+            this.perform("delete", `/reporting/${report_id}/entries/${user_email}/${entry_id}`).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
     addDescription(report_id, description) {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/${report_id}/presetDescription`, {'description': description}).then(result => {

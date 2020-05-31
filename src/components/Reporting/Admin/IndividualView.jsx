@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {Card, CardTitle, CardBody, CardHeader, Table} from "reactstrap";
 import Select from "react-select";
+import {FaTrashAlt} from "react-icons/fa";
 
 const formatDate = (date) => {
     try{
@@ -127,6 +128,7 @@ const IndividualView = (props) => {
                         <th>Description</th>
                         <th>Status</th>
                         <th>Value</th>
+                        <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -136,6 +138,11 @@ const IndividualView = (props) => {
                             <td>{formatDescription(entry["description"])}</td>
                             <td>{entry["status"]}</td>
                             <td>{formatValue(valueType, entry["value"])}</td>
+                            <td style={{width: "50px"}}
+                                className={"text-right"}>
+                                <FaTrashAlt style={{color: "red", cursor: "pointer"}}
+                                            onClick={() => {props.deleteReportEntry(entry["user_email"], entry["entry_id"])}}/>
+                            </td>
                         </tr>
                     })}
                     <tr>
@@ -143,6 +150,7 @@ const IndividualView = (props) => {
                         <td></td>
                         <td></td>
                         <td style={{fontWeight: "bold"}}>{summary}</td>
+                        <td></td>
                     </tr>
                     </tbody>
                 </Table>
