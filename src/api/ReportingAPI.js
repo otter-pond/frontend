@@ -143,6 +143,14 @@ export default class ReportingAPI extends APIClient {
         })
     }
 
+    changeEntryStatus(report_id, user_email, entry_id, new_status) {
+        return new Promise((resolve, reject) => {
+            this.perform("put", `/reporting/${report_id}/entries/${user_email}/${entry_id}/status`, {"new_status": new_status}).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
     addDescription(report_id, description) {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/${report_id}/presetDescription`, {'description': description}).then(result => {

@@ -22,6 +22,7 @@ import UsersAPI from "../../../api/UsersAPI";
 import ReportTotals from "./ReportTotals";
 import IndividualView from "./IndividualView";
 import DescriptionView from "./DescriptionView";
+import StatusView from "./StatusView";
 
 const cookies = new Cookies();
 
@@ -44,7 +45,8 @@ class ReportAdminView extends Component {
             deleteSuccess: false,
             reportForm: null,
             editingForm: null,
-            formSuccess: false
+            formSuccess: false,
+            statusUpdateSuccess: false
         };
 
 
@@ -154,6 +156,44 @@ class ReportAdminView extends Component {
                 })
             })
         }
+    }
+
+    changeEntryStatus(entryId, newStatus) {
+        const entry = this.state.entries.filter(a => {return a["entry_id"] === entryId})[0];
+        this.setState({
+            loading: true
+        }, () => {
+            this.reportingApi.changeEntryStatus(this.state.report_id, entry["user_email"], entryId, newStatus).then(() => {
+                this.reportingApi.getReportEntries(this.state.report_id).then(entries => {
+                    this.setState({
+                        entries: entries,
+                        loading: false,
+                        statusUpdateSuccess: true
+                    })
+                })
+            })
+        })
+    }
+
+    changeEntryStatusBulk(entryIds, newStatus) {
+        this.setState({
+            loading: true
+        }, () => {
+            let promises = entryIds.reduce((agg, entryId) => {
+                const entry = this.state.entries.filter(a => {return a["entry_id"] === entryId})[0];
+                agg.push(this.reportingApi.changeEntryStatus(this.state.report_id, entry["user_email"], entryId, newStatus))
+                return agg
+            }, []);
+            Promise.all(promises).then(() => {
+                this.reportingApi.getReportEntries(this.state.report_id).then(entries => {
+                    this.setState({
+                        entries: entries,
+                        loading: false,
+                        statusUpdateSuccess: true
+                    })
+                })
+            })
+        })
     }
 
     saveForm() {
@@ -483,6 +523,10 @@ class ReportAdminView extends Component {
                                    toggle={() => {this.setState({deleteSuccess: false})}}
                                    color="success"
                                    fade={true}>Report entry successfully deleted</Alert>
+                            <Alert isOpen={this.state.statusUpdateSuccess}
+                                   toggle={() => {this.setState({statusUpdateSuccess: false})}}
+                                   color="success"
+                                   fade={true}>Report entry status successfully updated</Alert>
                             {this.state.viewType === "totals" ?
                                 <ReportTotals users={this.getApplicableUsers()}
                                               reportType={this.state.reportType}
@@ -499,7 +543,11 @@ class ReportAdminView extends Component {
                                               deleteReportEntry={(email, id) => {this.deleteReportEntry(email, id)}}
                                               deleteEntriesWithDescription={(description) => {this.deleteEntriesWithDescription(description)}}/>
                             : this.state.viewType === "byStatus" ?
-                                <p>By Status</p>
+                                <StatusView users={this.getApplicableUsers()}
+                                            reportType={this.state.reportType}
+                                            entries={this.state.entries}
+                                            changeEntryStatus={(entryId, newStatus) => {this.changeEntryStatus(entryId, newStatus)}}
+                                            changeEntryStatusBulk={(entryIds, newStatus) => {this.changeEntryStatusBulk(entryIds, newStatus)}}/>
                             : null}
                         </Col>
                     </Row>
