@@ -1,5 +1,6 @@
 import React from "react";
 import {Card, CardTitle, CardBody, CardHeader, Table} from "reactstrap";
+import {formatValue} from "../../../utils/ReportDisplayUtils";
 
 
 const ReportTotals = (props) => {
@@ -26,9 +27,9 @@ const ReportTotals = (props) => {
         }
         let value = entry["value"]
         if (valueType === "optionselect") {
-            usersTotalMap[userEmail].value[value] = 1
+            usersTotalMap[userEmail].value[value] = usersTotalMap[userEmail].value[value] + 1
         } else {
-            usersTotalMap[userEmail].value = usersTotalMap[userEmail].value + 1
+            usersTotalMap[userEmail].value = usersTotalMap[userEmail].value + parseFloat(value)
         }
     });
     const totals = Object.keys(usersTotalMap).reduce((agg, userEmail) => {
@@ -68,7 +69,10 @@ const ReportTotals = (props) => {
                 <tbody>
                     {totals.map((row, key) => {
                         return <tr key={key}>
-                            {Object.keys(row).map((name, key) => {
+                            {Object.keys(row).map((name, index) => {
+                                if (index > 0) {
+                                    return <td>{formatValue(valueType,row[name])}</td>
+                                }
                                 return <td>{row[name]}</td>
                             })}
                         </tr>

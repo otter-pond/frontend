@@ -31,6 +31,8 @@ const DescriptionView = (props) => {
         let user = users.filter(a => {return a["user_email"] === entry["user_email"]})[0];
         if (user !== undefined) {
             entry["user_name"] = user["last_name"] + ", " + user["first_name"]
+        } else {
+            entry["user_name"] = entry["user_email"]
         }
     });
 

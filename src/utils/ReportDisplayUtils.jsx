@@ -12,8 +12,8 @@ export const formatDate = (date) => {
 export const formatValue = (valueType, value) => {
     if (valueType != null) {
         if (valueType === "financial") {
-            let fixed = value.toFixed(2);
-            if (value < 0) {
+            let fixed = parseFloat(value).toFixed(2);
+            if (fixed < 0) {
                 return "-$" + Math.abs(fixed)
             }
             return "$" + fixed;
