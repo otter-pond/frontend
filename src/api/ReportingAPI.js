@@ -4,7 +4,79 @@ import Cookies from "universal-cookie";
 export default class ReportingAPI extends APIClient {
     getReports() {
         return new Promise((resolve, reject) => {
-            this.perform("get", "/reporting/").then(reports => {
+            this.perform("get", `/reporting/`).then(reports => {
+                resolve(reports)
+            })
+        })
+    }
+
+    getAdminReports() {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/reporting/adminReports`).then(reports => {
+                resolve(reports)
+            })
+        })
+    }
+
+    getSemesters() {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/reporting/semesters/`).then(reports => {
+                resolve(reports)
+            })
+        })
+    }
+
+    getSemesterById(semesterId) {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/reporting/semesters/${semesterId}`).then(report => {
+                resolve(report)
+            })
+        })
+    }
+
+    createSemester(semester) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `/reporting/semesters/create`, semester).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
+    updateSemester(semesterId, semester) {
+        return new Promise((resolve, reject) => {
+            this.perform("put", `/reporting/semesters/${semesterId}`, semester).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
+    createReportType(reportType) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `/reporting/types/create`, reportType).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
+    updateReportType(reportId, reportType) {
+        return new Promise((resolve, reject) => {
+            this.perform("put", `/reporting/types/${reportId}`, reportType).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
+    createReport(report) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", "/reporting/create", report).then(result => {
+                resolve(result);
+            })
+        })
+    }
+
+    getReportTypes() {
+        return new Promise((resolve, reject) => {
+            this.perform("get", `/reporting/types/`).then(reports => {
                 resolve(reports)
             })
         })
@@ -13,6 +85,14 @@ export default class ReportingAPI extends APIClient {
     getReportById(reportId) {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/${reportId}`).then(report => {
+                resolve(report)
+            })
+        })
+    }
+
+    updateReport(reportId, report) {
+        return new Promise((resolve, reject) => {
+            this.perform("put", `/reporting/${reportId}`, report).then(report => {
                 resolve(report)
             })
         })
@@ -55,6 +135,22 @@ export default class ReportingAPI extends APIClient {
         })
     }
 
+    deleteReportEntry(report_id, user_email, entry_id) {
+        return new Promise((resolve, reject) => {
+            this.perform("delete", `/reporting/${report_id}/entries/${user_email}/${entry_id}`).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
+    changeEntryStatus(report_id, user_email, entry_id, new_status) {
+        return new Promise((resolve, reject) => {
+            this.perform("put", `/reporting/${report_id}/entries/${user_email}/${entry_id}/status`, {"new_status": new_status}).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
     addDescription(report_id, description) {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/${report_id}/presetDescription`, {'description': description}).then(result => {
@@ -93,6 +189,22 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/${report_id}/form/submit`, entry).then(result => {
                 resolve(result);
+            })
+        })
+    }
+
+    createReportForm(report_id, form) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `/reporting/${report_id}/form`, form).then(result => {
+                resolve(result)
+            })
+        })
+    }
+
+    deleteReportForm(report_id) {
+        return new Promise((resolve, reject) => {
+            this.perform("delete", `/reporting/${report_id}/form`).then(result => {
+                resolve(result)
             })
         })
     }
