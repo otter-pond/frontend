@@ -133,7 +133,6 @@ class EditRosterCard extends Component {
         this.setState({
             userToDelete: user
         });
-        console.log(user)
     }
 
     toggleDeleteModal = () => {
@@ -170,11 +169,9 @@ class EditRosterCard extends Component {
             if (this.state.displayInvalidEntryAlert) {
                 this.toggleInvalidEntryAlert();
             }
-            console.log("deleting user !!!");
             // Call API to delete user
             this.usersClient.deleteUser(user.user_email).then(resp => {
                 // Updates UI for deleted user
-                console.log(resp);
                 let users = { ...this.state.users }
                 delete users[user['user_email']];
                 this.setState({
@@ -184,7 +181,6 @@ class EditRosterCard extends Component {
                 // Closes modal
                 this.toggleDeleteModal();
             }).catch(e => {
-                console.log("Unable to delete user.");
                 if (!this.state.displayDeleteFailedAlert) {
                     this.toggleDeleteFailedAlert();
                 }
