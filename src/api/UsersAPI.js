@@ -1,5 +1,6 @@
 import APIClient from "./APIClient";
 import Cookies from "universal-cookie";
+import { tsThisType } from "@babel/types";
 
 const cookies = new Cookies();
 
@@ -47,5 +48,16 @@ export default class UsersAPI extends APIClient {
                 resolve()
             })
         })
+    }
+
+    deleteUser(userEmail) {
+        return new Promise((resolve, reject) => {
+            this.perform('delete', `/users/${userEmail}`).then(result => {
+                console.log(result);
+                resolve(result);
+            }).catch(err => {
+                reject(new Error(err));
+            });
+        });
     }
 }
