@@ -48,4 +48,14 @@ export default class UsersAPI extends APIClient {
             })
         })
     }
+
+    deleteUser(userEmail) {
+        return new Promise((resolve, reject) => {
+            this.perform('delete', `/users/${userEmail}`).then(result => {
+                resolve(result);
+            }).catch(err => {
+                reject(new Error(err));
+            });
+        });
+    }
 }
