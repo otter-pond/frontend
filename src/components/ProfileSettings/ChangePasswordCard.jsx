@@ -1,21 +1,24 @@
-import React from "react";
-
+import React, { Component } from "react";
 import {
-  Card, CardLink, CardBody, CardHeader, Col, Row, Container, Form, FormGroup, Label, Input, Button, Alert
+  Card, CardBody, CardHeader, Form, FormGroup, Label, Input, Button, Alert
 } from "reactstrap";
+import UsersAPI from "../../api/UsersAPI";
 
-class ChangePasswordCard extends React.Component {
+class ChangePasswordCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
       currentPassword: "",
       newPassword: "",
       confirmNewPassword: "",
+      passwordWrong: false,
       passwordMismatch: false,
       passwordsEmpty: false,
-      resetSuccess: false,
-      networkError: false
-    }
+      changeSuccess: false,
+      networkError: false,
+    };
+
+    this.usersApi = new UsersAPI();
   }
 
   handleCurrentPasswordChange(event) {
@@ -40,13 +43,13 @@ class ChangePasswordCard extends React.Component {
     this.setState({
       passwordMismatch: false,
       passwordsEmpty: false,
-      resetSuccess: false,
+      changeSuccess: false,
       networkError: false
     });
   }
 
   submitForm(event) {
-    console.log("submit change password form");
+    // TODO: verify password meets certain criteria (> certain length, etc.)
     event.preventDefault();
     this.resetStateStatusFlags();
 
@@ -61,8 +64,28 @@ class ChangePasswordCard extends React.Component {
         passwordMismatch: true,
       });
     } else {
-      // DO the password change
+      this.usersApi.changeUserPassword(this.state.currentPassword, this.state.newPassword)
+      .then(result => {
+        if (result.error === "Success") {
+          this.setState({
+            changeSuccess: true
+          });
+        } else {
+          this.setState({
+            passwordWrong: true
+          })
+        }
+      }).catch(err => {
+        this.setState({
+          networkError: true
+        });
+      });
     }
+    this.setState({
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    });
   }
 
   render() {
@@ -73,6 +96,21 @@ class ChangePasswordCard extends React.Component {
         </CardHeader>
         <CardBody>
           <Form onSubmit={ (e) => this.submitForm(e) }>
+            <Alert color="success" isOpen={this.state.changeSuccess}>
+              Change successful!
+            </Alert>
+            <Alert color="danger" isOpen={this.state.networkError}>
+              Change failed: could not reach server
+            </Alert>
+            <Alert color="danger" isOpen={this.state.passwordWrong}>
+              Change failed: current password entered incorrectly
+            </Alert>
+            <Alert color="warning" isOpen={this.state.passwordsEmpty}>
+              Passwords are empty
+            </Alert>
+            <Alert color="warning" isOpen={this.state.passwordMismatch}>
+              Passwords do not match
+            </Alert>
             <FormGroup>
               <Label for="currentPassword">Current Password</Label>
               <Input 
@@ -105,18 +143,6 @@ class ChangePasswordCard extends React.Component {
                 onChange={(e) => this.handleConfirmNewPasswordChange(e)}
               />
             </FormGroup>
-            <Alert color="success" isOpen={this.state.resetSuccess}>
-              Change successful!
-            </Alert>
-            <Alert color="danger" isOpen={this.state.networkError}>
-              Change failed: could not reach server
-            </Alert>
-            <Alert color="warning" isOpen={this.state.passwordsEmpty}>
-              Passwords are empty
-            </Alert>
-            <Alert color="warning" isOpen={this.state.passwordMismatch}>
-              Passwords do not match
-            </Alert>
             <div className="text-right">
               <Button type="submit">Save</Button>
             </div>
