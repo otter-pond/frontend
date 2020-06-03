@@ -3,7 +3,7 @@ import {Col, Container, Row} from "reactstrap";
 import ProfileCard from "../../components/ProfileSettings/ProfileCard";
 import EmailSettingsCard from "../../components/ProfileSettings/EmailSettingsCard";
 import ListSubscriptionsCard from "../../components/ProfileSettings/ListSubscriptionsCard";
-
+import ChangePasswordCard from "../../components/ProfileSettings/ChangePasswordCard";
 
 class ProfileSettings extends React.Component {
     constructor(props) {
@@ -22,6 +22,7 @@ class ProfileSettings extends React.Component {
                             </Col>
                             <Col md={6}>
                                 <ListSubscriptionsCard />
+                                <ChangePasswordCard />
                             </Col>
                         </Row>
                 </div>
