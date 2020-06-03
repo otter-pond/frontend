@@ -1,6 +1,5 @@
 import APIClient from "./APIClient";
 import Cookies from "universal-cookie";
-import { tsThisType } from "@babel/types";
 
 const cookies = new Cookies();
 
