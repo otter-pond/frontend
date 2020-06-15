@@ -48,4 +48,30 @@ export default class UsersAPI extends APIClient {
             })
         })
     }
+
+    changeUserPassword(oldPassword, newPassword) {
+        let new_credentials = {
+            "user_email": cookies.get("user_email"),
+            "new_password": newPassword,
+            "old_password": oldPassword
+        };
+
+        return new Promise((resolve, reject) => {
+            this.perform("post", "/auth/changePassword", new_credentials).then(result => {
+                resolve(result);
+            }).catch(err => {
+                reject(new Error(err));
+            });
+        })
+    }
+
+    deleteUser(userEmail) {
+        return new Promise((resolve, reject) => {
+            this.perform('delete', `/users/${userEmail}`).then(result => {
+                resolve(result);
+            }).catch(err => {
+                reject(new Error(err));
+            });
+        });
+    }
 }
