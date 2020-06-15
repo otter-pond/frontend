@@ -15,6 +15,7 @@ const client = axios.create({
 class APIClient {
     constructor() {
         this.accessToken = cookies.get("accessToken");
+        this.baseUri = BASE_URI
     }
 
     login(username, password) {

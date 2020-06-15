@@ -208,4 +208,8 @@ export default class ReportingAPI extends APIClient {
             })
         })
     }
+
+    getBulkSheetLink(report_id) {
+        return this.baseUri + `/reporting/${report_id}/entries/bulkUpload`
+    }
 }

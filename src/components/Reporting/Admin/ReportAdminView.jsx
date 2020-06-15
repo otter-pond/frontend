@@ -23,6 +23,7 @@ import ReportTotals from "./ReportTotals";
 import IndividualView from "./IndividualView";
 import DescriptionView from "./DescriptionView";
 import StatusView from "./StatusView";
+import { Link } from "react-router-dom";
 
 const cookies = new Cookies();
 
@@ -322,6 +323,13 @@ class ReportAdminView extends Component {
                                                            toggle={() => {this.setState({formSuccess: false})}}
                                                            color="success"
                                                            fade={true}>Report form successfully saved</Alert>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col sm={12} className={"text-center"}>
+                                                    <a href={this.reportingApi.getBulkSheetLink(this.state.report_id)} download target={"_blank"}>
+                                                        <Button size={"sm"}>Download Spreadsheet for Bulk Upload</Button>
+                                                    </a>
                                                 </Col>
                                             </Row>
                                             <Row style={{marginTop: "20px"}}>
