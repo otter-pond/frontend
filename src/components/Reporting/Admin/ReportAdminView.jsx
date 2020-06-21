@@ -604,7 +604,8 @@ class ReportAdminView extends Component {
                             {this.state.viewType === "totals" ?
                                 <ReportTotals users={this.getApplicableUsers()}
                                               reportType={this.state.reportType}
-                                              entries={this.state.entries} />
+                                              entries={this.state.entries}
+                                              roles={this.state.roles}/>
                             : this.state.viewType === "individual" ?
                                 <IndividualView users={this.getApplicableUsers()}
                                                 reportType={this.state.reportType}
