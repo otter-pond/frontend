@@ -47,7 +47,11 @@ class ReportAdminView extends Component {
             reportForm: null,
             editingForm: null,
             formSuccess: false,
-            statusUpdateSuccess: false
+            statusUpdateSuccess: false,
+            uploadedFile: null,
+            showUploadFile: false,
+            uploadFileSuccess: false,
+            uploadFileLoading: false
         };
 
 
@@ -252,6 +256,28 @@ class ReportAdminView extends Component {
         }
     }
 
+    submitBulkUpload() {
+        let file = this.state.uploadedFile;
+
+        this.setState({
+            uploadFileLoading: true
+        }, () => {
+            const data = new FormData()
+            data.append('file', file)
+            this.reportingApi.uploadBulkEntries(this.state.report_id, data).then(() => {
+                this.reportingApi.getReportEntries(this.state.report_id).then(entries => {
+                    this.setState({
+                        entries: entries,
+                        uploadedFile: null,
+                        showUploadFile: false,
+                        uploadFileSuccess: true,
+                        uploadFileLoading: false
+                    })
+                })
+            })
+        })
+    }
+
     render() {
         return (
             <>
@@ -330,6 +356,11 @@ class ReportAdminView extends Component {
                                                     <a href={this.reportingApi.getBulkSheetLink(this.state.report_id)} download target={"_blank"}>
                                                         <Button size={"sm"}>Download Spreadsheet for Bulk Upload</Button>
                                                     </a>
+                                                    <Button size={"sm"} onClick={() => {this.setState({showUploadFile: true})}}>Upload Bulk Spreadsheet</Button>
+                                                    <Alert isOpen={this.state.uploadFileSuccess}
+                                                           toggle={() => {this.setState({uploadFileSuccess: false})}}
+                                                           color="success"
+                                                           fade={true}>Bulk entries successfully uploaded</Alert>
                                                 </Col>
                                             </Row>
                                             <Row style={{marginTop: "20px"}}>
@@ -520,6 +551,33 @@ class ReportAdminView extends Component {
                                             >Delete Form</Button>
                                         </div>
                                     </ModalFooter>
+                                </Modal>
+                                <Modal isOpen={this.state.showUploadFile} backdrop={true}>
+                                    <ModalHeader tag={"h2"}>Upload Bulk Entry Spreadsheet</ModalHeader>
+                                    <LoadingOverlay
+                                        active={this.state.uploadFileLoading}
+                                        spinner
+                                        text='Loading...'
+                                    >
+                                        <ModalBody>
+                                            <input type={"file"}
+                                                   onChange={(e) => {this.setState({uploadedFile: e.target.files[0]})}}
+                                                   name="file" id="uploadFile"/>
+                                        </ModalBody>
+                                        <ModalFooter>
+                                            <div className="clearfix" style={{width: "100%"}}>
+                                                <Button color="secondary"
+                                                        className="float-right"
+                                                        onClick={() => {this.submitBulkUpload()}}
+                                                        style={{marginLeft: "10px"}}
+                                                >Save Report</Button>
+                                                <Button color="secondary"
+                                                        className="float-right"
+                                                        onClick={() => {this.setState({showUploadFile: false, uploadedFile: null})}}
+                                                >Cancel</Button>
+                                            </div>
+                                        </ModalFooter>
+                                    </LoadingOverlay>
                                 </Modal>
                             </>
                             }
