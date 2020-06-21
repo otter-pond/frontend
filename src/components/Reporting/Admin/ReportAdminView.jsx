@@ -560,6 +560,14 @@ class ReportAdminView extends Component {
                                         text='Loading...'
                                     >
                                         <ModalBody>
+                                            <p>Steps for bulk uploading entries:</p>
+                                            <ol>
+                                                <li>Download the spreadsheet by clicking <a href={this.reportingApi.getBulkSheetLink(this.state.report_id)} download target={"_blank"}>here</a></li>
+                                                <li>Fill out the "Entries" tab of the spreadsheet with the report entries that you want to create</li>
+                                                <li>Export the "Entries" tab as CSV (From the "Entries" tab, go to File -> Save As -> File Format: CSV, click "OK" in the popup window)</li>
+                                                <li>Click "Choose File" below and navigate to the CSV file that you created</li>
+                                                <li>Click Upload</li>
+                                            </ol>
                                             <input type={"file"}
                                                    onChange={(e) => {this.setState({uploadedFile: e.target.files[0]})}}
                                                    name="file" id="uploadFile"/>
@@ -570,7 +578,7 @@ class ReportAdminView extends Component {
                                                         className="float-right"
                                                         onClick={() => {this.submitBulkUpload()}}
                                                         style={{marginLeft: "10px"}}
-                                                >Save Report</Button>
+                                                >Upload Entries</Button>
                                                 <Button color="secondary"
                                                         className="float-right"
                                                         onClick={() => {this.setState({showUploadFile: false, uploadedFile: null})}}
