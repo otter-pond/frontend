@@ -208,4 +208,16 @@ export default class ReportingAPI extends APIClient {
             })
         })
     }
+
+    getBulkSheetLink(report_id) {
+        return this.baseUri + `/reporting/${report_id}/entries/bulkUpload`
+    }
+
+    uploadBulkEntries(report_id, data) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `/reporting/${report_id}/entries/bulkUpload`, data).then(result => {
+                resolve(result)
+            })
+        })
+    }
 }

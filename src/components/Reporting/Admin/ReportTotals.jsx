@@ -7,10 +7,16 @@ const ReportTotals = (props) => {
     const users = props.users;
     const entries = props.entries;
     const reportType = props.reportType;
-    const valueType = reportType["value_type"]
+    const roles = props.roles
+    const valueType = reportType["value_type"];
+    const rolesMap = roles.reduce((agg, role) => {
+        agg[role["role_id"]] = role["role_description"]
+        return agg
+    }, {})
     var usersTotalMap = users.reduce((agg, user) => {
         agg[user["user_email"]] = {
             name: user["last_name"] + ", " + user["first_name"],
+            role: rolesMap[user["role_id"]],
             value: valueType === "optionselect" ?
                 reportType["options"].reduce((agg, type) => {
                     agg[type] = 0
@@ -34,7 +40,8 @@ const ReportTotals = (props) => {
     });
     const totals = Object.keys(usersTotalMap).reduce((agg, userEmail) => {
         var row = {
-            "Name" : usersTotalMap[userEmail]["name"]
+            "Name" : usersTotalMap[userEmail]["name"],
+            "Role" : usersTotalMap[userEmail]["role"]
         }
         if (valueType === "optionselect") {
             row = {

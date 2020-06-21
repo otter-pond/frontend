@@ -23,6 +23,7 @@ import ReportTotals from "./ReportTotals";
 import IndividualView from "./IndividualView";
 import DescriptionView from "./DescriptionView";
 import StatusView from "./StatusView";
+import { Link } from "react-router-dom";
 
 const cookies = new Cookies();
 
@@ -46,7 +47,11 @@ class ReportAdminView extends Component {
             reportForm: null,
             editingForm: null,
             formSuccess: false,
-            statusUpdateSuccess: false
+            statusUpdateSuccess: false,
+            uploadedFile: null,
+            showUploadFile: false,
+            uploadFileSuccess: false,
+            uploadFileLoading: false
         };
 
 
@@ -251,6 +256,28 @@ class ReportAdminView extends Component {
         }
     }
 
+    submitBulkUpload() {
+        let file = this.state.uploadedFile;
+
+        this.setState({
+            uploadFileLoading: true
+        }, () => {
+            const data = new FormData()
+            data.append('file', file)
+            this.reportingApi.uploadBulkEntries(this.state.report_id, data).then(() => {
+                this.reportingApi.getReportEntries(this.state.report_id).then(entries => {
+                    this.setState({
+                        entries: entries,
+                        uploadedFile: null,
+                        showUploadFile: false,
+                        uploadFileSuccess: true,
+                        uploadFileLoading: false
+                    })
+                })
+            })
+        })
+    }
+
     render() {
         return (
             <>
@@ -322,6 +349,18 @@ class ReportAdminView extends Component {
                                                            toggle={() => {this.setState({formSuccess: false})}}
                                                            color="success"
                                                            fade={true}>Report form successfully saved</Alert>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col sm={12} className={"text-center"}>
+                                                    <a href={this.reportingApi.getBulkSheetLink(this.state.report_id)} download target={"_blank"}>
+                                                        <Button size={"sm"}>Download Spreadsheet for Bulk Upload</Button>
+                                                    </a>
+                                                    <Button size={"sm"} onClick={() => {this.setState({showUploadFile: true})}}>Upload Bulk Spreadsheet</Button>
+                                                    <Alert isOpen={this.state.uploadFileSuccess}
+                                                           toggle={() => {this.setState({uploadFileSuccess: false})}}
+                                                           color="success"
+                                                           fade={true}>Bulk entries successfully uploaded</Alert>
                                                 </Col>
                                             </Row>
                                             <Row style={{marginTop: "20px"}}>
@@ -513,6 +552,41 @@ class ReportAdminView extends Component {
                                         </div>
                                     </ModalFooter>
                                 </Modal>
+                                <Modal isOpen={this.state.showUploadFile} backdrop={true}>
+                                    <ModalHeader tag={"h2"}>Upload Bulk Entry Spreadsheet</ModalHeader>
+                                    <LoadingOverlay
+                                        active={this.state.uploadFileLoading}
+                                        spinner
+                                        text='Loading...'
+                                    >
+                                        <ModalBody>
+                                            <p>Steps for bulk uploading entries:</p>
+                                            <ol>
+                                                <li>Download the spreadsheet by clicking <a href={this.reportingApi.getBulkSheetLink(this.state.report_id)} download target={"_blank"}>here</a></li>
+                                                <li>Fill out the "Entries" tab of the spreadsheet with the report entries that you want to create</li>
+                                                <li>Export the "Entries" tab as CSV (From the "Entries" tab, go to File -> Save As -> File Format: CSV, click "OK" in the popup window)</li>
+                                                <li>Click "Choose File" below and navigate to the CSV file that you created</li>
+                                                <li>Click Upload</li>
+                                            </ol>
+                                            <input type={"file"}
+                                                   onChange={(e) => {this.setState({uploadedFile: e.target.files[0]})}}
+                                                   name="file" id="uploadFile"/>
+                                        </ModalBody>
+                                        <ModalFooter>
+                                            <div className="clearfix" style={{width: "100%"}}>
+                                                <Button color="secondary"
+                                                        className="float-right"
+                                                        onClick={() => {this.submitBulkUpload()}}
+                                                        style={{marginLeft: "10px"}}
+                                                >Upload Entries</Button>
+                                                <Button color="secondary"
+                                                        className="float-right"
+                                                        onClick={() => {this.setState({showUploadFile: false, uploadedFile: null})}}
+                                                >Cancel</Button>
+                                            </div>
+                                        </ModalFooter>
+                                    </LoadingOverlay>
+                                </Modal>
                             </>
                             }
                         </Col>
@@ -530,7 +604,8 @@ class ReportAdminView extends Component {
                             {this.state.viewType === "totals" ?
                                 <ReportTotals users={this.getApplicableUsers()}
                                               reportType={this.state.reportType}
-                                              entries={this.state.entries} />
+                                              entries={this.state.entries}
+                                              roles={this.state.roles}/>
                             : this.state.viewType === "individual" ?
                                 <IndividualView users={this.getApplicableUsers()}
                                                 reportType={this.state.reportType}
