@@ -1,9 +1,22 @@
 import React, { Component } from "react";
 import {
-    Card, CardBody, CardHeader, CardTitle, Form, FormGroup, Label, Input, Alert, Button
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Form,
+    FormGroup,
+    Label,
+    Input,
+    Alert,
+    Button,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem, UncontrolledDropdown
 } from "reactstrap"
 import AdminAPI from "../../api/AdminAPI";
 import LoadingOverlay from "react-loading-overlay";
+import ReportingAPI from "../../api/ReportingAPI";
 
 class SemesterLaunchCard extends Component {
     constructor(props) {
@@ -15,10 +28,32 @@ class SemesterLaunchCard extends Component {
             financesRolloverId: "",
             loading: false,
             showError: false,
-            showSuccess: false
+            showSuccess: false,
+            reports: []
         }
 
+        this.reportingApi = new ReportingAPI();
+        this.reportingApi.getReports().then((reports) => {
+            this.setState({
+                reports: reports,
+                loading: false
+            })
+        }).catch(e => {
+            console.log("Unable to load reports: " + e)
+        });
+
         this.adminApi = new AdminAPI();
+    }
+
+    getReportTitle() {
+        return this.state.reports.filter(a => { return a.report_id === this.state.financesRolloverId })[0]["name"]
+    }
+
+    onReportSelect(e) {
+        let reportId = e.target.value;
+        this.setState({
+            financesRolloverId: reportId
+        })
     }
 
     submitForm() {
@@ -90,8 +125,18 @@ class SemesterLaunchCard extends Component {
                                 </FormGroup>
                                 <FormGroup>
                                     <Label>Finances Form to Rollover From</Label>
-                                    <Input type={"text"} value={this.state.financesRolloverId}
-                                           onChange={e => {this.setState({financesRolloverId: e.target.value})}} />
+                                    <UncontrolledDropdown>
+                                        <DropdownToggle>
+                                            Selected: {this.state.financesRolloverId === "" ? "None" : this.getReportTitle()}
+                                        </DropdownToggle>
+                                        <DropdownMenu>
+                                            {this.state.reports.map((report, index) => {
+                                                return <DropdownItem value={report["report_id"]}
+                                                                     key={report["report_id"]}
+                                                                     onClick={(e) => {this.onReportSelect(e)}}>{report["name"]}</DropdownItem>
+                                            })}
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
                                 </FormGroup>
                                 <Button onClick={() => {this.submitForm()}}>Launch New Semester</Button>
                             </Form>
