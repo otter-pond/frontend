@@ -74,4 +74,12 @@ export default class UsersAPI extends APIClient {
             });
         });
     }
+
+    createUser(user) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", "/users/create", user).then(result => {
+                resolve(result)
+            })
+        })
+    }
 }

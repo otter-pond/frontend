@@ -12,6 +12,7 @@ import {
 import EmailListAPI from "../../api/EmailListAPI";
 import UsersAPI from "../../api/UsersAPI";
 import EditPositionsCard from "../../components/Admin/EditPositionsCard";
+import SemesterLaunchCard from "../../components/Admin/SemesterLaunchCard";
 
 class Admin extends React.Component {
     constructor(props) {
@@ -64,6 +65,11 @@ class Admin extends React.Component {
                     <Row>
                         <Col xs={12}>
                             <EditPositionsCard />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12}>
+                            <SemesterLaunchCard />
                         </Col>
                     </Row>
                 </div>
