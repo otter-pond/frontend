@@ -7,6 +7,7 @@ import {
 import UsersAPI from "../../api/UsersAPI";
 import RolesAPI from "../../api/RolesAPI";
 import LoadingOverlay from "react-loading-overlay";
+import CreateUserModal from "./CreateUserModal";
 
 class EditRosterCard extends Component {
   constructor(props) {
@@ -26,12 +27,25 @@ class EditRosterCard extends Component {
         first_name: '',
         last_name: '',
         user_email: ''
-      }
+      },
+      showCreateUser: false
     }
 
     this.usersClient = new UsersAPI();
     this.rolesClient = new RolesAPI();
 
+    this.loadUsers()
+
+    this.rolesClient.getRoles().then(roles => {
+      this.setState({
+        roles: roles
+      });
+    }).catch(e => {
+      console.log("Unable to load roles.")
+    })
+  }
+
+  loadUsers() {
     this.usersClient.getUsers().then(users => {
       var userMap = {};
       users.forEach(user => {
@@ -43,14 +57,6 @@ class EditRosterCard extends Component {
     }).catch(e => {
       console.log("Unable to load users.")
     });
-
-    this.rolesClient.getRoles().then(roles => {
-      this.setState({
-        roles: roles
-      });
-    }).catch(e => {
-      console.log("Unable to load roles.")
-    })
   }
 
   setActiveRole(role_id) {
@@ -144,10 +150,12 @@ class EditRosterCard extends Component {
 
   deleteUser = () => {
     // Parse modal input
-    let names = this.state.deleteModalText.trim().split(" ");
     let user = this.state.userToDelete;
+    let userName = user.first_name + " " + user.last_name;
+    let enteredName = this.state.deleteModalText
 
-    if (user.first_name == names[0] && user.last_name == names[names.length - 1]) {
+
+    if (userName === enteredName) {
       if (this.state.displayInvalidEntryAlert) {
         this.toggleInvalidEntryAlert();
       }
@@ -173,6 +181,20 @@ class EditRosterCard extends Component {
         displayDeleteFailedAlert: false
       });
     }
+  }
+
+  createNewUser() {
+    this.setState({
+      showCreateUser: true
+    }, () => {
+      this.loadUsers()
+    });
+  }
+
+  cancelCreateUser() {
+    this.setState({
+      showCreateUser: false
+    })
   }
 
   render() {
@@ -211,6 +233,9 @@ class EditRosterCard extends Component {
             <div className="clearfix">
               <CardTitle tag="h2" className="float-left">Edit Roster</CardTitle>
               <div className="float-right">
+                <div className={"float-left"}>
+                  <Button onClick={() => {this.createNewUser()}}>Create New</Button>
+                </div>
                 <div className="float-right">
                   {this.renderRoleDropdown(this.state.selectedRole, (e) => { this.dropdownSelect(e) })}
                 </div>
@@ -274,7 +299,7 @@ class EditRosterCard extends Component {
                 </LoadingOverlay>
               </div>
             }
-
+            <CreateUserModal isOpen={this.state.showCreateUser} cancel={() => {this.cancelCreateUser()}} />
           </CardBody>
         </Card>
       </div>
