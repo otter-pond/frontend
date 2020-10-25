@@ -88,7 +88,7 @@ class MemberDetailsModal extends Component {
                                         <p><a href={"mailto:" + this.props.user["user_email"]}>{this.props.user["user_email"]}</a> (Primary)</p>
                                     </Col>
                                 </Row>
-                                {this.props.user["other_emails"].map((email, index) => {
+                                {this.props.user["other_emails"] && this.props.user["other_emails"].map((email, index) => {
                                     return <Row key={index}>
                                         <Col md={4}>
                                         </Col>

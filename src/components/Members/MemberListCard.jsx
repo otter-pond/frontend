@@ -96,6 +96,7 @@ class MemberListCard extends Component {
     }
 
     filterUsers(users, searchTerm, roles) {
+        searchTerm = searchTerm.toLowerCase()
         let role_ids = []
         for (let roleIndex in roles) {
             if (roles[roleIndex].selected) {
@@ -107,7 +108,7 @@ class MemberListCard extends Component {
                 if (searchTerm === "") {
                     return role_ids.includes(user["role_id"])
                 }
-                return (user["first_name"].includes(searchTerm) || user["last_name"].includes(searchTerm)) && role_ids.includes(user["role_id"])
+                return (user["first_name"].toLowerCase().includes(searchTerm) || user["last_name"].toLowerCase().includes(searchTerm)) && role_ids.includes(user["role_id"])
             } catch {
                 return true
             }
