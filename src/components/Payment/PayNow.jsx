@@ -28,7 +28,8 @@ class PayNow extends Component {
             this.setState({
                 loading: true
             }, () => {
-                this.paymentApi.charge(total).then(result => {
+                // this.paymentApi.charge(total).then(result => {
+                this.paymentApi.prepareCharge(total).then(result => {
                     if (result["error"] === "Success") {
                         this.setState({
                             success: true,
@@ -100,7 +101,7 @@ class PayNow extends Component {
                         An error occurred processing this payment. Please contact an administrator.
                     </Alert>
                     <Alert color="success" isOpen={this.state.success}>
-                        Successfully processed payment. Your account should be debited in the next 4-5 business days.
+                        Successfully processed payment. This payment has been sent to the D for approval. Once he approves, your payment should process in 4-5 business days.
                     </Alert>
                     <Form onSubmit={(e) => {this.submit(e)}} class="needs-validation" novalidate>
                         <FormGroup>

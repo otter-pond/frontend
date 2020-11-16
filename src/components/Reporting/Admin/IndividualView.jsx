@@ -3,6 +3,7 @@ import {Card, CardTitle, CardBody, CardHeader, Table} from "reactstrap";
 import Select from "react-select";
 import {FaTrashAlt} from "react-icons/fa";
 import {formatDate, formatDescription, formatValue, summarizeEntries} from "../../../utils/ReportDisplayUtils";
+import ExecutePaymentButton from "./ExecutePaymentButton";
 
 const IndividualView = (props) => {
     const [selectedUser, setSelectedUser] = useState(null);
@@ -61,6 +62,7 @@ const IndividualView = (props) => {
                         <th>Description</th>
                         <th>Status</th>
                         <th>Value</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -73,6 +75,7 @@ const IndividualView = (props) => {
                                 <FaTrashAlt style={{color: "red", cursor: "pointer", marginLeft: "10px", float: "right"}}
                                         onClick={() => {props.deleteReportEntry(entry["user_email"], entry["entry_id"])}}/>
                             </td>
+                            <td><ExecutePaymentButton entry={entry}/></td>
                         </tr>
                     })}
                     <tr>
@@ -80,6 +83,7 @@ const IndividualView = (props) => {
                         <td></td>
                         <td></td>
                         <td style={{fontWeight: "bold"}}>{summary}</td>
+                        <td></td>
                     </tr>
                     </tbody>
                 </Table>

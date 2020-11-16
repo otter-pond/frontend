@@ -3,6 +3,7 @@ import {Card, CardTitle, CardBody, CardHeader, Table, Button} from "reactstrap";
 import Select from "react-select";
 import {FaTrashAlt} from "react-icons/fa";
 import {formatDate, formatDescription, formatValue, summarizeEntries} from "../../../utils/ReportDisplayUtils";
+import ExecutePaymentButton from "./ExecutePaymentButton";
 
 
 const StatusView = (props) => {
@@ -153,7 +154,7 @@ const StatusView = (props) => {
                                         <td>{formatDescription(entry["description"])}</td>
                                         <td>{formatDate(entry["timestamp"])}</td>
                                         <td>{formatValue(valueType, entry["value"])}</td>
-                                        <td>{getOptionButton(entry)}</td>
+                                        <td>{getOptionButton(entry)} <ExecutePaymentButton entry={entry}/></td>
                                     </tr>
                                 })}
                             </tbody>
