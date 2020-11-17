@@ -82,4 +82,12 @@ export default class UsersAPI extends APIClient {
             })
         })
     }
+
+    enrollBuzzcard(user, gtid) {
+        return new Promise((resolve, reject) => {
+            this.perform("post", `/users/${user}/buzzcard`, {"gtid": gtid}).then(result => {
+                resolve(result)
+            })
+        })
+    }
 }

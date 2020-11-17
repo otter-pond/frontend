@@ -16,6 +16,7 @@ import ReportingAPI from "../../api/ReportingAPI";
 import UsersAPI from "../../api/UsersAPI";
 import RolesAPI from "../../api/RolesAPI";
 import Cookies from "universal-cookie";
+import EnrollBuzzcardModal from "../../components/Attendance/EnrollBuzzcardModal";
 
 const cookies = new Cookies();
 let permissions = cookies.get("permissions")
@@ -218,6 +219,9 @@ class Attendance extends React.Component {
         let summaries = {}
         entries.forEach(entry => {
             let user = users.filter(a => {return a["user_email"] === entry["user_email"]})[0];
+            if (!user) {
+                return;
+            }
             let role = user["role"]
             let key = role + " (" + entry["value"]+ ")";
             if (key in summaries) {
@@ -254,6 +258,11 @@ class Attendance extends React.Component {
                             <Card>
                                 <CardHeader>
                                     <CardTitle tag="h2" className="float-left">Attendance</CardTitle>
+                                    {this.state.selectedReportId !== "" &&
+                                    <>
+                                        <Button className={"float-right"}  size={"sm"} onClick={() => {this.setState({enrollBuzzcard: true})}}>Enroll Buzzcard</Button>
+                                        <EnrollBuzzcardModal users={this.state.users} isOpen={this.state.enrollBuzzcard} close={() => {this.setState({enrollBuzzcard: false})}} />
+                                    </>}
                                 </CardHeader>
                                 <CardBody>
                                     {this.state.selectedReportId === "" ? <p>Select a report above to take attendance</p> :
