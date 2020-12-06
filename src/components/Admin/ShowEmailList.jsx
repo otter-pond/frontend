@@ -48,7 +48,16 @@ class ShowEmailList extends Component {
                     }, () => {
                         resolve()
                     })
-                ])
+                ]).catch(e => {
+                    var options = {
+                        place: "tc",
+                        message: `Error executing request`,
+                        type: "danger",
+                        autoDismiss: -1,
+                        closeButton: true
+                    };
+                    this.refs.notify.notificationAlert(options);
+                })
             }
         })
     }
@@ -117,6 +126,15 @@ class ShowEmailList extends Component {
                 };
                 this.refs.notify.notificationAlert(options);
             }
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 

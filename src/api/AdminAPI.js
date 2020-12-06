@@ -5,6 +5,8 @@ export default class AdminAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/admin/semesterLaunch`, launchConfig).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }

@@ -3,6 +3,7 @@ import {injectStripe} from 'react-stripe-elements';
 import {Input, Button, Form, FormGroup, Label} from "reactstrap"
 import PaymentAPI from "../../api/PaymentAPI";
 import LoadingOverlay from "react-loading-overlay";
+import Notify from "react-notification-alert";
 class Enroll extends Component {
     constructor(props) {
         super(props);
@@ -39,7 +40,14 @@ class Enroll extends Component {
                     })
                 })
             }).catch(e => {
-                console.log(JSON.stringify(e))
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
         })
 
@@ -48,6 +56,7 @@ class Enroll extends Component {
     render() {
         return (
             <div>
+                <Notify ref="notify"/>
                 <LoadingOverlay
                     active={this.state.loading}
                     spinner

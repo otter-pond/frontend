@@ -17,6 +17,7 @@ import UsersAPI from "../../api/UsersAPI";
 import RolesAPI from "../../api/RolesAPI";
 import Cookies from "universal-cookie";
 import EnrollBuzzcardModal from "../../components/Attendance/EnrollBuzzcardModal";
+import Notify from "react-notification-alert";
 
 const cookies = new Cookies();
 let permissions = cookies.get("permissions")
@@ -51,6 +52,15 @@ class Attendance extends React.Component {
             this.setState({
                 users: users
             })
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
@@ -130,6 +140,15 @@ class Attendance extends React.Component {
                     errorText: ""
                 });
             }
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
@@ -172,6 +191,15 @@ class Attendance extends React.Component {
                     }
                 })
             }
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
@@ -186,6 +214,15 @@ class Attendance extends React.Component {
             this.setState({
                 entries: applicable_entries
             })
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
@@ -211,7 +248,16 @@ class Attendance extends React.Component {
                     this.setState({users: users_details})
                 })
             }
-        });
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
+        })
 
     }
 
@@ -244,6 +290,7 @@ class Attendance extends React.Component {
         let summaries = this.calculateSummaries(this.state.users, this.state.entries);
         return (
             <>
+                <Notify ref="notify"/>
                 <div className="content">
                     <h1>Chapter Attendance</h1>
                     {this.state.selectedReportId === "" ?

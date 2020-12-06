@@ -12,6 +12,7 @@ import {
     Input, FormGroup, Button, Form, Alert
 } from "reactstrap"
 import UsersAPI from "../../api/UsersAPI";
+import Notify from "react-notification-alert";
 
 class ProfileCard extends Component {
     constructor(props) {
@@ -51,6 +52,15 @@ class ProfileCard extends Component {
                     major: user["major"],
                     success: false
                 })
+            }).catch(e => {
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
         })
 
@@ -75,6 +85,15 @@ class ProfileCard extends Component {
                     loading: false,
                     success: true
                 })
+            }).catch(e => {
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
         })
     }
@@ -82,6 +101,7 @@ class ProfileCard extends Component {
     render() {
         return (
             <Card>
+                <Notify ref="notify"/>
                 <CardHeader>
                     <CardTitle tag="h2" className="float-left">User Profile</CardTitle>
                 </CardHeader>

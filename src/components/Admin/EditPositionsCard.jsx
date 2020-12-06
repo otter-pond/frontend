@@ -14,6 +14,7 @@ import {
 import { Multiselect } from 'multiselect-react-dropdown';
 import PositionsAPI from "../../api/PositionsAPI";
 import UsersAPI from "../../api/UsersAPI";
+import Notify from "react-notification-alert";
 
 class EditPositionsCard extends Component {
     constructor(props) {
@@ -38,7 +39,17 @@ class EditPositionsCard extends Component {
                 permissions: results[1],
                 users: results[2].map(a => {return {...a, fullName: a["last_name"] + ", " + a["first_name"]}})
             })
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
+
     }
 
     updatePositionField(field, newValue){
@@ -60,7 +71,17 @@ class EditPositionsCard extends Component {
                 selectedPositionName: position["name"],
                 usersOnPosition: fullUsers,
             });
-        });
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
+        })
+
     }
 
     onPermissionUpdate(e) {
@@ -88,7 +109,17 @@ class EditPositionsCard extends Component {
                     })
                 })
 
+            }).catch(e => {
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
+
         }
     }
 
@@ -120,7 +151,17 @@ class EditPositionsCard extends Component {
                         editingPosition: position,
                         editingNewPosition: false
                     })
+                }).catch(e => {
+                    var options = {
+                        place: "tc",
+                        message: `Error executing request`,
+                        type: "danger",
+                        autoDismiss: -1,
+                        closeButton: true
+                    };
+                    this.refs.notify.notificationAlert(options);
                 })
+
             })
         } else {
             this.positionsApi.getUsersForPosition(position["id"]).then(existingUsers => {
@@ -143,7 +184,17 @@ class EditPositionsCard extends Component {
                     this.setState({
                         showSuccessAlert: true
                     })
+                }).catch(e => {
+                    var options = {
+                        place: "tc",
+                        message: `Error executing request`,
+                        type: "danger",
+                        autoDismiss: -1,
+                        closeButton: true
+                    };
+                    this.refs.notify.notificationAlert(options);
                 })
+
             });
 
         }
@@ -169,6 +220,7 @@ class EditPositionsCard extends Component {
     render() {
         return (
             <Card>
+                <Notify ref="notify"/>
                 <CardHeader>
                     <div className="clearfix">
                         <CardTitle tag="h2" className="float-left">Edit Positions</CardTitle>

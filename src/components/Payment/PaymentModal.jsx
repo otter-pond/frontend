@@ -7,6 +7,7 @@ import Verified from "./Verified.jsx"
 import PaymentAPI from "../../api/PaymentAPI";
 import LoadingOverlay from "react-loading-overlay";
 import PayNow from "./PayNow.jsx";
+import Notify from "react-notification-alert";
 
 class PaymentModal extends Component {
     constructor(props) {
@@ -43,7 +44,14 @@ class PaymentModal extends Component {
                     })
                 }
             }).catch(e => {
-                console.log("Unable to load account status: " + e)
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
         })
 
@@ -72,7 +80,7 @@ class PaymentModal extends Component {
     render() {
         return (
             <div>
-
+                <Notify ref="notify"/>
                     <Modal isOpen={this.props.isOpen} backdrop={true}>
                         <ModalHeader tag={"h2"}>Payment</ModalHeader>
                         <LoadingOverlay

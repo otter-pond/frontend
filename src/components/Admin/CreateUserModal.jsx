@@ -3,7 +3,7 @@ import {Alert, Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFoo
 import {Multiselect} from "multiselect-react-dropdown";
 import RolesAPI from "../../api/RolesAPI";
 import UsersAPI from "../../api/UsersAPI";
-
+import Notify from "react-notification-alert";
 
 class CreateUserModal extends Component {
     constructor(props) {
@@ -26,6 +26,15 @@ class CreateUserModal extends Component {
             this.setState({
                 allRoles: roles
             })
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
@@ -50,6 +59,15 @@ class CreateUserModal extends Component {
 
             this.usersApi.createUser(user).then(() => {
                 this.props.cancel()
+            }).catch(e => {
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
         }
     }
@@ -141,6 +159,7 @@ class CreateUserModal extends Component {
                         >Cancel</Button>
                     </div>
                 </ModalFooter>
+                <Notify ref="notify"/>
             </Modal>
         );
     }

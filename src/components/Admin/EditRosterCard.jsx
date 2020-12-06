@@ -8,6 +8,7 @@ import UsersAPI from "../../api/UsersAPI";
 import RolesAPI from "../../api/RolesAPI";
 import LoadingOverlay from "react-loading-overlay";
 import CreateUserModal from "./CreateUserModal";
+import Notify from "react-notification-alert";
 
 class EditRosterCard extends Component {
   constructor(props) {
@@ -41,7 +42,14 @@ class EditRosterCard extends Component {
         roles: roles
       });
     }).catch(e => {
-      console.log("Unable to load roles.")
+      var options = {
+        place: "tc",
+        message: `Error executing request`,
+        type: "danger",
+        autoDismiss: -1,
+        closeButton: true
+      };
+      this.refs.notify.notificationAlert(options);
     })
   }
 
@@ -55,8 +63,15 @@ class EditRosterCard extends Component {
         users: userMap
       });
     }).catch(e => {
-      console.log("Unable to load users.")
-    });
+      var options = {
+        place: "tc",
+        message: `Error executing request`,
+        type: "danger",
+        autoDismiss: -1,
+        closeButton: true
+      };
+      this.refs.notify.notificationAlert(options);
+    })
   }
 
   setActiveRole(role_id) {
@@ -111,8 +126,15 @@ class EditRosterCard extends Component {
       this.setState({
         activeUsers: users
       });
-    }).catch(() => {
-      console.error("Error setting user role");
+    }).catch(e => {
+      var options = {
+        place: "tc",
+        message: `Error executing request`,
+        type: "danger",
+        autoDismiss: -1,
+        closeButton: true
+      };
+      this.refs.notify.notificationAlert(options);
     })
   }
 
@@ -200,6 +222,7 @@ class EditRosterCard extends Component {
   render() {
     return (
       <div>
+        <Notify ref="notify"/>
         <Modal isOpen={this.state.isDeleteModalOpen} toggle={this.toggleDeleteModal}>
           <ModalHeader toggle={this.toggleDeleteModal}>Confirm Deletion</ModalHeader>
           <ModalBody>

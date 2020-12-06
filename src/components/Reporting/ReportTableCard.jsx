@@ -9,6 +9,7 @@ import {
 } from "reactstrap"
 import ReportingAPI from "../../api/ReportingAPI";
 import ReactTable from 'react-table';
+import Notify from "react-notification-alert";
 // import "react-table/react-table.css";
 
 
@@ -167,7 +168,14 @@ class ReportTableCard extends Component {
                 loading: false
             })
         }).catch(e => {
-            console.log("Unable to load report table: " + e)
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
@@ -184,6 +192,7 @@ class ReportTableCard extends Component {
     render() {
         return (
             <Card>
+                <Notify ref="notify"/>
                 <CardHeader>
                     <CardTitle tag="h2" className="float-left">Report Table View</CardTitle>
                 </CardHeader>

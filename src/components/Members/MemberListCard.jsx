@@ -17,6 +17,7 @@ import UsersAPI from "../../api/UsersAPI";
 import RolesAPI from "../../api/RolesAPI";
 import MemberDetailsModal from "./MemberDetailsModal.jsx";
 import Select from "react-select";
+import Notify from "react-notification-alert";
 
 
 class MemberListCard extends Component {
@@ -64,6 +65,15 @@ class MemberListCard extends Component {
                     roles: roles,
                     loading: false
                 })
+            }).catch(e => {
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
         })
     }
@@ -160,6 +170,7 @@ class MemberListCard extends Component {
     render() {
         return (
             <Card>
+                <Notify ref="notify"/>
                 <CardHeader>
                     <CardTitle tag="h2" className="float-left">Member List</CardTitle>
                 </CardHeader>

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Notify from "react-notification-alert";
 
 import {
     Card,
@@ -36,6 +37,15 @@ class EditEmailListsCard extends Component {
             },() => {
                 this.refreshLists()
             })
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
 
         this.refreshLists()
@@ -47,8 +57,15 @@ class EditEmailListsCard extends Component {
                 emailLists: lists.filter(a => {return !(a.hasOwnProperty("position") && a["position"] !== null)})
             })
         }).catch(e => {
-            console.log("Unable to load email lists")
-        });
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
+        })
     }
 
     onListSelect(e) {
@@ -77,6 +94,15 @@ class EditEmailListsCard extends Component {
                         this.props.showSubscribers(false)
                     }
                 }
+            }).catch(e => {
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
         })
     }
@@ -103,6 +129,15 @@ class EditEmailListsCard extends Component {
                 })
                 this.refreshLists()
             }
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
@@ -143,12 +178,22 @@ class EditEmailListsCard extends Component {
                     permissions: permissions
                 })
             }
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
     render() {
         return (
             <Card>
+                <Notify ref="notify"/>
                 <CardHeader>
                     <div className="clearfix">
                         <CardTitle tag="h2" className="float-left">Edit Email List</CardTitle>

@@ -8,6 +8,8 @@ export default class UsersAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", "/users/").then(users => {
                 resolve(users)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -16,6 +18,8 @@ export default class UsersAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/users/${user_email}`).then(user => {
                 resolve(user)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -24,6 +28,8 @@ export default class UsersAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/users/${user_email}/role`).then(role => {
                 resolve(role);
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -32,6 +38,8 @@ export default class UsersAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/users/${user_email}/permissions`).then(permissions => {
                 resolve(permissions);
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -45,6 +53,8 @@ export default class UsersAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("put", `/users/${userEmail}`, user).then(result => {
                 resolve()
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -69,9 +79,9 @@ export default class UsersAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform('delete', `/users/${userEmail}`).then(result => {
                 resolve(result);
-            }).catch(err => {
-                reject(new Error(err));
-            });
+            }).catch(e => {
+                reject(e)
+            })
         });
     }
 
@@ -79,6 +89,8 @@ export default class UsersAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", "/users/create", user).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -87,6 +99,8 @@ export default class UsersAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/users/${user}/buzzcard`, {"gtid": gtid}).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }

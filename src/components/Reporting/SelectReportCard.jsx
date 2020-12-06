@@ -14,6 +14,7 @@ import {
 import Select from 'react-select';
 import ReportingAPI from "../../api/ReportingAPI";
 import LoadingOverlay from "react-loading-overlay";
+import Notify from "react-notification-alert";
 
 class SelectReportCard extends Component {
     constructor(props) {
@@ -36,7 +37,14 @@ class SelectReportCard extends Component {
                 loading: false
             })
         }).catch(e => {
-            console.log("Unable to load reports: " + e)
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
@@ -98,7 +106,16 @@ class SelectReportCard extends Component {
                         }
                     })
                 }
-            });
+            }).catch(e => {
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
+            })
         })
     }
 
@@ -117,6 +134,7 @@ class SelectReportCard extends Component {
     render() {
         return (
             <Card>
+                <Notify ref="notify"/>
                 <CardHeader>
                     <CardTitle tag="h2" className="float-left">Select Report</CardTitle>
                 </CardHeader>

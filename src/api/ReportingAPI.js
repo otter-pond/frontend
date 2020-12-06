@@ -6,6 +6,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/`).then(reports => {
                 resolve(reports)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -14,6 +16,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/adminReports`).then(reports => {
                 resolve(reports)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -22,6 +26,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/semesters/`).then(reports => {
                 resolve(reports)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -30,6 +36,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/semesters/${semesterId}`).then(report => {
                 resolve(report)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -38,6 +46,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/semesters/create`, semester).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -46,6 +56,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("put", `/reporting/semesters/${semesterId}`, semester).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -54,6 +66,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/types/create`, reportType).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -62,6 +76,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("put", `/reporting/types/${reportId}`, reportType).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -70,6 +86,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", "/reporting/create", report).then(result => {
                 resolve(result);
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -78,6 +96,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/types/`).then(reports => {
                 resolve(reports)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -86,6 +106,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/${reportId}`).then(report => {
                 resolve(report)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -94,6 +116,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("put", `/reporting/${reportId}`, report).then(report => {
                 resolve(report)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -102,6 +126,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/${reportId}/form`).then(report => {
                 resolve(report)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -110,6 +136,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/types/${reportTypeId}`).then(report => {
                 resolve(report)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -123,6 +151,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/${report_id}/entries/${username}`).then(entries => {
                 resolve(entries);
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -131,6 +161,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/${report_id}/entries`).then(entries => {
                 resolve(entries);
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -139,6 +171,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("delete", `/reporting/${report_id}/entries/${user_email}/${entry_id}`).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -147,6 +181,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("put", `/reporting/${report_id}/entries/${user_email}/${entry_id}/status`, {"new_status": new_status}).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -155,6 +191,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/${report_id}/presetDescription`, {'description': description}).then(result => {
                 resolve(result);
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -163,6 +201,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/${report_id}/entries?checkExisting=${existing}`, entry).then(result => {
                 resolve(result);
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -172,6 +212,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/${report_id}/checkPermissions`).then(result => {
                 resolve(result["can_manage"])
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -181,6 +223,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/reporting/${report_id}/applicableUsers`).then(users => {
                 resolve(users)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -189,6 +233,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/${report_id}/form/submit`, entry).then(result => {
                 resolve(result);
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -197,6 +243,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/${report_id}/form`, form).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -205,6 +253,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("delete", `/reporting/${report_id}/form`).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -217,6 +267,8 @@ export default class ReportingAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/reporting/${report_id}/entries/bulkUpload`, data).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }

@@ -9,6 +9,8 @@ export default class ConfigAPI extends APIClient {
                     resolve(setting[0]);
                 else
                     resolve(null)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -17,6 +19,8 @@ export default class ConfigAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/config/settings`, setting).then(result => {
                 resolve()
+            }).catch(e => {
+                reject(e)
             })
         })
     }

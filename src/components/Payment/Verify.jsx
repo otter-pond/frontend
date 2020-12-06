@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Input, Button, Form, FormGroup, Label, Alert, InputGroup, InputGroupAddon} from "reactstrap"
 import PaymentAPI from "../../api/PaymentAPI";
 import LoadingOverlay from "react-loading-overlay";
+import Notify from "react-notification-alert";
 class Verify extends Component {
     constructor(props) {
         super(props);
@@ -31,6 +32,15 @@ class Verify extends Component {
                         loading: false
                     })
                 }
+            }).catch(e => {
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
         })
     }
@@ -47,6 +57,15 @@ class Verify extends Component {
                         this.props.postVerify()
                     }
                 })
+            }).catch(e => {
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
         })
 
@@ -55,6 +74,7 @@ class Verify extends Component {
     render() {
         return (
             <div>
+                <Notify ref="notify"/>
                 <LoadingOverlay
                     active={this.state.loading}
                     spinner

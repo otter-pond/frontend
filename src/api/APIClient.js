@@ -32,6 +32,8 @@ class APIClient {
                     cookies.set("user_email", username, {path: '/'})
                     resolve()
                 }
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -48,8 +50,8 @@ class APIClient {
                 } else {
                     reject()
                 }
-            }).catch(() => {
-                reject()
+            }).catch((e) => {
+                reject(e)
             })
         })
     }
@@ -61,8 +63,8 @@ class APIClient {
                 user_email: email
             }).then( () => {
                 resolve()
-            }).catch( () => {
-                reject()
+            }).catch( (e) => {
+                reject(e)
             })
         })
     }
@@ -75,8 +77,8 @@ class APIClient {
                 password: newPassword
             }).then( () => {
                 resolve()
-            }).catch( () => {
-                reject()
+            }).catch( (e) => {
+                reject(e)
             })
         })
     }

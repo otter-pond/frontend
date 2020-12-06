@@ -11,6 +11,7 @@ import {
 } from "reactstrap"
 import UsersAPI from "../../api/UsersAPI";
 import EmailListAPI from "../../api/EmailListAPI";
+import Notify from "react-notification-alert";
 
 class EmailSettingsCard extends Component {
     constructor(props) {
@@ -65,8 +66,26 @@ class EmailSettingsCard extends Component {
                         otherEmails: emails,
                         success: false
                     })
+                }).catch(e => {
+                    var options = {
+                        place: "tc",
+                        message: `Error executing request`,
+                        type: "danger",
+                        autoDismiss: -1,
+                        closeButton: true
+                    };
+                    this.refs.notify.notificationAlert(options);
                 })
 
+            }).catch(e => {
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
         })
     }
@@ -118,6 +137,15 @@ class EmailSettingsCard extends Component {
         }, () => {
             this.usersApi.updateUser(this.state.userEmail.address, user).then(() => {
                 this.loadUser()
+            }).catch(e => {
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
         })
     }
@@ -125,6 +153,7 @@ class EmailSettingsCard extends Component {
     render() {
         return (
             <Card>
+                <Notify ref="notify"/>
                 <CardHeader>
                     <CardTitle tag="h2" className="float-left">Email Addresses</CardTitle>
                 </CardHeader>

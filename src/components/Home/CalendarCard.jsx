@@ -13,7 +13,7 @@ import {
 
 import CalendarAPI from "../../api/CalendarAPI";
 import CalendarEventFetcher from "../../api/CalendarEventFetcher";
-
+import Notify from "react-notification-alert";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import LoadingOverlay from "react-loading-overlay";
@@ -40,7 +40,14 @@ class CalendarCard extends Component {
                 })
             })
         }).catch(e => {
-            console.log("Unable to load calendar: " + e)
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
@@ -49,12 +56,22 @@ class CalendarCard extends Component {
             this.setState({
                 link: link
             })
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
     render() {
         return (
             <Card>
+                <Notify ref="notify"/>
                 <CardHeader>
                     <CardTitle tag="h2" className="float-left">Calendar</CardTitle>
                 </CardHeader>

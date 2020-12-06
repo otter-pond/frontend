@@ -29,6 +29,8 @@ class CalendarEventFetcher {
 
                 });
                 resolve(events);
+            }).catch(e => {
+                reject(e)
             })
         })
 

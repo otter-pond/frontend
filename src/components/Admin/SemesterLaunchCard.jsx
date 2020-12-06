@@ -17,6 +17,7 @@ import {
 import AdminAPI from "../../api/AdminAPI";
 import LoadingOverlay from "react-loading-overlay";
 import ReportingAPI from "../../api/ReportingAPI";
+import Notify from "react-notification-alert";
 
 class SemesterLaunchCard extends Component {
     constructor(props) {
@@ -39,8 +40,15 @@ class SemesterLaunchCard extends Component {
                 loading: false
             })
         }).catch(e => {
-            console.log("Unable to load reports: " + e)
-        });
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
+        })
 
         this.adminApi = new AdminAPI();
     }
@@ -84,6 +92,15 @@ class SemesterLaunchCard extends Component {
                     financesRolloverId: "",
                     showSuccess: true
                 })
+            }).catch(e => {
+                var options = {
+                    place: "tc",
+                    message: `Error executing request`,
+                    type: "danger",
+                    autoDismiss: -1,
+                    closeButton: true
+                };
+                this.refs.notify.notificationAlert(options);
             })
         })
     }
@@ -91,6 +108,7 @@ class SemesterLaunchCard extends Component {
     render() {
         return (
             <div>
+                <Notify ref="notify"/>
                 <Card>
                     <CardHeader>
                         <CardTitle tag="h2" className="float-left">Launch New Semester</CardTitle>

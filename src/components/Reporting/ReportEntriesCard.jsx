@@ -13,6 +13,7 @@ import LoadingOverlay from "react-loading-overlay";
 import PaymentModal from "../Payment/PaymentModal";
 import ReportEntryForm from "./ReportEntryForm";
 import Cookies from 'universal-cookie';
+import Notify from "react-notification-alert";
 
 class ReportEntriesCard extends Component {
     constructor(props) {
@@ -111,8 +112,15 @@ class ReportEntriesCard extends Component {
                 form: form
             })
 
-        }).catch(e =>{
-            console.log("Unable to load report: " + e)
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
@@ -231,6 +239,15 @@ class ReportEntriesCard extends Component {
             }, () => {
                 this.loadReport(this.state.report["report_id"], this.state.selectedIndividual)
             })
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
@@ -241,6 +258,7 @@ class ReportEntriesCard extends Component {
         }
         return (
             <Card>
+                <Notify ref="notify"/>
                 <CardHeader>
                     <div className="clearfix">
                         <CardTitle tag="h2" className="float-left">Report Details {this.state.selectedIndividual === "" ? ""

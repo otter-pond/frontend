@@ -8,7 +8,7 @@ import Button from "reactstrap/es/Button";
 import Cookies from "universal-cookie";
 import UsersAPI from "../../api/UsersAPI";
 import ConfigAPI from "../../api/ConfigAPI";
-
+import Notify from "react-notification-alert";
 import DOMPurify from 'dompurify';
 
 class ConfigurableHomeCard extends Component {
@@ -37,6 +37,15 @@ class ConfigurableHomeCard extends Component {
                     htmlContent: setting["value"]
                 })
             }
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
@@ -53,12 +62,22 @@ class ConfigurableHomeCard extends Component {
                 editing: false,
                 editinContent: ""
             })
+        }).catch(e => {
+            var options = {
+                place: "tc",
+                message: `Error executing request`,
+                type: "danger",
+                autoDismiss: -1,
+                closeButton: true
+            };
+            this.refs.notify.notificationAlert(options);
         })
     }
 
     render() {
         return (
             <div>
+                <Notify ref="notify"/>
                 <Row>
                     <Col md={12}>
                         {this.state.isAdmin &&

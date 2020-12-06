@@ -5,6 +5,8 @@ export default class PositionsAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", "/positions/").then(positions => {
                 resolve(positions)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -13,6 +15,8 @@ export default class PositionsAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", "/config/permissions").then(permissions => {
                 resolve(permissions)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -21,6 +25,8 @@ export default class PositionsAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/positions/${positionId}/users/`).then(users => {
                 resolve(users)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -29,6 +35,8 @@ export default class PositionsAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("put", `/positions/${positionId}`, position).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -37,6 +45,8 @@ export default class PositionsAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("delete", `/positions/${positionId}`).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -45,6 +55,8 @@ export default class PositionsAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", `/positions/${positionId}/users/${user_email}`).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -53,6 +65,8 @@ export default class PositionsAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("delete", `/positions/${positionId}/users/${user_email}`).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -61,6 +75,8 @@ export default class PositionsAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("post", "/positions/create", position).then(result => {
                 resolve(result)
+            }).catch(e => {
+                reject(e)
             })
         })
     }

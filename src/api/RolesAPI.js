@@ -5,6 +5,8 @@ export default class RolesAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", "/roles/").then(roles => {
                 resolve(roles)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -13,6 +15,8 @@ export default class RolesAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/roles/${role_id}`).then(role => {
                 resolve(role)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -21,6 +25,8 @@ export default class RolesAPI extends APIClient {
         return new Promise((resolve, reject) => {
             this.perform("get", `/roles/${role_id}/users`).then(users => {
                 resolve(users)
+            }).catch(e => {
+                reject(e)
             })
         })
     }
@@ -32,6 +38,8 @@ export default class RolesAPI extends APIClient {
                     resolve();
                 else
                     reject();
+            }).catch(e => {
+                reject(e)
             })
         })
     }
