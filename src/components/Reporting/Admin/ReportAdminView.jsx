@@ -69,13 +69,19 @@ class ReportAdminView extends Component {
                             this.usersApi.getUsers(),
                             this.reportingApi.getReportFormById(this.state.report_id)];
 
+
+
             Promise.all(promises).then(results => {
+                let entries = results[3]
+                entries.sort((a, b) => {
+                    return new Date(a.timestamp) - new Date(b.timestamp);
+                })
                 this.setState({
                     report: report,
                     reportType: results[0],
                     semester: results[1],
                     roles: results[2],
-                    entries: results[3],
+                    entries: entries,
                     users: results[4],
                     reportForm: results[5].valueQuestion === null ? null : results[5],
                     loading: false

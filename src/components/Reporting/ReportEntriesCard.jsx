@@ -72,15 +72,14 @@ class ReportEntriesCard extends Component {
                 return;
             }
             var summary;
-            if (this.props.sortDirection){
-                entries.sort((a, b) => {
-                    if (this.props.sortDirection === "asc") {
-                        return new Date(a.timestamp) - new Date(b.timestamp);
-                    } else if (this.props.sortDirection === "desc"){
-                        return new Date(b.timestamp) - new Date(a.timestamp);
-                    }
-                })
-            }
+            let sortDirection = this.props.sortDirection ? this.props.sortDirection : "asc"
+            entries.sort((a, b) => {
+                if (sortDirection === "asc") {
+                    return new Date(a.timestamp) - new Date(b.timestamp);
+                } else if (sortDirection === "desc"){
+                    return new Date(b.timestamp) - new Date(a.timestamp);
+                }
+            })
             if (report["report_type"]["value_type"] === "optionselect") {
                 let options = report["report_type"]["options"];
                 let optionsMap = {}
